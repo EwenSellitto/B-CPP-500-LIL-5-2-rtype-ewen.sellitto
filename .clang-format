@@ -26,7 +26,6 @@ AccessModifierOffset: 0
 PointerAlignment: Right
 
 AllowShortIfStatementsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: SFS_InlineOnly
 AllowShortEnumsOnASingleLine: false
 
 IncludeBlocks: Preserve
