@@ -1,3 +1,4 @@
 #!/bin/bash
 
+echo 'Running clang-format on staged files...'
 clang-format -i -style=file $(git diff --name-only --cached | grep -E "\.(cpp|hpp)$")

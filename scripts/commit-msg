@@ -10,6 +10,7 @@ BREAKING_CHANGE_FOOTER_REGEX='BREAKING CHANGE: .+'
 # Read commit message
 commit_message=$(cat $COMMIT_MSG_FILE)
 
+echo 'Checking commit message format...'
 # Check if commit message matches the regex
 if ! [[ $commit_message =~ $COMMIT_REGEX ]] || \
    [[ $commit_message =~ $BREAKING_CHANGE_FOOTER_REGEX && ! $commit_message =~ ! ]]; then
