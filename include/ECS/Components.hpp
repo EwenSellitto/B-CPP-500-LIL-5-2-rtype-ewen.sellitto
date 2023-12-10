@@ -29,8 +29,7 @@ class BaseComponent
  *
  * @tparam T The type of the component this handle is for.
  */
-template <typename T>
-class ComponentHandle
+template <typename T> class ComponentHandle
 {
     public:
         /**

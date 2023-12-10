@@ -18,7 +18,8 @@ typedef std::size_t type_t;
 class Utils
 {
     public:
-        template<typename T> static id_t getNewId() {
+        template <typename T> static id_t getNewId()
+        {
             static id_t id = 0;
             return id++;
         }
