@@ -9,3 +9,8 @@ CmakeFiles
 CMakeCache.txt
 
 build/
+.idea
+.cache
+r-type_client
+compile_commands.json
+compile.sh
