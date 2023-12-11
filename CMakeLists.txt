@@ -1,7 +1,46 @@
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+
 cmake_minimum_required(VERSION 3.20.5)
 
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++20")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++20 -fsanitize=address -fsanitize=leak -lasan -g3")
+
+include_directories(include)
+
+add_executable(r-type_client
+               src/test.cpp
+               include/ECS/World.hpp
+               include/ECS/Entity.hpp
+               include/ECS/Components.hpp
+               include/ECS/EventSubscriber.hpp
+               include/ECS/Utilities.hpp
+               include/ECS/System.hpp
+)
+
+target_compile_features(r-type_client PRIVATE cxx_std_17)
+
+if (UNIX OR APPLE)
+    include(FetchContent)
+    FetchContent_Declare(SFML
+            GIT_REPOSITORY https://github.com/SFML/SFML.git
+            GIT_TAG 2.6.x)
+    FetchContent_MakeAvailable(SFML)
+
+    # Manually specify the UDev library and include directories
+    find_library(UDEV_LIBRARIES NAMES udev)
+    find_path(UDEV_INCLUDE_DIR NAMES libudev.h)
+
+    # Log the UDev paths
+    message(STATUS "UDev Library: ${UDEV_LIBRARIES}")
+    message(STATUS "UDev Include Dir: ${UDEV_INCLUDE_DIR}")
+
+    set(SFML_DEPENDENCIES_INSTALL_PREFIX "/usr/lib/udev/")
+
+    target_link_libraries(r-type_client PRIVATE sfml-graphics)
+
+    install(TARGETS r-type_client DESTINATION bin)
+endif (UNIX OR APPLE)
+

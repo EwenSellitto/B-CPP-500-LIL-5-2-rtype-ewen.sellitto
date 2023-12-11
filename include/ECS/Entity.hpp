@@ -7,9 +7,11 @@
 
 #pragma once
 
+#include <sys/types.h>
+#include <unordered_map>
+
 #include "Components.hpp"
 #include "Utilities.hpp"
-#include <unordered_map>
 
 namespace ECS {
 
@@ -31,7 +33,7 @@ class Entity
          * @note The Entity will be destroyed when the World is destroyed.
          * @warning Only create an Entity with a World.
          */
-        Entity(World &world) : _world(world), _components(){};
+        Entity(World &world) : _components(), _world(world){};
 
         /**
          * @brief Destroy the Entity object.
@@ -115,9 +117,8 @@ class Entity
         template <typename T, typename V, typename... Types> bool has() { return has<T>() && has<V, Types...>(); }
 
     private:
-        std::unordered_map<size_t, BaseComponent *>
-            _components; ///< Mapping of component type IDs to component pointers.
-        World &_world;   ///< Reference to the World this Entity belongs to.
+        std::unordered_map<id_t, BaseComponent *> _components; ///< Mapping of component type IDs to component pointers.
+        World &_world;                                         ///< Reference to the World this Entity belongs to.
 };
 
 class GlobalEntity : public Entity
