@@ -10,7 +10,8 @@
 #include "Utilities.hpp"
 #include <vector>
 
-namespace ECS {
+namespace ECS
+{
 class World;
 
 /**
@@ -36,7 +37,10 @@ class BaseSystem
          * @param world Reference to the World object that this system is part of.
          * @param ids A variable number of entity IDs to be processed by this system.
          */
-        BaseSystem(World &world, id_t ids...) : _world(world), _entities_id() { _entities_id.emplace_back(ids); }
+        BaseSystem(World &world, id_t ids...) : _world(world), _entities_id()
+        {
+            _entities_id.emplace_back(ids);
+        }
 
         /**
          * @brief Virtual destructor for the BaseSystem.

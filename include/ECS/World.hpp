@@ -13,7 +13,8 @@
 #include <memory>
 #include <unordered_map>
 
-namespace ECS {
+namespace ECS
+{
 
 /**
  * @class World
@@ -54,7 +55,10 @@ class World
          * @param id The unique identifier of the entity to be removed.
          * @note The entity will be properly destroyed when removed.
          */
-        void removeEntity(id_t id) { _entities.erase(id); }
+        void removeEntity(id_t id)
+        {
+            _entities.erase(id);
+        }
 
         /**
          * @brief Get an immutable reference to an entity.
@@ -62,7 +66,10 @@ class World
          * @param id The unique identifier of the entity to get.
          * @return const Entity& An immutable reference to the entity.
          */
-        Entity &getEntity(id_t id) { return *_entities.at(id); }
+        Entity &getEntity(id_t id)
+        {
+            return *_entities.at(id);
+        }
 
         /**
          * @brief Get a mutable reference to an entity.
@@ -71,7 +78,10 @@ class World
          * @return Entity& A mutable reference to the entity.
          * @warning This function is meant to be used by the systems only.
          */
-        Entity &getMutEntity(id_t id) { return *_entities.at(id); }
+        Entity &getMutEntity(id_t id)
+        {
+            return *_entities.at(id);
+        }
 
         /**
          * @brief Add a global entity to the world.
@@ -93,7 +103,10 @@ class World
          * @param id The unique identifier of the global entity to be removed.
          * @note The global entity will be properly destroyed when removed from all the worlds.
          */
-        void removeGlobalEntity(id_t id) { _global_entities.erase(id); }
+        void removeGlobalEntity(id_t id)
+        {
+            _global_entities.erase(id);
+        }
 
         /**
          * @brief Get an immutable reference to a global entity.
@@ -101,7 +114,10 @@ class World
          * @param id The unique identifier of the global entity to get.
          * @return cosnt GlobalEntity& An immutable reference to the global entity.
          */
-        const GlobalEntity &getGlobalEntity(id_t id) { return *_global_entities.at(id); }
+        const GlobalEntity &getGlobalEntity(id_t id)
+        {
+            return *_global_entities.at(id);
+        }
 
         /**
          * @brief Get a mutable reference to a global entity.
@@ -109,7 +125,10 @@ class World
          * @param id The unique identifier of the global entity to get.
          * @return GlobalEntity& A mutable reference to the global entity.
          */
-        GlobalEntity &getMutGlobalEntity(id_t id) { return *_global_entities.at(id); }
+        GlobalEntity &getMutGlobalEntity(id_t id)
+        {
+            return *_global_entities.at(id);
+        }
 
     private:
         std::unordered_map<id_t, std::unique_ptr<Entity>> _entities; ///< Map of entities, indexed by their unique IDs.

@@ -8,14 +8,7 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: Consecutive
 
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
-
-BraceWrapping:
-  AfterFunction: true
-  AfterStruct: false
-  AfterUnion: false
-  AfterEnum: false
-  AfterClass: true
+BreakBeforeBraces: Linux
 
 BinPackArguments: true
 
@@ -27,6 +20,7 @@ PointerAlignment: Right
 
 AllowShortIfStatementsOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
 
 IncludeBlocks: Preserve
 IncludeCategories:

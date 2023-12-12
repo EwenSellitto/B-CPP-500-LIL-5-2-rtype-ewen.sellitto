@@ -8,7 +8,8 @@
 
 #pragma once
 
-namespace ECS {
+namespace ECS
+{
 
 /**
  * @class BaseComponent
@@ -64,14 +65,20 @@ template <typename T> class ComponentHandle
          *
          * @return T* Pointer to the component.
          */
-        std::shared_ptr<T> operator*() { return get(); }
+        std::shared_ptr<T> operator*()
+        {
+            return get();
+        }
 
         /**
          * @brief Overloading arrow operator to access the underlying component's members.
          *
          * @return T* Pointer to the component.
          */
-        std::shared_ptr<T> operator->() { return get(); }
+        std::shared_ptr<T> operator->()
+        {
+            return get();
+        }
 
         /**
          * @brief Deleted assignment operator to prevent copying of the component handle.
@@ -85,7 +92,10 @@ template <typename T> class ComponentHandle
          * @return true If both handles point to the same component.
          * @return false Otherwise.
          */
-        bool operator==(const ComponentHandle<T> &other) { return _component == other._component; }
+        bool operator==(const ComponentHandle<T> &other)
+        {
+            return _component == other._component;
+        }
 
         /**
          * @brief Compare this handle's validity with a boolean.
@@ -94,7 +104,10 @@ template <typename T> class ComponentHandle
          * @return true If the handle's validity matches the boolean.
          * @return false Otherwise.
          */
-        bool operator==(bool other) { return isValid() == other; }
+        bool operator==(bool other)
+        {
+            return isValid() == other;
+        }
 
         /**
          * @brief Compare this handle with another for inequality.
@@ -103,7 +116,10 @@ template <typename T> class ComponentHandle
          * @return true If both handles do not point to the same component.
          * @return false Otherwise.
          */
-        bool operator!=(const ComponentHandle<T> &other) { return _component != other._component; }
+        bool operator!=(const ComponentHandle<T> &other)
+        {
+            return _component != other._component;
+        }
 
         /**
          * @brief Compare this handle's validity with a boolean for inequality.
@@ -112,7 +128,10 @@ template <typename T> class ComponentHandle
          * @return true If the handle's validity does not match the boolean.
          * @return false Otherwise.
          */
-        bool operator!=(bool other) { return isValid() != other; }
+        bool operator!=(bool other)
+        {
+            return isValid() != other;
+        }
 
         /**
          * @brief Check if the handle is valid (i.e., it points to a component).
@@ -120,7 +139,10 @@ template <typename T> class ComponentHandle
          * @return true If the handle is valid.
          * @return false Otherwise.
          */
-        bool isValid() { return _component != nullptr; }
+        bool isValid()
+        {
+            return _component != nullptr;
+        }
 
     private:
         std::shared_ptr<T> _component; ///< Pointer to the component.
@@ -130,7 +152,10 @@ template <typename T> class ComponentHandle
          *
          * @return T* Pointer to the component.
          */
-        std::shared_ptr<T> get() { return _component; }
+        std::shared_ptr<T> get()
+        {
+            return _component;
+        }
 };
 
 } // namespace ECS

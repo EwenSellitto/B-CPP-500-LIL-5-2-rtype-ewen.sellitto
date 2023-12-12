@@ -11,7 +11,8 @@
 
 #define ECS_TYPEID(T) typeid(T).hash_code()
 
-namespace ECS {
+namespace ECS
+{
 typedef std::size_t id_t;
 typedef std::size_t type_t;
 

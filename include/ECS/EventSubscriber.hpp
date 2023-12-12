@@ -7,7 +7,8 @@
 
 #include <string>
 
-namespace ECS {
+namespace ECS
+{
 
 /**
  * @class BaseEventSubscriber

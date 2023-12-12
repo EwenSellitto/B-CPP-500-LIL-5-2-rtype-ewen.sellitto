@@ -14,7 +14,8 @@
 #include "Components.hpp"
 #include "Utilities.hpp"
 
-namespace ECS {
+namespace ECS
+{
 
 class World;
 
@@ -44,7 +45,10 @@ class Entity
          * @note The Entity will be removed from all the systems.
          * @warning Only destroy an Entity with a World.
          */
-        ~Entity() { removeAllComponents(); };
+        ~Entity()
+        {
+            removeAllComponents();
+        };
 
         /**
          * @brief Add a component to the Entity.
@@ -79,7 +83,10 @@ class Entity
          * @throw std::out_of_range if a component does not exist.
          * @note This function will destroy the components.
          */
-        void removeAllComponents() { _components.clear(); }
+        void removeAllComponents()
+        {
+            _components.clear();
+        }
 
         /**
          * @brief Get a component.
@@ -100,7 +107,10 @@ class Entity
          * @tparam T Type of the component.
          * @return bool True if the component exists, false otherwise.
          */
-        template <typename T> bool has() const { return _components.find(ECS_TYPEID(T)) != _components.end(); }
+        template <typename T> bool has() const
+        {
+            return _components.find(ECS_TYPEID(T)) != _components.end();
+        }
 
         /**
          * @brief Check if the Entity has a list of components.
@@ -109,7 +119,10 @@ class Entity
          * @return bool True if all specified components exist, false otherwise.
          * @throw std::out_of_range if a component does not exist.
          */
-        template <typename T, typename V, typename... Types> bool has() const { return has<T>() && has<V, Types...>(); }
+        template <typename T, typename V, typename... Types> bool has() const
+        {
+            return has<T>() && has<V, Types...>();
+        }
 
     private:
         std::unordered_map<id_t, std::shared_ptr<BaseComponent>>
