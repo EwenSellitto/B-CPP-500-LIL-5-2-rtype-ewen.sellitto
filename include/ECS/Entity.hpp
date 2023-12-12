@@ -8,6 +8,7 @@
 #pragma once
 
 #include <sys/types.h>
+#include <memory>
 #include <unordered_map>
 
 #include "Components.hpp"
@@ -25,7 +26,7 @@ class Entity
 {
         friend class World;
 
-    private:
+    public:
         /**
          * @brief Construct a new Entity object.
          * @param world Reference to the World to which this Entity belongs.
@@ -33,7 +34,7 @@ class Entity
          * @note The Entity will be destroyed when the World is destroyed.
          * @warning Only create an Entity with a World.
          */
-        Entity(World &world) : _components(), _world(world){};
+        explicit Entity(World &world) : _components(), _world(world){};
 
         /**
          * @brief Destroy the Entity object.
@@ -45,17 +46,17 @@ class Entity
          */
         ~Entity() { removeAllComponents(); };
 
-    public:
         /**
          * @brief Add a component to the Entity.
+         * @brief and deletes the sent references
          * @tparam T Type of the component.
          * @param component Component to add.
          * @throw std::runtime_error if the component already exists.
          * @warning Meant to be called by the user and the World.
          */
-        template <typename T> void addComponent(const T &component)
+        template <typename T> void addComponent(const T component)
         {
-            _components.insert(std::make_pair(ECS_TYPEID(T), component));
+            _components.insert(std::make_pair(ECS_TYPEID(T), std::make_shared<T>(component)));
         }
 
         /**
@@ -70,7 +71,6 @@ class Entity
             auto it    = _components.find(index);
             if (it != _components.end()) {
                 _components.erase(it);
-                delete it->second;
             }
         }
 
@@ -79,14 +79,7 @@ class Entity
          * @throw std::out_of_range if a component does not exist.
          * @note This function will destroy the components.
          */
-        void removeAllComponents()
-        {
-            for (auto pair : _components) {
-                delete pair.second;
-            }
-
-            _components.clear();
-        }
+        void removeAllComponents() { _components.clear(); }
 
         /**
          * @brief Get a component.
@@ -97,7 +90,9 @@ class Entity
          */
         template <typename T> ComponentHandle<T> getComponent()
         {
-            return ComponentHandle<T>(_components.at(ECS_TYPEID(T)));
+            auto baseComponentPtr                   = _components.at(ECS_TYPEID(T));
+            std::shared_ptr<T> specificComponentPtr = std::dynamic_pointer_cast<T>(baseComponentPtr);
+            return ComponentHandle<T>(specificComponentPtr);
         }
 
         /**
@@ -105,7 +100,7 @@ class Entity
          * @tparam T Type of the component.
          * @return bool True if the component exists, false otherwise.
          */
-        template <typename T> bool has() { return _components.find(ECS_TYPEID(T)) != _components.end(); }
+        template <typename T> bool has() const { return _components.find(ECS_TYPEID(T)) != _components.end(); }
 
         /**
          * @brief Check if the Entity has a list of components.
@@ -114,11 +109,12 @@ class Entity
          * @return bool True if all specified components exist, false otherwise.
          * @throw std::out_of_range if a component does not exist.
          */
-        template <typename T, typename V, typename... Types> bool has() { return has<T>() && has<V, Types...>(); }
+        template <typename T, typename V, typename... Types> bool has() const { return has<T>() && has<V, Types...>(); }
 
     private:
-        std::unordered_map<id_t, BaseComponent *> _components; ///< Mapping of component type IDs to component pointers.
-        World &_world;                                         ///< Reference to the World this Entity belongs to.
+        std::unordered_map<id_t, std::shared_ptr<BaseComponent>>
+            _components; ///< Mapping of component type IDs to component pointers.
+        World &_world;   ///< Reference to the World this Entity belongs to.
 };
 
 class GlobalEntity : public Entity

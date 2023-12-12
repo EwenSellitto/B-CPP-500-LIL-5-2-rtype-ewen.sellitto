@@ -18,9 +18,19 @@ class BaseComponent
 {
     public:
         /**
-         * @brief Virtual destructor for BaseComponent, defined as pure virtual (0).
+         * @brief Virtual destructor for BaseComponent
          */
-        virtual ~BaseComponent() = 0;
+        virtual ~BaseComponent() = default;
+};
+
+struct PositionComponent : public BaseComponent {
+    public:
+        PositionComponent() : x(0), y(0){};
+        explicit PositionComponent(int x, int y) : x(x), y(y){};
+        ~PositionComponent() override = default;
+
+        int x;
+        int y;
 };
 
 /**
@@ -42,7 +52,7 @@ template <typename T> class ComponentHandle
          *
          * @param component Pointer to the component.
          */
-        ComponentHandle(T *component) : _component(component){};
+        explicit ComponentHandle(std::shared_ptr<T> component) : _component(component){};
 
         /**
          * @brief Default destructor.
@@ -50,25 +60,18 @@ template <typename T> class ComponentHandle
         ~ComponentHandle() = default;
 
         /**
-         * @brief Get the underlying component pointer.
-         *
-         * @return T* Pointer to the component.
-         */
-        T *get() { return _component; }
-
-        /**
          * @brief Overloading dereference operator to get the underlying component.
          *
          * @return T* Pointer to the component.
          */
-        T *operator*() { return get(); }
+        std::shared_ptr<T> operator*() { return get(); }
 
         /**
          * @brief Overloading arrow operator to access the underlying component's members.
          *
          * @return T* Pointer to the component.
          */
-        T *operator->() { return get(); }
+        std::shared_ptr<T> operator->() { return get(); }
 
         /**
          * @brief Deleted assignment operator to prevent copying of the component handle.
@@ -120,7 +123,14 @@ template <typename T> class ComponentHandle
         bool isValid() { return _component != nullptr; }
 
     private:
-        T *_component; ///< Pointer to the component.
+        std::shared_ptr<T> _component; ///< Pointer to the component.
+
+        /**
+         * @brief Get the underlying component pointer.
+         *
+         * @return T* Pointer to the component.
+         */
+        std::shared_ptr<T> get() { return _component; }
 };
 
 } // namespace ECS

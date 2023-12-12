@@ -8,7 +8,7 @@ BEAR=$(which bear)
 
 if [[ -z "$CLANG" || -z "$CMAKE" || -z "$CLANG_FORMAT" || -z "$CLANG_TIDY" || -z "$BEAR" ]]; then
     echo "Please install clang, cmake, clang-format, clang-tidy and bear"
-    sudo dnf install clang clang-tools-extra cmake ninja-build lld bear -y
+    sudo apt install clang clang-format cmake ninja-build lld bear -y
 fi
 
 pre_commit_path=$(git rev-parse --show-toplevel)/.git/hooks/pre-commit

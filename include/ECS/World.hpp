@@ -25,13 +25,13 @@ class World
         /**
          * @brief Construct a new World object.
          */
-        World();
+        World() = default;
 
         /**
          * @brief Destroy the World object.
          * @note This will also destroy all entities and global entities within the world.
          */
-        ~World();
+        ~World() = default;
 
         /**
          * @brief Add an entity to the world.
@@ -60,9 +60,9 @@ class World
          * @brief Get an immutable reference to an entity.
          *
          * @param id The unique identifier of the entity to get.
-         * @return cosnt Entity& An immutable reference to the entity.
+         * @return const Entity& An immutable reference to the entity.
          */
-        const Entity &getEntity(id_t id) { return *_entities.at(id); }
+        Entity &getEntity(id_t id) { return *_entities.at(id); }
 
         /**
          * @brief Get a mutable reference to an entity.

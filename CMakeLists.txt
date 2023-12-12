@@ -18,6 +18,7 @@ add_executable(r-type_client
                include/ECS/EventSubscriber.hpp
                include/ECS/Utilities.hpp
                include/ECS/System.hpp
+               include/r-type.hpp
 )
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)
