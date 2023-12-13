@@ -8,32 +8,34 @@
 #pragma once
 
 #include <cstddef>
+#include <unordered_map>
 
 #define ECS_TYPEID(T) typeid(T).hash_code()
 
 namespace ECS
 {
-typedef std::size_t id_t;
-typedef std::size_t type_t;
+    typedef std::size_t id_t;
+    typedef std::size_t type_t;
 
-/**
- * @class Utils
- * @brief Utility class for the ECS.
- */
-class Utils
-{
-    public:
-        /**
-         * @brief Get a new unique identifier.
-         *
-         * @tparam T The type of the identifier.
-         * @return id_t A new unique identifier for this type.
-         * @note Typedefs will have the same identifier as their underlying type.
-         */
-        template <typename T> static id_t getNewId()
-        {
-            static id_t id = 0;
-            return id++;
-        }
-};
+    /**
+     * @class Utils
+     * @brief Utility class for the ECS.
+     */
+    class Utils
+    {
+        public:
+            /**
+             * @brief Get a new unique identifier.
+             *
+             * @tparam T The type of the identifier.
+             * @return id_t A new unique identifier for this type.
+             * @note Typedefs will have the same identifier as their underlying type.
+             */
+            template <typename T> static id_t getNewId()
+            {
+                static id_t id = 0;
+                // static std::unordered_map<T, id_t> ids();
+                return id++;
+            }
+    };
 } // namespace ECS

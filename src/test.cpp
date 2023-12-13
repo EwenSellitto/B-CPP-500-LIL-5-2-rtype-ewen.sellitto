@@ -10,6 +10,22 @@
 #include "r-type.hpp"
 #include <iostream>
 
+struct TestEvent {
+        int x;
+};
+
+class TestSubscriber : public virtual ECS::EventSubscriber<TestEvent>
+{
+    public:
+        TestSubscriber()  = default;
+        ~TestSubscriber() = default;
+        void receiveEvent(const std::string &name, const TestEvent &data) override
+        {
+            std::cout << "TestSubscriber received event " << name << std::endl;
+            std::cout << "Entity id: " << data.x << std::endl;
+        }
+};
+
 struct Position {
         float x;
         float y;
@@ -24,11 +40,23 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     std::cout << typeid(Hello).hash_code() << std::endl;
 
     ECS::World world;
-    world.addEntity(std::make_unique<ECS::Entity>(world));
-    ECS::Entity &entity        = world.getEntity(0);
-    bool has_PositionComponent = entity.has<PositionComponent>();
+    world.addEntity(std::make_unique<ECS::Entity>());
+
+    TestEvent event{42};
+    auto     *sub = new TestSubscriber();
+    world.subscribe<TestEvent>(sub);
+    try {
+        world.broadcastEvent<TestEvent>(event);
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    ECS::Entity &entity                = world.getMutEntity(0);
+    bool         has_PositionComponent = entity.has<PositionComponent>();
+
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
     entity.addComponent<PositionComponent>((PositionComponent){42, 64});
+
     has_PositionComponent                        = entity.has<PositionComponent>();
     ECS::ComponentHandle<PositionComponent> comp = entity.getComponent<PositionComponent>();
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
