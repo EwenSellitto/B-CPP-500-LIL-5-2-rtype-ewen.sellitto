@@ -17,3 +17,5 @@ compile.sh
 
 example_ecs.hpp
 .vscode/
+cmake-build-debug/
+vgcore.*

@@ -15,13 +15,14 @@ BinPackArguments: true
 
 EmptyLineBeforeAccessModifier: Always
 IndentAccessModifiers: true
+NamespaceIndentation: All
 AccessModifierOffset: 0
 
 PointerAlignment: Right
 
 AllowShortIfStatementsOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
 
 IncludeBlocks: Preserve
 IncludeCategories:
