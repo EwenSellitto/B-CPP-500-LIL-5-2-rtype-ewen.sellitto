@@ -5,7 +5,10 @@
 ** test.cpp
 */
 
+#include "ECS/Entity.hpp"
+#include "ECS/World.hpp"
 #include "r-type.hpp"
+#include <iostream>
 
 struct Position {
         float x;
@@ -15,7 +18,7 @@ struct Position {
 struct Hello : public Position {
 };
 
-int main(int argc, char **argv)
+int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
     std::cout << typeid(Position).hash_code() << std::endl;
     std::cout << typeid(Hello).hash_code() << std::endl;
@@ -23,11 +26,11 @@ int main(int argc, char **argv)
     ECS::World world;
     world.addEntity(std::make_unique<ECS::Entity>(world));
     ECS::Entity &entity        = world.getEntity(0);
-    bool has_PositionComponent = entity.has<ECS::PositionComponent>();
+    bool has_PositionComponent = entity.has<PositionComponent>();
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
-    entity.addComponent<ECS::PositionComponent>((ECS::PositionComponent){42, 64});
-    has_PositionComponent                             = entity.has<ECS::PositionComponent>();
-    ECS::ComponentHandle<ECS::PositionComponent> comp = entity.getComponent<ECS::PositionComponent>();
+    entity.addComponent<PositionComponent>((PositionComponent){42, 64});
+    has_PositionComponent                        = entity.has<PositionComponent>();
+    ECS::ComponentHandle<PositionComponent> comp = entity.getComponent<PositionComponent>();
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
     return (0);
 }

@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo 'Running clang-format on staged files...'

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <typeinfo>
+#include <cstddef>
 
 #define ECS_TYPEID(T) typeid(T).hash_code()
 

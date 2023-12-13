@@ -8,11 +8,17 @@
 #ifndef R_TYPE_HPP
 #define R_TYPE_HPP
 
-#include "ECS/Entity.hpp"
-#include "ECS/World.hpp"
-#include <iostream>
-#include <ostream>
-#include <string>
-#include <unordered_map>
+#include "ECS/Components.hpp"
+#include <memory>
+
+struct PositionComponent : public ECS::BaseComponent {
+    public:
+        PositionComponent() : x(0), y(0){};
+        explicit PositionComponent(int x, int y) : x(x), y(y){};
+        ~PositionComponent() override = default;
+
+        int x;
+        int y;
+};
 
 #endif // R_TYPE_HPP

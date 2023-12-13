@@ -1,4 +1,3 @@
-
 /*
 ** EPITECH PROJECT, 2023
 ** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
@@ -7,6 +6,8 @@
 */
 
 #pragma once
+
+#include <memory>
 
 namespace ECS
 {
@@ -22,16 +23,6 @@ class BaseComponent
          * @brief Virtual destructor for BaseComponent
          */
         virtual ~BaseComponent() = default;
-};
-
-struct PositionComponent : public BaseComponent {
-    public:
-        PositionComponent() : x(0), y(0){};
-        explicit PositionComponent(int x, int y) : x(x), y(y){};
-        ~PositionComponent() override = default;
-
-        int x;
-        int y;
 };
 
 /**

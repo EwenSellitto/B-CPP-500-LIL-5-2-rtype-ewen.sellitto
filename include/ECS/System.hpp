@@ -73,7 +73,7 @@ class BaseSystem
         virtual void tick() = 0;
 
     private:
-        World &_world;                  ///< Reference to the World this system belongs to.
+        [[maybe_unused]] World &_world; ///< Reference to the World this system belongs to.
         std::vector<id_t> _entities_id; ///< List of entity IDs that this system processes.
 };
 } // namespace ECS

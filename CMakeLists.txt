@@ -1,7 +1,7 @@
+cmake_minimum_required(VERSION 3.20.5)
+
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
-
-cmake_minimum_required(VERSION 3.20.5)
 
 project(R-TYPE)
 
@@ -10,20 +10,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++20")
 
 include_directories(include)
 
-add_executable(r-type_client
-               src/test.cpp
-               include/ECS/World.hpp
-               include/ECS/Entity.hpp
-               include/ECS/Components.hpp
-               include/ECS/EventSubscriber.hpp
-               include/ECS/Utilities.hpp
-               include/ECS/System.hpp
-               include/r-type.hpp
-)
+find_package(SFML 2.6 COMPONENTS graphics QUIET)
 
-target_compile_features(r-type_client PRIVATE cxx_std_17)
-
-if (UNIX OR APPLE)
+if (NOT SFML_FOUND AND (UNIX OR APPLE))
     include(FetchContent)
     FetchContent_Declare(SFML
             GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -39,9 +28,23 @@ if (UNIX OR APPLE)
     message(STATUS "UDev Include Dir: ${UDEV_INCLUDE_DIR}")
 
     set(SFML_DEPENDENCIES_INSTALL_PREFIX "/usr/lib/udev/")
+endif()
 
-    target_link_libraries(r-type_client PRIVATE sfml-graphics)
+add_executable(r-type_client
+               src/test.cpp
+               include/ECS/World.hpp
+               include/ECS/Entity.hpp
+               include/ECS/Components.hpp
+               include/ECS/EventSubscriber.hpp
+               include/ECS/Utilities.hpp
+               include/ECS/System.hpp
+               include/r-type.hpp
+)
 
+target_compile_features(r-type_client PRIVATE cxx_std_17)
+
+target_link_libraries(r-type_client PRIVATE sfml-graphics)
+
+if (UNIX OR APPLE)
     install(TARGETS r-type_client DESTINATION bin)
 endif (UNIX OR APPLE)
-
