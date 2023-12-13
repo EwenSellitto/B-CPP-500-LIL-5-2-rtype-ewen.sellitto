@@ -14,3 +14,6 @@ build/
 r-type_client
 compile_commands.json
 compile.sh
+
+example_ecs.hpp
+.vscode/

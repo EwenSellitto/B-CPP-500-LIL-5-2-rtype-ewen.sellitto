@@ -6,6 +6,7 @@ UseTab: Never
 
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: Consecutive
 
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Linux
