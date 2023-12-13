@@ -46,8 +46,12 @@ namespace ECS
              */
             id_t addEntity(std::unique_ptr<Entity> entity)
             {
-                type_t id = Utils::getNewId<Entity>();
+                type_t                  id = Utils::getNewId<Entity>();
+                Events::OnEntityCreated event{entity.get()};
+
                 _entities.emplace(id, std::move(entity));
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityCreated>(event);
                 return id;
             }
 
@@ -59,7 +63,11 @@ namespace ECS
              */
             void removeEntity(id_t id)
             {
+                Events::OnEntityDestroyed event{_entities.at(id).get()};
+
                 _entities.erase(id);
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityDestroyed>(event);
             }
 
             /**
@@ -95,6 +103,7 @@ namespace ECS
             id_t addGlobalEntity(std::unique_ptr<GlobalEntity> entity)
             {
                 type_t id = Utils::getNewId<GlobalEntity>();
+
                 _global_entities.emplace(id, std::move(entity));
                 return id;
             }
@@ -166,6 +175,16 @@ namespace ECS
                 _subscribers[type_id].erase(uuid);
             }
 
+            /**
+             * @brief Broadcast an event to all subscribers of a specific event type.
+             *
+             * @tparam T The type of the event data to be broadcast.
+             * @param data The event data to be broadcast.
+             * @param name The name of the event.
+             * @note This method allows for the dynamic broadcasting of events to all subscribers of a specific event
+             * type.
+             * @warning This method can cause infinite recursion if its broadcasting an event of type T or it broadcast
+             */
             template <typename T> void broadcastEvent(T &data, const std::string &name = "")
             {
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
