@@ -24,16 +24,18 @@ AllowShortIfStatementsOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 
-IncludeBlocks: Preserve
+IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^<.*\.h>'
+  - Regex: "^<.*>"
     Priority: 1
-  - Regex: '^".*\.h"'
+  - Regex: '^<.*\.h>'
     Priority: 2
   - Regex: '^<.*\.hpp>'
     Priority: 3
-  - Regex: '^".*\.hpp"'
+  - Regex: '^".*\.h"'
     Priority: 4
+  - Regex: '^".*\.hpp"'
+    Priority: 5
 SortIncludes: true
 
 SpaceAfterCStyleCast: false

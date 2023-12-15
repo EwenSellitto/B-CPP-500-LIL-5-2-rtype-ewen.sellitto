@@ -18,16 +18,6 @@ if (NOT SFML_FOUND AND (UNIX OR APPLE))
             GIT_REPOSITORY https://github.com/SFML/SFML.git
             GIT_TAG 2.6.x)
     FetchContent_MakeAvailable(SFML)
-
-    # Manually specify the UDev library and include directories
-    find_library(UDEV_LIBRARIES NAMES udev)
-    find_path(UDEV_INCLUDE_DIR NAMES libudev.h)
-
-    # Log the UDev paths
-    message(STATUS "UDev Library: ${UDEV_LIBRARIES}")
-    message(STATUS "UDev Include Dir: ${UDEV_INCLUDE_DIR}")
-
-    set(SFML_DEPENDENCIES_INSTALL_PREFIX "/usr/lib/udev/")
 endif()
 
 add_executable(r-type_client

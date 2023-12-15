@@ -8,11 +8,13 @@
 
 #pragma once
 
+#include <ctime>
+#include <memory>
+#include <unordered_map>
+
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
 #include "Utilities.hpp"
-#include <memory>
-#include <unordered_map>
 
 namespace ECS
 {
@@ -28,7 +30,7 @@ namespace ECS
             /**
              * @brief Construct a new World object.
              */
-            World() : _entities(), _global_entities(), _subscribers() {}
+            World() : _entities(), _global_entities(), _subscribers(), _clock() {}
 
             /**
              * @brief Destroy the World object.
@@ -185,7 +187,7 @@ namespace ECS
              * type.
              * @warning This method can cause infinite recursion if its broadcasting an event of type T or it broadcast
              */
-            template <typename T> void broadcastEvent(T &data, const std::string &name = "")
+            template <typename T> void broadcastEvent(T &data, const std::string name = "")
             {
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
                 for (auto &subscriber : subscribers) {
@@ -194,9 +196,21 @@ namespace ECS
                 }
             }
 
+            /**
+             * @brief Give the elapsed time between two calls of this function
+             *
+             * @return the elapsed time between two calls of this function
+             * @note on first call will give the time elapsed since the start of the programm
+             */
+            std::clock_t getWorldTime()
+            {
+                return _clock.getElapsedTime();
+            }
+
         private:
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
+            Clock                                                                       _clock;
     };
 } // namespace ECS

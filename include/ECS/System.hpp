@@ -7,8 +7,10 @@
 
 #pragma once
 
-#include "Utilities.hpp"
 #include <vector>
+
+#include "Clock.hpp"
+#include "Utilities.hpp"
 
 namespace ECS
 {
@@ -29,7 +31,7 @@ namespace ECS
              *
              * @param world Reference to the World object that this system is part of.
              */
-            BaseSystem(World &world) : _world(world), _entities_id(){};
+            BaseSystem(World &world) : _world(world), _entities_id(), _clock(){};
 
             /**
              * @brief Construct a new BaseSystem object and initialize it with a list of entity IDs.
@@ -75,5 +77,6 @@ namespace ECS
         private:
             [[maybe_unused]] World &_world;       ///< Reference to the World this system belongs to.
             std::vector<id_t>       _entities_id; ///< List of entity IDs that this system processes.
+            [[maybe_unused]] Clock  _clock;       ///< Clock used to track the time between ticks.
     };
 } // namespace ECS

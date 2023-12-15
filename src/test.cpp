@@ -5,10 +5,12 @@
 ** test.cpp
 */
 
+#include <iostream>
+#include <iterator>
+
 #include "ECS/Entity.hpp"
 #include "ECS/World.hpp"
 #include "r-type.hpp"
-#include <iostream>
 
 struct TestEvent {
         int x;
@@ -40,6 +42,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     std::cout << typeid(Hello).hash_code() << std::endl;
 
     ECS::World world;
+    std::cout << world.getWorldTime() << std::endl;
     world.addEntity(std::make_unique<ECS::Entity>());
 
     TestEvent event{42};
@@ -60,5 +63,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     has_PositionComponent                        = entity.has<PositionComponent>();
     ECS::ComponentHandle<PositionComponent> comp = entity.getComponent<PositionComponent>();
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
+    std::cout << world.getWorldTime() << std::endl;
     return (0);
 }

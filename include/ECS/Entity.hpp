@@ -7,11 +7,13 @@
 
 #pragma once
 
-#include <sys/types.h>
+#include <ctime>
 #include <memory>
+#include <sys/types.h>
 #include <unordered_map>
 #include <vector>
 
+#include "Clock.hpp"
 #include "Components.hpp"
 #include "Utilities.hpp"
 
@@ -36,12 +38,12 @@ namespace ECS
              * @note The Entity will be destroyed when the World is destroyed.
              * @warning Only create an Entity with a World.
              */
-            explicit Entity() : _components(){};
+            explicit Entity() : _components(), _clock(){};
 
             /**
              * @brief Destroy the Entity object.
              * @note All components will be destroyed.
-             * @note The Entity will be removed from the World.
+             * @note The Entity will be removed from  the World.
              * @note The Entity will be destroyed when the World is destroyed.
              * @note The Entity will be removed from all the systems.
              * @warning Only destroy an Entity with a World.
@@ -125,8 +127,14 @@ namespace ECS
                 return has<T>() && has<V, Types...>();
             }
 
+            std::clock_t getElapsedTime()
+            {
+                return _clock.getElapsedTime();
+            }
+
         private:
             std::unordered_map<id_t, std::shared_ptr<BaseComponent>> _components;
+            Clock                                                    _clock;
     };
 
     class GlobalEntity : public Entity
