@@ -6,7 +6,6 @@
 */
 
 #include <iostream>
-#include <iterator>
 
 #include "ECS/Entity.hpp"
 #include "ECS/World.hpp"

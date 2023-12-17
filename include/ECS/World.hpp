@@ -1,4 +1,3 @@
-
 /*
 ** EPITECH PROJECT, 2023
 ** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
@@ -257,6 +256,13 @@ namespace ECS
             {
                 return _clock.getElapsedTime();
             }
+
+            /*==================//
+            //  Logic Handling  //
+            //==================*/
+
+            // TODO : implement this tick function by calling each ticks of the systems in a thread
+            void tick() {}
 
         private:
             /**

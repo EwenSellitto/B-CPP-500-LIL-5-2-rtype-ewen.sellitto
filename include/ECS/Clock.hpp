@@ -5,6 +5,8 @@
 ** Clock.hpp
 */
 
+#pragma once
+
 #include <ctime>
 
 #ifndef CLOCK_MIN_ELAPSED_TIME      // Minimum elapsed time between two calls to the update method of a system

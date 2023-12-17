@@ -74,6 +74,16 @@ namespace ECS
              */
             virtual void tick() = 0;
 
+            /**
+             * @brief Get the World object that this system is part of.
+             *
+             * @return Reference to the World object.
+             */
+            [[nodiscard]] World &getWorld() const
+            {
+                return _world;
+            }
+
         private:
             [[maybe_unused]] World &_world;       ///< Reference to the World this system belongs to.
             std::vector<id_t>       _entities_id; ///< List of entity IDs that this system processes.

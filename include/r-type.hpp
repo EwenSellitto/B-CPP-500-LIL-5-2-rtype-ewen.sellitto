@@ -8,8 +8,9 @@
 #ifndef R_TYPE_HPP
 #define R_TYPE_HPP
 
-#include "ECS/Components.hpp"
 #include <memory>
+
+#include "ECS/Components.hpp"
 
 struct PositionComponent : public ECS::BaseComponent {
     public:

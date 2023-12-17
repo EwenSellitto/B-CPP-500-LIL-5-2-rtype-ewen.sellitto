@@ -5,9 +5,12 @@
 ** EventSubscriber.hpp
 */
 
+#pragma once
+
+#include <string>
+
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
-#include <string>
 
 namespace ECS
 {

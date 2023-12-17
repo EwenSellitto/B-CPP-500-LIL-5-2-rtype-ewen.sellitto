@@ -5,7 +5,10 @@
 ** RenderEngine.hpp
 */
 
+#pragma once
+
 #include "ECS/System.hpp"
+#include "ECS/World.hpp"
 
 namespace Engine
 {
@@ -13,7 +16,16 @@ namespace Engine
     {
         class Renderer : public ECS::BaseSystem
         {
+            public:
+                Renderer(ECS::World &world) : ECS::BaseSystem(world){};
+                Renderer(ECS::World &world, id_t ids...) : ECS::BaseSystem(world, ids) {}
+                ~Renderer() override = default;
+
+                void configure(ECS::World &world) override;
+
+                void unconfigure() override;
+
+                void tick() override;
         };
     } // namespace System
-
 } // namespace Engine

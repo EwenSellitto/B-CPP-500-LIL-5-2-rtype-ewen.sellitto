@@ -21,14 +21,20 @@ if (NOT SFML_FOUND AND (UNIX OR APPLE))
 endif()
 
 add_executable(r-type_client
-               src/test.cpp
-               include/ECS/World.hpp
-               include/ECS/Entity.hpp
                include/ECS/Components.hpp
                include/ECS/EventSubscriber.hpp
-               include/ECS/Utilities.hpp
+               include/ECS/Clock.hpp
                include/ECS/System.hpp
+               include/ECS/World.hpp
+               include/ECS/Entity.hpp
+               include/ECS/Utilities.hpp
                include/r-type.hpp
+               include/Engine/Systems/Renderer.system.hpp
+               include/Engine/Components/Renderable.component.hpp
+               include/Engine/Engine.hpp
+               src/test.cpp
+               src/Engine/Engine.cpp
+               src/Engine/Systems/Renderer.systems.cpp
 )
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)
