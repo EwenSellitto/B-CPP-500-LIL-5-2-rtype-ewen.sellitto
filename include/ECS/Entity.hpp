@@ -127,6 +127,10 @@ namespace ECS
                 return has<T>() && has<V, Types...>();
             }
 
+            /**
+             * @brief Get the time elapsed since the last call to this function.
+             * @return std::clock_t The time elapsed since the last call to this function.
+             */
             std::clock_t getElapsedTime()
             {
                 return _clock.getElapsedTime();
@@ -149,4 +153,5 @@ namespace ECS
         private:
             std::vector<World *> _worlds;
     };
+
 } // namespace ECS

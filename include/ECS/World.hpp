@@ -9,6 +9,7 @@
 #pragma once
 
 #include <ctime>
+#include <functional>
 #include <memory>
 #include <unordered_map>
 
@@ -37,6 +38,10 @@ namespace ECS
              * @note This will also destroy all entities and global entities within the world.
              */
             ~World() = default;
+
+            /*===================//
+            //  Entity Handling  //
+            //===================*/
 
             /**
              * @brief Add an entity to the world.
@@ -96,6 +101,44 @@ namespace ECS
             }
 
             /**
+             * @brief Iterates over all entities that have a specific component type.
+             *
+             * @tparam T The component type to filter entities.
+             * @param func The callable function that will be applied to each entity and its component.
+             */
+            template <typename T> void each(std::function<void(Entity *, ComponentHandle<T>)> func)
+            {
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>()) {
+                        ComponentHandle<T> component = entity.getComponent<T>();
+                        func(&entity, component);
+                    }
+                }
+            }
+
+            /**
+             * @brief Iterates over all entities that have a specific set of component types.
+             *
+             * @tparam Types Component types to filter entities.
+             * @param func The callable function that will be applied to each entity and its components.
+             * @note This function utilizes a helper function to handle the iteration and application of the function.
+             */
+            template <typename... Types> void each(std::function<void(Entity *, ComponentHandle<Types...>)> func)
+            {
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<Types...>()) {
+                        _eachHelper<Types...>(&entity, func);
+                    }
+                }
+            }
+
+            /*=========================//
+            //  GlobalEntity Handling  //
+            //=========================*/
+
+            /**
              * @brief Add a global entity to the world.
              *
              * @param entity A unique pointer to the GlobalEntity to be added. Ownership of the global entity is
@@ -142,6 +185,10 @@ namespace ECS
             {
                 return *_global_entities.at(id);
             }
+
+            /*==================//
+            //  Event Handling  //
+            //==================*/
 
             /**
              * @brief Subscribe an event subscriber to a specific event type.
@@ -196,6 +243,10 @@ namespace ECS
                 }
             }
 
+            /*==================//
+            //  Clock Handling  //
+            //==================*/
+
             /**
              * @brief Give the elapsed time between two calls of this function
              *
@@ -208,6 +259,36 @@ namespace ECS
             }
 
         private:
+            /**
+             * @brief Helper function to call a function on an entity with a single component type.
+             *
+             * @tparam T The component type.
+             * @param entity Pointer to the entity.
+             * @param func The function to be applied to the entity and its component.
+             */
+            template <typename T>
+            void _eachHelper(Entity *entity, std::function<void(Entity *, ComponentHandle<T>)> func)
+            {
+                func(&entity, entity->getComponent<T>());
+            }
+
+            /**
+             * @brief Recursive helper function to call a function on an entity with multiple component types.
+             *
+             * @tparam T The current component type being processed.
+             * @tparam V The next component type to be processed.
+             * @tparam Types Remaining component types to be processed.
+             * @param entity Pointer to the entity.
+             * @param func The function to be applied to the entity and its component.
+             * @note This function recursively iterates through the component types.
+             */
+            template <typename T, typename V, typename... Types>
+            void _eachHelper(Entity *entity, std::function<void(Entity *, ComponentHandle<T>)> func)
+            {
+                entity->has<T>() ? _eachHelper<T>(entity, func) : nullptr;
+                _eachHelper<V, Types...>(entity, func);
+            }
+
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
