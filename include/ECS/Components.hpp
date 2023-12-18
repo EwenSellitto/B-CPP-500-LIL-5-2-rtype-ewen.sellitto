@@ -51,6 +51,10 @@ namespace ECS
              */
             ~ComponentHandle() = default;
 
+            /*======================//
+            //  Operator Overloads  //
+            //======================*/
+
             /**
              * @brief Overloading dereference operator to get the underlying component.
              *
@@ -123,6 +127,10 @@ namespace ECS
             {
                 return isValid() != other;
             }
+
+            /*=====================//
+            //  Validity Handling  //
+            //=====================*/
 
             /**
              * @brief Check if the handle is valid (i.e., it points to a component).

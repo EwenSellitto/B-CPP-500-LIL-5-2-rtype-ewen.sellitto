@@ -25,6 +25,8 @@ namespace ECS
     /**
      * @class Entity
      * @brief Represents an entity in an Entity-Component-System (ECS) architecture.
+     * @note you should create a child class that create instance of the needed components (just overlaod the
+     * constructor)
      */
     class Entity
     {

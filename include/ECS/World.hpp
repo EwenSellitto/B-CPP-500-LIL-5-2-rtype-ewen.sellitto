@@ -12,6 +12,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "ECS/Components.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
 #include "Utilities.hpp"
@@ -100,6 +101,25 @@ namespace ECS
             }
 
             /**
+             * @brief get all entities that have a specific component type.
+             * @tparam T The component type to filter entities.
+             *
+             * @return std::vector<Entity *> A vector of pointers to the entities.
+             */
+            template <typename T> std::unordered_map<Entity *, ComponentHandle<T>> get()
+            {
+                std::unordered_map<Entity *, ComponentHandle<T>> entities;
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>()) {
+                        ComponentHandle<T> component = entity.getComponent<T>();
+                        entities.emplace(&entity, component);
+                    }
+                }
+                return entities;
+            }
+
+            /**
              * @brief Iterates over all entities that have a specific component type.
              *
              * @tparam T The component type to filter entities.
@@ -185,6 +205,59 @@ namespace ECS
                 return *_global_entities.at(id);
             }
 
+            /**
+             * @brief Get all global entities that have a specific component type.
+             *
+             * @tparam T The component type to filter global entities.
+             * @return std::vector<GlobalEntity *> A vector of pointers to the global entities.
+             */
+            template <typename T> std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> getGlobal()
+            {
+                std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> entities;
+                for (auto &pair : _global_entities) {
+                    GlobalEntity &entity = *pair.second;
+                    if (entity.has<T>()) {
+                        ComponentHandle<T> component = entity.getComponent<T>();
+                        entities.emplace(&entity, component);
+                    }
+                }
+                return entities;
+            }
+
+            /**
+             * @brief Iterates over all entities that have a specific component type.
+             *
+             * @tparam T The component type to filter entities.
+             * @param func The callable function that will be applied to each global entity and its component.
+             */
+            template <typename T> void each(std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
+            {
+                for (auto &pair : _global_entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>()) {
+                        ComponentHandle<T> component = entity.getComponent<T>();
+                        func(&entity, component);
+                    }
+                }
+            }
+
+            /**
+             * @brief Iterates over all entities that have a specific set of component types.
+             *
+             * @tparam Types Component types to filter entities.
+             * @param func The callable function that will be applied to each global entity and its components.
+             * @note This function utilizes a helper function to handle the iteration and application of the function.
+             */
+            template <typename... Types> void each(std::function<void(GlobalEntity *, ComponentHandle<Types...>)> func)
+            {
+                for (auto &pair : _global_entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<Types...>()) {
+                        _eachHelper<Types...>(&entity, func);
+                    }
+                }
+            }
+
             /*==================//
             //  Event Handling  //
             //==================*/
@@ -243,7 +316,7 @@ namespace ECS
             }
 
             /*==================//
-            //  Clock Handling  //
+            //  Logic Handling  //
             //==================*/
 
             /**
@@ -257,14 +330,14 @@ namespace ECS
                 return _clock.getElapsedTime();
             }
 
-            /*==================//
-            //  Logic Handling  //
-            //==================*/
-
             // TODO : implement this tick function by calling each ticks of the systems in a thread
             void tick() {}
 
         private:
+            /*====================//
+            //  Helper Functions  //
+            //====================*/
+
             /**
              * @brief Helper function to call a function on an entity with a single component type.
              *
@@ -294,6 +367,40 @@ namespace ECS
                 entity->has<T>() ? _eachHelper<T>(entity, func) : nullptr;
                 _eachHelper<V, Types...>(entity, func);
             }
+
+            /**
+             * @brief Helper function to call a function on a global entity with a single component type.
+             *
+             * @tparam T The component type.
+             * @param g_entity Pointer to the entity.
+             * @param func The function to be applied to the global entity and its component.
+             */
+            template <typename T>
+            void _eachHelper(GlobalEntity *g_entity, std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
+            {
+                func(&g_entity, g_entity->getComponent<T>());
+            }
+
+            /**
+             * @brief Recursive helper function to call a function on a global entity with multiple component types.
+             *
+             * @tparam T The current component type being processed.
+             * @tparam V The next component type to be processed.
+             * @tparam Types Remaining component types to be processed.
+             * @param g_entity Pointer to the entity.
+             * @param func The function to be applied to the global entity and its component.
+             * @note This function recursively iterates through the component types.
+             */
+            template <typename T, typename V, typename... Types>
+            void _eachHelper(GlobalEntity *g_entity, std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
+            {
+                g_entity->has<T>() ? _eachHelper<T>(g_entity, func) : nullptr;
+                _eachHelper<V, Types...>(g_entity, func);
+            }
+
+            /*==============//
+            //  Attributes  //
+            //==============*/
 
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;

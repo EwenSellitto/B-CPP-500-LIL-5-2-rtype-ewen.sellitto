@@ -13,20 +13,18 @@
 #include "ECS/Clock.hpp"
 #include "ECS/Components.hpp"
 
-class ScreenComponent : public ECS::BaseComponent
+class WindowComponent : public ECS::BaseComponent
 {
     public:
-        ScreenComponent() : _window(sf::RenderWindow(sf::VideoMode(1920, 1080), "Default")), _clock(){};
-        ScreenComponent(unsigned int size_x, unsigned int size_y, std::string title)
-            : _window(sf::RenderWindow(sf::VideoMode(size_x, size_y), title)), _clock(){};
-        ScreenComponent(sf::VideoMode mode, std::string title = "Default")
-            : _window(sf::VideoMode(mode), title), _clock(){};
-        ~ScreenComponent() override
+        WindowComponent() : window(sf::RenderWindow(sf::VideoMode(1920, 1080), "Default")), clock(){};
+        WindowComponent(unsigned int size_x, unsigned int size_y, std::string title)
+            : window(sf::RenderWindow(sf::VideoMode(size_x, size_y), title)), clock(){};
+        WindowComponent(sf::VideoMode mode, std::string title = "Default") : window(mode, title), clock(){};
+        ~WindowComponent() override
         {
-            _window.close();
+            window.close();
         };
 
-    private:
-        sf::RenderWindow            _window;
-        [[maybe_unused]] ECS::Clock _clock;
+        sf::RenderWindow            window;
+        [[maybe_unused]] ECS::Clock clock;
 };
