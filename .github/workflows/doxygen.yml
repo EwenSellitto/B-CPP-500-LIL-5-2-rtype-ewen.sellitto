@@ -27,3 +27,8 @@ jobs:
         with:
           name: doxygen-output
           path: doc/
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: doc/
