@@ -41,7 +41,7 @@ void Renderer::tick()
 
             auto window_entity = world.get<WindowComponent>();
             for (auto &window : window_entity) {
-                window.second->window.draw(renderable->sprite);
+                window.second->window->draw(renderable->sprite);
             }
         }
     }

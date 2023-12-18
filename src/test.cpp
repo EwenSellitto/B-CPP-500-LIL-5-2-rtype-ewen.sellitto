@@ -8,7 +8,9 @@
 #include <iostream>
 
 #include "ECS/Entity.hpp"
+#include "ECS/Utilities.hpp"
 #include "ECS/World.hpp"
+#include "Engine/Components/Window.component.hpp"
 #include "r-type.hpp"
 
 struct TestEvent {
@@ -47,6 +49,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     TestEvent event{42};
     auto     *sub = new TestSubscriber();
     world.subscribe<TestEvent>(sub);
+
     try {
         world.broadcastEvent<TestEvent>(event);
     } catch (std::exception &e) {
@@ -63,5 +66,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     ECS::ComponentHandle<PositionComponent> comp = entity.getComponent<PositionComponent>();
     std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
     std::cout << world.getWorldTime() << std::endl;
+
+    std::cout << typeid(std::tuple<std::string, std::size_t, std::size_t, std::size_t, std::size_t, int, float,
+                                   std::size_t, std::size_t>)
+                     .hash_code()
+              << std::endl;
+    std::cout << typeid(std::tuple<int, float>).hash_code() << std::endl;
+    std::cout << typeid(std::tuple<std::size_t, std::string, std::size_t, std::size_t, std::size_t, int, float,
+                                   std::size_t, std::size_t>)
+                     .hash_code()
+              << std::endl;
+    id_t window_entity = world.addEntity(std::make_unique<ECS::Entity>());
+    world.getMutEntity(window_entity).addComponent(Engine::Components::WindowComponent(1920, 1080, "Test"));
+
     return (0);
 }

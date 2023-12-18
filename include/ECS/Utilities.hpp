@@ -8,7 +8,6 @@
 #pragma once
 
 #include <cstddef>
-#include <unordered_map>
 
 #define ECS_TYPEID(T) typeid(T).hash_code()
 

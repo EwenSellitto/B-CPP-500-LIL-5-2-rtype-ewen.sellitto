@@ -2,9 +2,9 @@ name: Generate Doxygen Documentation
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   build:
@@ -27,3 +27,11 @@ jobs:
         with:
           name: doxygen-output
           path: doc/
+
+      - name: Commit Documentation
+        run: |
+          git config --global user.name 'Ewen Sellitto'
+          git config --global user.email 'ewen.sellitto@epitech.eu'
+          git add doc/
+          git commit -m "doc: Update documentation"
+          git push

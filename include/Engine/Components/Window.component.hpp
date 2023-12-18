@@ -13,18 +13,23 @@
 #include "ECS/Clock.hpp"
 #include "ECS/Components.hpp"
 
-class WindowComponent : public ECS::BaseComponent
+namespace Engine::Components
 {
-    public:
-        WindowComponent() : window(sf::RenderWindow(sf::VideoMode(1920, 1080), "Default")), clock(){};
-        WindowComponent(unsigned int size_x, unsigned int size_y, std::string title)
-            : window(sf::RenderWindow(sf::VideoMode(size_x, size_y), title)), clock(){};
-        WindowComponent(sf::VideoMode mode, std::string title = "Default") : window(mode, title), clock(){};
-        ~WindowComponent() override
-        {
-            window.close();
-        };
+    class WindowComponent : public ECS::BaseComponent
+    {
+        public:
+            WindowComponent() : window(new sf::RenderWindow(sf::VideoMode(1920, 1080), "Default")), clock(){};
+            WindowComponent(unsigned int size_x, unsigned int size_y, std::string title)
+                : window(new sf::RenderWindow(sf::VideoMode(size_x, size_y), title)), clock(){};
+            WindowComponent(sf::VideoMode mode, std::string title = "Default")
+                : window(new sf::RenderWindow(mode, title)), clock(){};
+            ~WindowComponent() override
+            {
+                window->close();
+                delete window;
+            };
 
-        sf::RenderWindow            window;
-        [[maybe_unused]] ECS::Clock clock;
-};
+            sf::RenderWindow           *window;
+            [[maybe_unused]] ECS::Clock clock;
+    };
+} // namespace Engine::Components
