@@ -25,7 +25,7 @@ namespace ECS
     /**
      * @class Entity
      * @brief Represents an entity in an Entity-Component-System (ECS) architecture.
-     * @note you should create a child class that create instance of the needed components (just overlaod the
+     * @note you should create a child class that create instance of the needed components (just overload the
      * constructor)
      */
     class Entity
@@ -59,13 +59,13 @@ namespace ECS
              * @brief Add a component to the Entity.
              * @brief and deletes the sent references
              * @tparam T Type of the component.
-             * @param component Component to add.
+             * @param component Component to add, passed as an rvalue.
              * @throw std::runtime_error if the component already exists.
              * @warning Meant to be called by the user and the World.
              */
-            template <typename T> void addComponent(const T component)
+            template <typename T> void addComponent(T &&component)
             {
-                _components.insert(std::make_pair(ECS_TYPEID(T), std::make_shared<T>(component)));
+                _components.insert(std::make_pair(ECS_TYPEID(T), std::make_shared<T>(std::forward<T>(component))));
             }
 
             /**

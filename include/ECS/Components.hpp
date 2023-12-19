@@ -15,6 +15,7 @@ namespace ECS
     /**
      * @class BaseComponent
      * @brief Abstract base class for components in the ECS (Entity-Component-System).
+     * @brief You must provide a move constructor if one cannot be created implicitely
      */
     class BaseComponent
     {

@@ -9,6 +9,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <iostream>
 
 #include "ECS/Clock.hpp"
 #include "ECS/Components.hpp"
@@ -19,13 +20,23 @@ namespace Engine::Components
     {
         public:
             WindowComponent() : window(new sf::RenderWindow(sf::VideoMode(1920, 1080), "Default")), clock(){};
-            WindowComponent(unsigned int size_x, unsigned int size_y, std::string title)
+            WindowComponent(unsigned int size_x, unsigned int size_y, const std::string &title)
                 : window(new sf::RenderWindow(sf::VideoMode(size_x, size_y), title)), clock(){};
-            WindowComponent(sf::VideoMode mode, std::string title = "Default")
+            explicit WindowComponent(sf::VideoMode mode, const std::string &title = "Default")
                 : window(new sf::RenderWindow(mode, title)), clock(){};
+            WindowComponent(WindowComponent &&other) noexcept : clock()
+            {
+                window       = other.window;
+                other.window = nullptr;
+            }
+            WindowComponent(WindowComponent &other) : clock()
+            {
+                window       = other.window;
+                other.window = nullptr;
+            }
             ~WindowComponent() override
             {
-                window->close();
+                if (window) window->close();
                 delete window;
             };
 

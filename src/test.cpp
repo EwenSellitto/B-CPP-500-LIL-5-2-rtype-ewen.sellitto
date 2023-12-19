@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "../_deps/sfml-src/include/SFML/Window/Event.hpp"
 #include "ECS/Entity.hpp"
 #include "ECS/Utilities.hpp"
 #include "ECS/World.hpp"
@@ -76,8 +77,28 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
                                    std::size_t, std::size_t>)
                      .hash_code()
               << std::endl;
-    id_t window_entity = world.addEntity(std::make_unique<ECS::Entity>());
-    world.getMutEntity(window_entity).addComponent(Engine::Components::WindowComponent(1920, 1080, "Test"));
+    std::cout << typeid(std::tuple<std::size_t, std::string, std::size_t, std::size_t, std::size_t, int, float,
+                                   std::size_t, std::size_t>)
+                     .hash_code()
+              << std::endl;
+    size_t       window_entity = world.addEntity(std::make_unique<ECS::Entity>());
+    ECS::Entity &a             = world.getMutEntity(window_entity);
 
+    // addComponent needs to take in an rvalue
+    Engine::Components::WindowComponent window_comp(1920, 1080, "Test");
+    a.addComponent<Engine::Components::WindowComponent>(std::move(window_comp));
+
+    a.addComponent<Engine::Components::WindowComponent>(Engine::Components::WindowComponent(1920, 1080, "Test"));
+
+    ECS::ComponentHandle<Engine::Components::WindowComponent> componentHandle(
+        a.getComponent<Engine::Components::WindowComponent>());
+    sf::Event the_event;
+    while (componentHandle->window->isOpen()) {
+        componentHandle->window->clear(sf::Color(255, 0, 0, 255));
+        componentHandle->window->display();
+        if (componentHandle->window->pollEvent(the_event)) {
+            if (the_event.type == sf::Event::Closed) componentHandle->window->close();
+        }
+    }
     return (0);
 }
