@@ -5,10 +5,10 @@
 ** Renderer.systems.cpp
 */
 
+#include <iostream>
 #include <map>
 
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Window.component.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
 
 using namespace Engine::System;
@@ -29,20 +29,21 @@ void Renderer::tick()
 
     ECS::World                                                           &world = getWorld();
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
+    sf::RenderWindow                                                     *window = nullptr;
 
     world.each<RenderableComponent>([&](ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> renderable) {
         components[renderable->priority].push_back(renderable);
     });
+
+    window->clear(sf::Color::Black);
     for (auto &component : components) {
         for (auto &renderable : component.second) {
             renderable->sprite.setPosition(renderable->position.x, renderable->position.y);
             renderable->sprite.setRotation(renderable->rotation);
             renderable->sprite.setScale(renderable->scale.x, renderable->scale.y);
 
-            auto window_entity = world.get<WindowComponent>();
-            for (auto &window : window_entity) {
-                window.second->window->draw(renderable->sprite);
-            }
+            window->draw(renderable->sprite);
         }
     }
+    window->display();
 }
