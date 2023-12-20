@@ -15,9 +15,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install build-essential libtool autoconf unzip wget clang
-          sudo apt remove --purge --auto-remove cmake
+          sudo apt update -y
+          sudo apt upgrade -y
+          sudo apt install build-essential libtool autoconf unzip wget clang -y
+          sudo apt remove --purge --auto-remove cmake -y
           version=3.27
           build=7
           mkdir ~/temp
