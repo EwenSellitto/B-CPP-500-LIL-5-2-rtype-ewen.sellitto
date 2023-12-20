@@ -17,10 +17,23 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt upgrade -y
-          sudo apt install build-essential libtool autoconf unzip wget clang \
-            software-properties-common lsb-release libx11-dev libgl1-mesa-dev \
-            libopenal-dev libfreetype6-dev libudev-dev libflac-dev libvorbis-dev \
-            libxcb1-dev libxcb-image0-dev libxcb-randr0-dev libjpeg-dev libpng-dev libxrandr-dev libxorg-dev -y
+          sudo apt install cmake \
+            build-essential \
+            libtool \
+            autoconf \
+            unzip wget clang \
+            software-properties-common \
+            lsb-release \
+            libudev-dev \
+            libopenal-dev \
+            libvorbis-dev \
+            libflac-dev \
+            libxcursor-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxi-dev \
+            libgl1-mesa-dev \
+            libfreetype-dev -y
 
           sudo apt clean all
           sudo apt remove --purge --auto-remove cmake -y
@@ -31,7 +44,6 @@ jobs:
           sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
           sudo apt update -y
           sudo apt install cmake -y
-
       - name: Build with CMake and Clang
         run: |
           mkdir build && cd build
