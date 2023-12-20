@@ -6,7 +6,7 @@ set(CMAKE_CXX_COMPILER clang++)
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
 
 include_directories(include)
 
@@ -32,14 +32,14 @@ add_executable(r-type_client
                include/Engine/Systems/Renderer.system.hpp
                include/Engine/Components/Renderable.component.hpp
                include/Engine/Engine.hpp
-               src/test.cpp
+               src/main.cpp
                src/Engine/Engine.cpp
                src/Engine/Systems/Renderer.systems.cpp
 )
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)
 
-    target_link_libraries(r-type_client PRIVATE sfml-graphics)
+target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
 if (UNIX OR APPLE)
     install(TARGETS r-type_client DESTINATION bin)

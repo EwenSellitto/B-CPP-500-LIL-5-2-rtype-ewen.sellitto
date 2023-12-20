@@ -49,12 +49,6 @@ namespace Engine
 
                 ~RenderableComponent() = default;
 
-                Renderable_serialize_t serialize() const
-                {
-                    return std::make_tuple(_path, position.x, position.y, size.x, size.y, priority, rotation, scale.x,
-                                           scale.y);
-                }
-
                 static Renderable_serialize_t serialize(const RenderableComponent &r)
                 {
                     return std::make_tuple(r._path, r.position.x, r.position.y, r.size.x, r.size.y, r.priority,

@@ -14,6 +14,8 @@
 #include <unordered_map>
 
 #include "ECS/Components.hpp"
+#include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Engine.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
 #include "Utilities.hpp"
@@ -32,7 +34,10 @@ namespace ECS
             /**
              * @brief Construct a new World object.
              */
-            World() : _entities(), _global_entities(), _subscribers(), _clock() {}
+            World()
+                : _entities(), _global_entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine())
+            {
+            }
 
             /**
              * @brief Destroy the World object.
@@ -350,7 +355,17 @@ namespace ECS
             }
 
             // TODO : implement this tick function by calling each ticks of the systems in a thread
-            void tick() {}
+            void tick()
+            {
+                // each<Engine::Components::RenderableComponent>(
+                //     [&](Entity *entity, ComponentHandle<Engine::Components::RenderableComponent> component) {
+                //         sf::Sprite &spr = component->sprite;
+                //         spr.setPosition(entity->getComponent<Engine::Components::PositionComponent>()->x,
+                //                         entity->getComponent<Engine::Components::PositionComponent>()->y);
+                //     });
+                _engine.window.clear(sf::Color::Black);
+                _engine.window.display();
+            }
 
         private:
             /*====================//
@@ -425,5 +440,6 @@ namespace ECS
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
             Clock                                                                       _clock;
+            Engine::EngineClass                                                        &_engine;
     };
 } // namespace ECS
