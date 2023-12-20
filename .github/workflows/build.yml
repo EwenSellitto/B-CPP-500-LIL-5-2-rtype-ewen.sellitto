@@ -35,6 +35,8 @@ jobs:
             libgl1-mesa-dev \
             libfreetype-dev -y
 
+      - name: Get Cmake 3.28
+        run: |
           sudo apt clean all
           sudo apt remove --purge --auto-remove cmake -y
           wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
@@ -44,11 +46,12 @@ jobs:
           sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
           sudo apt update -y
           sudo apt install cmake -y
+
       - name: Build with CMake and Clang
         run: |
           mkdir build && cd build
           cmake ..
-          make
+          make -j$(nproc)
 
   # build-windows:
   #   runs-on: windows-latest
