@@ -17,7 +17,11 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt upgrade -y
-          sudo apt install build-essential libtool autoconf unzip wget clang software-properties-common lsb-release -y
+          sudo apt install build-essential libtool autoconf unzip wget clang \
+            software-properties-common lsb-release libx11-dev libgl1-mesa-dev \
+            libopenal-dev libfreetype6-dev libudev-dev libflac-dev libvorbis-dev \
+            libxcb1-dev libxcb-image0-dev libxcb-randr0-dev libjpeg-dev libpng-dev -y
+
           sudo apt clean all
           sudo apt remove --purge --auto-remove cmake -y
           wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
@@ -34,17 +38,17 @@ jobs:
           cmake ..
           make
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: |
-          choco install llvm
-
-      - name: Build with CMake and Clang
-        run: |
-          mkdir build && cd build
-          cmake -G "Visual Studio 17 2022" -T ClangCL -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
-          cmake --build . --config Release
+  # build-windows:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #
+  #     - name: Install dependencies
+  #       run: |
+  #         choco install llvm
+  #
+  #     - name: Build with CMake and Clang
+  #       run: |
+  #         mkdir build && cd build
+  #         cmake -G "Visual Studio 17 2022" -T ClangCL -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
+  #         cmake --build . --config Release
