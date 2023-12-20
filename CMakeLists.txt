@@ -30,11 +30,13 @@ add_executable(r-type_client
                include/ECS/Utilities.hpp
                include/r-type.hpp
                include/Engine/Systems/Renderer.system.hpp
+               include/Engine/Systems/Server.system.hpp
                include/Engine/Components/Renderable.component.hpp
                include/Engine/Engine.hpp
                src/test.cpp
                src/Engine/Engine.cpp
                src/Engine/Systems/Renderer.systems.cpp
+               src/Engine/Systems/Server.systems.cpp
 )
 
 target_compile_features(r-type_client PRIVATE cxx_std_17)

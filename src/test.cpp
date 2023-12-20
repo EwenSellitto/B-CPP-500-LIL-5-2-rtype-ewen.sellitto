@@ -10,6 +10,7 @@
 #include "ECS/Entity.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Systems/Server.system.hpp"
 #include "r-type.hpp"
 
 struct TestEvent {
@@ -36,56 +37,22 @@ struct Position {
 struct Hello : public Position {
 };
 
+void runServer()
+{
+    ECS::World             world;
+    Engine::System::Server server(world);
+    server.configure(world);
+}
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
-    std::cout << typeid(Position).hash_code() << std::endl;
-    std::cout << typeid(Hello).hash_code() << std::endl;
-
-    ECS::World world;
-    std::cout << world.getWorldTime() << std::endl;
-    world.addEntity(std::make_unique<ECS::Entity>());
-
-    TestEvent event{42};
-    auto     *sub = new TestSubscriber();
-    world.subscribe<TestEvent>(sub);
-
-    try {
-        world.broadcastEvent<TestEvent>(event);
-    } catch (std::exception &e) {
-        std::cout << e.what() << std::endl;
+    std::thread serverThread(runServer);
+    while (true) {
+        std::cout << "Programme principal en cours d'exécution." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(5));
     }
 
-    ECS::Entity &entity                = world.getMutEntity(0);
-    bool         has_PositionComponent = entity.has<PositionComponent>();
-
-    std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
-    entity.addComponent<PositionComponent>((PositionComponent){42, 64});
-
-    has_PositionComponent                        = entity.has<PositionComponent>();
-    ECS::ComponentHandle<PositionComponent> comp = entity.getComponent<PositionComponent>();
-    std::cout << "has PositionComponent " << has_PositionComponent << std::endl;
-    std::cout << world.getWorldTime() << std::endl;
-
-    std::cout << typeid(std::tuple<std::string, std::size_t, std::size_t, std::size_t, std::size_t, int, float,
-                                   std::size_t, std::size_t>)
-                     .hash_code()
-              << std::endl;
-    std::cout << typeid(std::tuple<int, float>).hash_code() << std::endl;
-    std::cout << typeid(std::tuple<std::size_t, std::string, std::size_t, std::size_t, std::size_t, int, float,
-                                   std::size_t, std::size_t>)
-                     .hash_code()
-              << std::endl;
-    std::cout << typeid(std::tuple<std::size_t, std::string, std::size_t, std::size_t, std::size_t, int, float,
-                                   std::size_t, std::size_t>)
-                     .hash_code()
-              << std::endl;
-
-    id_t hehe = world.createEntity<PositionComponent, Engine::Components::RenderableComponent>(
-        PositionComponent(1, 2), Engine::Components::RenderableComponent());
-    const ECS::Entity &entity2 = world.getEntity(hehe);
-
-    std::cout << entity2.has<PositionComponent>() << std::endl;
-    std::cout << entity2.has<Engine::Components::RenderableComponent>() << std::endl;
-
+    // Rejoindre le thread du serveur avant de quitter le programme
+    serverThread.join();
     return (0);
 }

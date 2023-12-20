@@ -9,6 +9,7 @@
 #define R_TYPE_HPP
 
 #include <memory>
+#include <thread>
 
 #include "ECS/Components.hpp"
 

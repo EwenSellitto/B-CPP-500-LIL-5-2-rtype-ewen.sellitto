@@ -7,9 +7,12 @@
 
 #pragma once
 
+#include <boost/asio.hpp>
+
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 
+using boost::asio::ip::udp;
 namespace Engine::System
 {
     class Renderer : public ECS::BaseSystem
