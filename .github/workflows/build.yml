@@ -17,18 +17,16 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt upgrade -y
-          sudo apt install build-essential libtool autoconf unzip wget clang -y
+          sudo apt install build-essential libtool autoconf unzip wget clang software-properties-common lsb-release -y
+          sudo apt clean all
           sudo apt remove --purge --auto-remove cmake -y
-          version=3.27
-          build=7
-          mkdir ~/temp
-          cd ~/temp
-          wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz
-          tar -xzvf cmake-$version.$build.tar.gz
-          cd cmake-$version.$build/
-          ./bootstrap
-          make -j$(nproc)
-          sudo make install
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+          sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main" -y
+          sudo apt update -y
+          sudo apt install kitware-archive-keyring -y
+          sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
+          sudo apt update -y
+          sudo apt install cmake -y
 
       - name: Build with CMake and Clang
         run: |
