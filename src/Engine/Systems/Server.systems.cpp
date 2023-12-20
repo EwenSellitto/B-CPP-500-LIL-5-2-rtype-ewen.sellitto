@@ -28,6 +28,7 @@ void Server::handle_receive(const boost::system::error_code &error, std::size_t 
 {
     if (!error || error == boost::asio::error::message_size) {
         std::cout << "Client: " << std::string(this->recvbuffer.data(), bytes_transferred) << std::endl;
+
         std::string msg = "Hello to you too!!!\n";
         socket_.async_send_to(boost::asio::buffer(msg), remote_endpoint_,
                               boost::bind(&Server::handle_send, this, msg, boost::asio::placeholders::error,

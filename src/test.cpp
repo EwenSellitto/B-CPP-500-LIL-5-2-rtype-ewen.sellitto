@@ -39,8 +39,16 @@ struct Hello : public Position {
 
 void runServer()
 {
-    ECS::World             world;
-    Engine::System::Server server(world);
+    ECS::World                  world;
+    Engine::System::WaitingRoom waiting(world);
+    Engine::System::Server      server(world);
+    waiting.addPlayer(1, "Ewen");
+    waiting.addPlayer(2, "Valentin");
+    waiting.addPlayer(3, "Will1");
+    waiting.addPlayer(4, "Will2");
+    waiting.addPlayer(5, "Florian");
+
+    std::cout << waiting.getPlayers(1) << std::endl;
     server.configure(world);
 }
 

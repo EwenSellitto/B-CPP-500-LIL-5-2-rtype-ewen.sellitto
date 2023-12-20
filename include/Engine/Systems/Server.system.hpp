@@ -15,6 +15,7 @@
 
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
+#include "Engine/Systems/WaitingRoom.system.hpp"
 
 using boost::asio::ip::udp;
 namespace Engine::System
