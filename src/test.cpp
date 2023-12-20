@@ -8,10 +8,8 @@
 #include <iostream>
 
 #include "ECS/Entity.hpp"
-#include "ECS/Utilities.hpp"
 #include "ECS/World.hpp"
-#include "Engine/Components/Window.component.hpp"
-#include "SFML/Window/Event.hpp"
+#include "Engine/Components/Renderable.component.hpp"
 #include "r-type.hpp"
 
 struct TestEvent {
@@ -81,6 +79,13 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
                                    std::size_t, std::size_t>)
                      .hash_code()
               << std::endl;
+
+    id_t hehe = world.createEntity<PositionComponent, Engine::Components::RenderableComponent>(
+        PositionComponent(1, 2), Engine::Components::RenderableComponent());
+    const ECS::Entity &entity2 = world.getEntity(hehe);
+
+    std::cout << entity2.has<PositionComponent>() << std::endl;
+    std::cout << entity2.has<Engine::Components::RenderableComponent>() << std::endl;
 
     return (0);
 }

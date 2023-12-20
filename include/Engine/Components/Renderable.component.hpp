@@ -68,24 +68,24 @@ namespace Engine
                                                {std::get<7>(data), std::get<8>(data)});
                 }
 
-                std::unique_ptr<sf::Texture> texture;
-                sf::Sprite                   sprite;
-                sf::Vector2<std::size_t>     size;
-                sf::Vector2<std::size_t>     position;
-                int                          priority;
-                float                        rotation;
-                sf::Vector2<std::size_t>     scale;
+                sf::Texture              texture;
+                sf::Sprite               sprite;
+                sf::Vector2<std::size_t> size;
+                sf::Vector2<std::size_t> position;
+                int                      priority;
+                float                    rotation;
+                sf::Vector2<std::size_t> scale;
 
             private:
                 std::string _path;
 
                 void setTexture(std::string texture_path)
                 {
-                    texture->loadFromFile(texture_path);
-                    sprite.setTexture(*texture);
+                    texture.loadFromFile(texture_path);
+                    sprite.setTexture(texture);
                     sf::RenderWindow test = sf::RenderWindow();
                     test.draw(sprite);
-                    size = {texture->getSize().x, texture->getSize().y};
+                    size = {texture.getSize().x, texture.getSize().y};
                 }
         };
     } // namespace Components

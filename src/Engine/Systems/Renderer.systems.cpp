@@ -10,6 +10,7 @@
 
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "r-type.hpp"
 
 using namespace Engine::System;
 
@@ -31,9 +32,10 @@ void Renderer::tick()
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
     sf::RenderWindow                                                     *window = nullptr;
 
-    world.each<RenderableComponent>([&](ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> renderable) {
-        components[renderable->priority].push_back(renderable);
-    });
+    world.each<RenderableComponent>(
+        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> renderable) {
+            components[renderable->priority].push_back(renderable);
+        });
 
     window->clear(sf::Color::Black);
     for (auto &component : components) {

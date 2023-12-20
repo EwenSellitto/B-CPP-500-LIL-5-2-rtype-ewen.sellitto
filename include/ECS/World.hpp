@@ -9,6 +9,7 @@
 
 #include <ctime>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <unordered_map>
 
@@ -55,10 +56,26 @@ namespace ECS
             {
                 type_t                  id = Utils::getNewId<Entity>();
                 Events::OnEntityCreated event{entity.get()};
+                std::cout << "addEntity" << std::endl;
 
                 _entities.emplace(id, std::move(entity));
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
                     broadcastEvent<Events::OnEntityCreated>(event);
+                return id;
+            }
+
+            id_t addEntity()
+            {
+                std::unique_ptr<Entity> entity = std::make_unique<Entity>();
+
+                return addEntity(std::move(entity));
+            }
+
+            template <typename... Components> id_t createEntity(Components &&...components)
+            {
+                id_t  id     = addEntity();
+                auto &entity = getMutEntity(id);
+                (entity.addComponent(std::forward<Components>(components)), ...);
                 return id;
             }
 

@@ -31,7 +31,6 @@ add_executable(r-type_client
                include/r-type.hpp
                include/Engine/Systems/Renderer.system.hpp
                include/Engine/Components/Renderable.component.hpp
-               include/Engine/Components/Window.component.hpp
                include/Engine/Engine.hpp
                src/test.cpp
                src/Engine/Engine.cpp
