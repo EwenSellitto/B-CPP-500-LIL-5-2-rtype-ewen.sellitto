@@ -28,7 +28,6 @@ add_executable(r-type_client
                include/ECS/World.hpp
                include/ECS/Entity.hpp
                include/ECS/Utilities.hpp
-               include/r-type.hpp
                include/Engine/Systems/Renderer.system.hpp
                include/Engine/Components/Renderable.component.hpp
                include/Engine/Engine.hpp

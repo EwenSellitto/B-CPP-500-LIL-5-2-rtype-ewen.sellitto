@@ -330,7 +330,7 @@ namespace ECS
              * type.
              * @warning This method can cause infinite recursion if its broadcasting an event of type T or it broadcast
              */
-            template <typename T> void broadcastEvent(T &data, const std::string name = "")
+            template <typename T> void broadcastEvent(T data, const std::string name = "")
             {
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
                 for (auto &subscriber : subscribers) {

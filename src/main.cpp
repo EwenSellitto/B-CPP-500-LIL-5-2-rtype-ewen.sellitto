@@ -10,7 +10,7 @@
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-    engine.createWorld("default");
+    engine.createEmptyWorld("default");
     engine.run();
     return 0;
 }

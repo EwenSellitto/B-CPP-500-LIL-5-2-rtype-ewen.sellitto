@@ -31,6 +31,14 @@ namespace ECS
 #define DEFAULT_WINDOW_NAME "default"
 #endif
 
+#ifndef BIND_F11_TO_OTHER
+#define BIND_F11_TO_FULLSCREEN
+#endif
+
+#ifndef BIND_ESC_TO_OTHER
+#define BIND_ESC_TO_QUIT
+#endif
+
 namespace Engine
 {
     typedef std::unordered_map<std::string, std::function<std::shared_ptr<ECS::World>()>> world_factories_t;
@@ -55,7 +63,7 @@ namespace Engine
             //============================*/
 
             EngineClass(std::size_t x = DEFAULT_WINDOW_SIZE_X, std::size_t y = DEFAULT_WINDOW_SIZE_Y,
-                        std::string name = DEFAULT_WINDOW_NAME);
+                        std::string name = DEFAULT_WINDOW_NAME, std::string start_world = DEFAULT_WINDOW_NAME);
 
             ~EngineClass();
 
@@ -64,7 +72,13 @@ namespace Engine
             //  Worlds Handling  //
             //===================*/
 
-            void createWorld(std::string name);
+            void createEmptyWorld(std::string name);
+
+            void addWorldFactory(std::string name, std::function<std::shared_ptr<ECS::World>()>);
+
+            void switchWorld(std::string name);
+
+            std::vector<std::string> getWorldsNames();
 
             ECS::World &world();
 
@@ -75,6 +89,16 @@ namespace Engine
             void run();
 
             void toggleFullscreen();
+
+            /*==================//
+            //  Event Handling  //
+            //==================*/
+
+            void handleEvents();
+
+            /*=====================//
+            //  Public Attributes  //
+            //=====================*/
 
             sf::RenderWindow window;
 
@@ -87,5 +111,6 @@ namespace Engine
             bool              _fullscreen;
             world_factories_t _worldsFactories;
             world_t           _currentWorld;
+            std::string       _startWorld;
     };
 } // namespace Engine

@@ -36,6 +36,9 @@ IncludeCategories:
     Priority: 4
   - Regex: '^".*\.hpp"'
     Priority: 5
+
+IndentCaseLabels: true
+
 SortIncludes: true
 
 SpaceAfterCStyleCast: false
