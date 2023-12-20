@@ -10,7 +10,6 @@
 
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
-#include "r-type.hpp"
 
 using namespace Engine::System;
 
