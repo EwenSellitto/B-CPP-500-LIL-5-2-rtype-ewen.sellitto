@@ -1,0 +1,40 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [main, develop, feature/CI]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install clang cmake -y
+
+      - name: Build with CMake and Clang
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          choco install llvm
+
+      - name: Build
+        run: |
+          mkdir build && cd build
+          cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
+          cmake --build . --config Release
