@@ -16,7 +16,7 @@ namespace Engine::System
     {
         public:
             Renderer(ECS::World &world) : ECS::BaseSystem(world){};
-            Renderer(ECS::World &world, id_t ids...) : ECS::BaseSystem(world, ids) {}
+            Renderer(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
             ~Renderer() override = default;
 
             void configure(ECS::World &world) override;
