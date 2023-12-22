@@ -19,6 +19,14 @@ if (NOT SFML_FOUND)
             GIT_TAG 2.6.x)
     FetchContent_MakeAvailable(SFML)
 endif()
+#
+# if (NOT LIBCONFIG_FOUND)
+#     include(FetchContent)
+#     FetchContent_Declare(LIBCONFIG
+#             GIT_REPOSITORY https://github.com/hyperrealm/libconfig.git
+#             GIT_TAG master)
+#     FetchContent_MakeAvailable(LIBCONFIG)
+# endif()
 
 add_executable(r-type_client
                include/ECS/Components.hpp
@@ -35,8 +43,6 @@ add_executable(r-type_client
                src/Engine/Engine.cpp
                src/Engine/Systems/Renderer.systems.cpp
 )
-
-target_compile_features(r-type_client PRIVATE cxx_std_17)
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics)
 

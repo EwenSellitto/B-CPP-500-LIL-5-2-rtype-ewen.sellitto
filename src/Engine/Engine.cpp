@@ -147,7 +147,10 @@ void EngineClass::handleEvents()
 
 void EngineClass::run()
 {
-    switchWorld(_startWorld);
+    if (_worldsFactories.empty())
+        createEmptyWorld("default");
+    else if (_currentWorld.second == nullptr)
+        switchWorld(_startWorld);
 
     while (window.isOpen()) {
         handleEvents();
