@@ -12,7 +12,7 @@ include_directories(include)
 
 find_package(SFML 2.6 COMPONENTS graphics QUIET)
 
-if (NOT SFML_FOUND AND (UNIX OR APPLE))
+if (NOT SFML_FOUND)
     include(FetchContent)
     FetchContent_Declare(SFML
             GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -40,6 +40,4 @@ target_compile_features(r-type_client PRIVATE cxx_std_17)
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
-if (UNIX OR APPLE)
-    install(TARGETS r-type_client DESTINATION bin)
-endif (UNIX OR APPLE)
+install(TARGETS r-type_client DESTINATION bin)
