@@ -66,4 +66,4 @@ jobs:
         run: |
           mkdir build && cd build
           cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G "Unix Makefiles" ..
-          make -j$(nproc)
+          make
