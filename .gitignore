@@ -20,11 +20,3 @@ example_ecs.hpp
 cmake-build-debug/
 vgcore.*
 doc/
-
-assets/Environnement/
-assets/klaed/
-assets/MainShip/
-assets/MainShipWeapons/
-assets/Nairan/
-assets/Nautolan/
-assets/Pickup/
