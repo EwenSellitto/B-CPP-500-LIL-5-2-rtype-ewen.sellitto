@@ -53,15 +53,14 @@ jobs:
           cmake ..
           make -j$(nproc)
 
-  # build-windows:
   #   runs-on: windows-latest
   #   steps:
   #     - uses: actions/checkout@v2
-  
+
   #     - name: Install dependencies
   #       run: |
   #         choco install llvm
-  
+
   #     - name: Build with CMake and Clang
   #       run: |
   #         mkdir build && cd build
