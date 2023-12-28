@@ -12,9 +12,6 @@
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/Window/Event.hpp"
 
 std::shared_ptr<ECS::World> createWorld()
 {
@@ -23,7 +20,6 @@ std::shared_ptr<ECS::World> createWorld()
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
     world->createEntity(new PositionComponent(0, 0),
                         new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
-    // AnimationComponent(0, 0, 32, 32, 100));
     std::cout << "Creating first world" << std::endl;
     world->addSystem<Engine::System::Renderer>("Renderer");
     return world;
