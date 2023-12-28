@@ -5,11 +5,12 @@
 ** Renderer.systems.cpp
 */
 
+#include "Engine/Systems/Renderer.system.hpp"
+
 #include <iostream>
 #include <map>
 
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Systems/Renderer.system.hpp"
 
 using namespace Engine::System;
 
