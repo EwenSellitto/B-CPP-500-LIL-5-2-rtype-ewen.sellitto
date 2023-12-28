@@ -30,6 +30,7 @@ add_executable(r-type_client
                include/ECS/Utilities.hpp
                include/Engine/Systems/Renderer.system.hpp
                include/Engine/Components/Renderable.component.hpp
+               include/Engine/Components/Sprite.component.hpp
                include/Engine/Engine.hpp
                src/main.cpp
                src/Engine/Engine.cpp

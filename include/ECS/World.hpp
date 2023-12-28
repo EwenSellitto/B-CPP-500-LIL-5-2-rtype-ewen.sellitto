@@ -15,6 +15,7 @@
 
 #include "ECS/Components.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Sprite.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
@@ -82,6 +83,12 @@ namespace ECS
                 auto &entity = getMutEntity(id);
                 (entity.addComponent(std::forward<Components>(components)), ...);
                 return id;
+            }
+
+            std::shared_ptr<Entity> createEntityWithSprite(SpriteData data, const std::string& spriteName) {
+                auto entity = std::make_shared<Entity>(); // Crée une nouvelle entité
+                entity->addComponent<Engine::Components::SpriteComponent>(Engine::Components::SpriteComponent(data, spriteName)); // Ajoute le composant SpriteComponent
+                return entity; // Retourne l'entité
             }
 
             /**
@@ -355,16 +362,19 @@ namespace ECS
             }
 
             // TODO : implement this tick function by calling each ticks of the systems in a thread
-            void tick()
-            {
-                // each<Engine::Components::RenderableComponent>(
-                //     [&](Entity *entity, ComponentHandle<Engine::Components::RenderableComponent> component) {
-                //         sf::Sprite &spr = component->sprite;
-                //         spr.setPosition(entity->getComponent<Engine::Components::PositionComponent>()->x,
-                //                         entity->getComponent<Engine::Components::PositionComponent>()->y);
-                //     });
-                _engine.window.clear(sf::Color::Black);
-                _engine.window.display();
+            // Dans World.hpp
+
+            void tick() {
+                _engine.window.clear(sf::Color::Black); // Efface l'écran avec une couleur noire
+
+                // Boucle sur toutes les entités qui ont un SpriteComponent
+                each<Engine::Components::SpriteComponent>([this](Entity *entity, ComponentHandle<Engine::Components::SpriteComponent> spriteComponentHandle) {
+                    if (spriteComponentHandle->getVisibility()) { // Vérifie si le sprite est visible
+                        _engine.window.draw(spriteComponentHandle->getSprite()); // Dessine le sprite sur la fenêtre
+                    }
+                });
+
+                _engine.window.display(); // Affiche tout ce qui a été dessiné sur l'écran
             }
 
         private:

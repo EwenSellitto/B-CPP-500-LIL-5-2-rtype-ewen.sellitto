@@ -12,6 +12,7 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Events/Resize.event.hpp"
+#include "Engine/Components/Sprite.component.hpp"
 
 using namespace Engine;
 
@@ -55,6 +56,7 @@ EngineClass::~EngineClass()
 void EngineClass::createEmptyWorld(const std::string name)
 {
     _currentWorld = std::make_pair(name, std::make_unique<ECS::World>());
+    _worldsFactories[name] = [this]() { return std::make_unique<ECS::World>(); };
 }
 
 void EngineClass::addWorldFactory(std::string name, std::function<std::shared_ptr<ECS::World>()> factory)
@@ -94,7 +96,6 @@ void EngineClass::handleEvents()
             case sf::Event::Closed:
                 window.close();
                 break;
-
             case sf::Event::KeyPressed:
 #ifdef BIND_F11_TO_FULLSCREEN
                 if (event.key.code == sf::Keyboard::F11)
@@ -145,13 +146,12 @@ void EngineClass::handleEvents()
 //  General Logic  //
 //=================*/
 
-void EngineClass::run()
-{
+void EngineClass::run() {
     switchWorld(_startWorld);
 
     while (window.isOpen()) {
-        handleEvents();
-        world().tick();
+        handleEvents(); // Gère les événements
+        world().tick(); // Met à jour et dessine les entités
     }
 }
 
