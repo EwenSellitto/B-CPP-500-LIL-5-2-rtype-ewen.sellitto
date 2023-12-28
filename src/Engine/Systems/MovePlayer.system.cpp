@@ -21,7 +21,7 @@ void MovePlayer::configure([[maybe_unused]] ECS::World &world) {}
 
 void MovePlayer::unconfigure() {}
 
-void MovePlayer::addMovePlayer(sf::Event event)
+void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
@@ -31,38 +31,46 @@ void MovePlayer::addMovePlayer(sf::Event event)
         return;
 
     ECS::ComponentHandle<RenderableComponent> playerRenderableComp(player->getComponent<RenderableComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed * 100)}, {speed * 100, 0}, {-(speed * 100), 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
             player->getComponent<Components::MovingComponent>());
-        auto now = std::chrono::high_resolution_clock::now();
-        auto epoch = now.time_since_epoch();
-        size_t startTime = std::chrono::duration_cast<std::chrono::milliseconds>(epoch).count();
-        movingComponent->moveStartTime = startTime;
-        movingComponent->moveDuration = 1000 * 100;
 
-        if (event.key.code == sf::Keyboard::Z)
-            movingComponent->moveAmount.y += moves_zdqs[0].y;
-        if (event.key.code == sf::Keyboard::D)
-            movingComponent->moveAmount.x += moves_zdqs[1].x;
-        if (event.key.code == sf::Keyboard::Q)
-            movingComponent->moveAmount.x += moves_zdqs[2].x;
-        if (event.key.code == sf::Keyboard::S)
-            movingComponent->moveAmount.y += moves_zdqs[3].y;
+        if ((movingComponent->moveAmount.y == moves_zdqs[0].y ||
+            movingComponent->moveAmount.y == moves_zdqs[3].y) &&
+            (key.code == sf::Keyboard::Z || key.code == sf::Keyboard::S))
+            return;
+        if ((movingComponent->moveAmount.x == moves_zdqs[1].x ||
+            movingComponent->moveAmount.x == moves_zdqs[2].x) &&
+            (key.code == sf::Keyboard::D || key.code == sf::Keyboard::Q))
+            return;
+
+        sf::Vector2f movingValuesSave = movingComponent->moveAmount;
+        player->removeComponent<MovingComponent>();
+
+        if (key.code == sf::Keyboard::Z)
+            movingValuesSave.y = moves_zdqs[0].y;
+        if (key.code == sf::Keyboard::D)
+            movingValuesSave.x = moves_zdqs[1].x;
+        if (key.code == sf::Keyboard::Q)
+            movingValuesSave.x = moves_zdqs[2].x;
+        if (key.code == sf::Keyboard::S)
+            movingValuesSave.y = moves_zdqs[3].y;
+        player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, movingValuesSave));
         return;
     }
-    if (event.key.code == sf::Keyboard::Z)
+    if (key.code == sf::Keyboard::Z)
         player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, moves_zdqs[0]));
-    if (event.key.code == sf::Keyboard::D)
+    if (key.code == sf::Keyboard::D)
         player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, moves_zdqs[1]));
-    if (event.key.code == sf::Keyboard::Q)
+    if (key.code == sf::Keyboard::Q)
         player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, moves_zdqs[2]));
-    if (event.key.code == sf::Keyboard::S)
+    if (key.code == sf::Keyboard::S)
         player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, moves_zdqs[3]));
 }
 
-void MovePlayer::stopMovePlayer(sf::Event event)
+void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
@@ -72,21 +80,22 @@ void MovePlayer::stopMovePlayer(sf::Event event)
         return;
 
     ECS::ComponentHandle<RenderableComponent> playerRenderableComp(player->getComponent<RenderableComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed * 100)}, {speed * 100, 0}, {-(speed * 100), 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(
             player->getComponent<Components::MovingComponent>());
 
-        if (event.key.code == sf::Keyboard::Z)
-            playerMovingComp->moveAmount.y -= moves_zdqs[0].y;
-        if (event.key.code == sf::Keyboard::D)
-            playerMovingComp->moveAmount.x -= moves_zdqs[1].x;
-        if (event.key.code == sf::Keyboard::Q)
-            playerMovingComp->moveAmount.x -= moves_zdqs[2].x;
-        if (event.key.code == sf::Keyboard::S)
-            playerMovingComp->moveAmount.y -= moves_zdqs[3].y;
-        return;
+        sf::Vector2f movingValuesSave = playerMovingComp->moveAmount;
+        player->removeComponent<MovingComponent>();
+
+        if (key.code == sf::Keyboard::Z || key.code == sf::Keyboard::S)
+            movingValuesSave.y = 0;
+        if (key.code == sf::Keyboard::D || key.code == sf::Keyboard::Q)
+            movingValuesSave.x = 0;
+        if (movingValuesSave.x == 0 && movingValuesSave.y == 0)
+            return;
+        player->addComponent(new MovingComponent(playerRenderableComp->position, 1000 * 100, movingValuesSave));
     }
 }
 

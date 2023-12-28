@@ -45,11 +45,19 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
 
     int endedMoveCounter = 0;
 
-    if (newPosition.x >= initialPos.x + moveAmount.x) {
+    if (moveAmount.x > 0 && newPosition.x >= initialPos.x + moveAmount.x) {
         newPosition.x = initialPos.x + moveAmount.x;
         endedMoveCounter++;
     }
-    if (newPosition.y >= initialPos.y + moveAmount.y) {
+    if (moveAmount.y > 0 && newPosition.y >= initialPos.y + moveAmount.y) {
+        newPosition.y = initialPos.y + moveAmount.y;
+        endedMoveCounter++;
+    }
+    if (moveAmount.x < 0 && newPosition.x <= initialPos.x + moveAmount.x) {
+        newPosition.x = initialPos.x + moveAmount.x;
+        endedMoveCounter++;
+    }
+    if (moveAmount.y < 0 && newPosition.y <= initialPos.y + moveAmount.y) {
         newPosition.y = initialPos.y + moveAmount.y;
         endedMoveCounter++;
     }

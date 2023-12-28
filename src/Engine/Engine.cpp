@@ -12,6 +12,8 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Events/Resize.event.hpp"
+#include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Events/KeyPressed.event.hpp"
 
 using namespace Engine;
 
@@ -128,7 +130,8 @@ void EngineClass::handleEvents()
                 else
 #endif
 
-                    world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+                world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+                world().broadcastEvent<KeyPressedEvent>(KeyPressedEvent{event.key});
                 break;
 
             case sf::Event::Resized:
@@ -139,6 +142,8 @@ void EngineClass::handleEvents()
             case sf::Event::GainedFocus:
             case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
+                world().broadcastEvent<KeyReleasedEvent>(KeyReleasedEvent{event.key});
+                break;
             case sf::Event::MouseWheelMoved:
             case sf::Event::MouseWheelScrolled:
             case sf::Event::MouseButtonPressed:

@@ -11,6 +11,7 @@
 #include "ECS/World.hpp"
 #include "ECS/Entity.hpp"
 #include <ctime>
+#include <SFML/Window/Event.hpp>
 
 namespace Engine::System
 {
@@ -27,8 +28,8 @@ namespace Engine::System
 
             void tick() override;
 
-            void addMovePlayer(sf::Event event);
-            void stopMovePlayer(sf::Event event);
+            void addMovePlayer(sf::Event::KeyEvent key);
+            void stopMovePlayer(sf::Event::KeyEvent key);
 
             // TODO: if the entity get destroyed, this will crash.
 

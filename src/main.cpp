@@ -5,16 +5,58 @@
 ** main.cpp
 */
 
+#include <SFML/Window/Event.hpp>
 #include <memory>
 
 #include "ECS/World.hpp"
+#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.compnent.hpp"
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Systems/Renderer.system.hpp"
+#include "Engine/Events/KeyPressed.event.hpp"
+#include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
+#include "Engine/Systems/Renderer.system.hpp"
+
+class PlayerMovePressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
+{
+    public:
+        PlayerMovePressedSubscriber()  = default;
+        ~PlayerMovePressedSubscriber() override = default;
+        void receiveEvent(const std::string &name, const KeyPressedEvent &data) override
+        {
+            if (!(data.keyEvent.code == sf::Keyboard::Z ||
+                data.keyEvent.code == sf::Keyboard::Q ||
+                data.keyEvent.code == sf::Keyboard::S ||
+                data.keyEvent.code == sf::Keyboard::D))
+                return;
+            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+            if (!movePlayerSystem) return;
+            movePlayerSystem->addMovePlayer(data.keyEvent);
+        }
+};
+
+class PlayerMoveReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
+{
+    public:
+        PlayerMoveReleasedSubscriber()  = default;
+        ~PlayerMoveReleasedSubscriber() override = default;
+        void receiveEvent(const std::string &name, const KeyReleasedEvent &data) override
+        {
+            if (!(data.keyEvent.code == sf::Keyboard::Z ||
+                  data.keyEvent.code == sf::Keyboard::Q ||
+                  data.keyEvent.code == sf::Keyboard::S ||
+                  data.keyEvent.code == sf::Keyboard::D))
+                return;
+            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+            if (!movePlayerSystem) return;
+            movePlayerSystem->stopMovePlayer(data.keyEvent);
+        }
+};
 
 std::shared_ptr<ECS::World> createWorldGame()
 {
@@ -23,15 +65,30 @@ std::shared_ptr<ECS::World> createWorldGame()
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
     world->createEntity(new ViewComponent());
     // View entity
-    id_t ship_id = world->createEntity(new PositionComponent(0, 0),
-                        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
-    ECS::Entity &ship = world->getMutEntity(ship_id);
+    id_t ship_id =
+        world->createEntity(new PositionComponent(0, 0),
+                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
+    ECS::Entity                              &ship = world->getMutEntity(ship_id);
     ECS::ComponentHandle<RenderableComponent> shipRenderableComp(ship.getComponent<RenderableComponent>());
+
     ship.addComponent(new MovingComponent(shipRenderableComp->position, 3000, {300, 0}));
 
     std::cout << "Creating first world" << std::endl;
     world->addSystem<Engine::System::Renderer>("Renderer");
     world->addSystem<Engine::System::Physics>("Physics");
+    world->addSystem<Engine::System::MovePlayer>("PlayerMover");
+
+    Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+        world->getSystems()["PlayerMover"].get());
+    if (movePlayerSystem) {
+        movePlayerSystem->setCurrentPlayer(&ship);
+        movePlayerSystem->setPlayerSpeed(50);
+    }
+    auto     *sub = new PlayerMovePressedSubscriber();
+    auto     *sub1 = new PlayerMoveReleasedSubscriber();
+    world->subscribe<KeyPressedEvent>(sub);
+    world->subscribe<KeyReleasedEvent>(sub1);
+
     return world;
 }
 

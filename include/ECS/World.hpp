@@ -369,8 +369,8 @@ namespace ECS
 
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
 
-                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+//                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
+//                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
@@ -412,6 +412,15 @@ namespace ECS
             {
                 for (auto &system : _systems)
                     system.second->tick();
+            }
+
+            /*===================//
+            //  Getters/Setters  //
+            //===================*/
+
+            std::unordered_map<std::string, std::unique_ptr<BaseSystem>> &getSystems()
+            {
+                return _systems;
             }
 
         private:
