@@ -59,6 +59,16 @@ void EngineClass::setStartWorld(const std::string &name)
     _startWorld = name;
 }
 
+std::size_t EngineClass::getWindowSizeX()
+{
+    return _windowSizeX;
+}
+
+std::size_t EngineClass::getWindowSizeY()
+{
+    return _windowSizeY;
+}
+
 /*===================//
 //  Worlds Handling  //
 //===================*/

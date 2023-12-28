@@ -14,6 +14,7 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/View.component.hpp"
+#include "Engine/Components/Player.component.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Engine::System;
@@ -39,11 +40,9 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
     sf::Vector2f moveAmount = handle->moveAmount;
 
     size_t elapsedTime = currentTime - moveStartTime;
-    std::cout << "elapsed and duration" << elapsedTime << " " << moveDuration << std::endl;
     double progress = std::min(static_cast<double>(elapsedTime) / static_cast<double>(moveDuration), 1.0);
     sf::Vector2f newPosition = initialPos + moveAmount * static_cast<float>(progress);
 
-    std::cout << newPosition.x << " " <<  newPosition.y << " " << progress << std::endl;
     int endedMoveCounter = 0;
 
     if (newPosition.x >= initialPos.x + moveAmount.x) {
@@ -54,10 +53,8 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
         newPosition.y = initialPos.y + moveAmount.y;
         endedMoveCounter++;
     }
-    if (!entity->has<Components::RenderableComponent>()) {
-        std::cout << "dont " << std::endl;
+    if (!entity->has<Components::RenderableComponent>())
         return;
-    }
     ECS::ComponentHandle<Components::RenderableComponent> renderableComponent(
         entity->getComponent<Components::RenderableComponent>());
 
@@ -65,7 +62,6 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
 
     renderableComponent->position = newPosition;
     renderableComponent->sprite.setPosition(newPosition);
-    std::cout << "pos << " << renderableComponent->position.x << std::endl;
     if (endedMoveCounter == 2)
         entity->removeComponent<Components::MovingComponent>();
 }

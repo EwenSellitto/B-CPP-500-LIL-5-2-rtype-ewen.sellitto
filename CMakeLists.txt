@@ -38,15 +38,18 @@ add_executable(r-type_client
                include/ECS/Utilities.hpp
                include/Engine/Systems/Renderer.system.hpp
                include/Engine/Systems/Physics.system.hpp
+               include/Engine/Systems/MovePlayer.system.hpp
                include/Engine/Components/Renderable.component.hpp
                include/Engine/Components/View.component.hpp
                include/Engine/Components/Moving.component.hpp
                include/Engine/Components/Collision.component.hpp
+               include/Engine/Components/Player.component.hpp
                include/Engine/Engine.hpp
                src/main.cpp
                src/Engine/Engine.cpp
                src/Engine/Systems/Renderer.system.cpp
                src/Engine/Systems/Physics.system.cpp
+               src/Engine/Systems/MovePlayer.system.cpp
 )
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics)

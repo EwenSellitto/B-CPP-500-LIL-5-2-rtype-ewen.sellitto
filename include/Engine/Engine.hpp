@@ -76,6 +76,9 @@ namespace Engine
 
             void setStartWorld(const std::string &name);
 
+            std::size_t getWindowSizeX();
+            std::size_t getWindowSizeY();
+
             /*===================//
             //  Worlds Handling  //
             //===================*/
