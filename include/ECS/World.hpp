@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <ctime>
 #include <functional>
 #include <iostream>
@@ -14,6 +15,7 @@
 #include <unordered_map>
 
 #include "ECS/Components.hpp"
+#include "ECS/System.hpp"
 #include "Engine/Engine.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
@@ -60,7 +62,6 @@ namespace ECS
             {
                 type_t                  id = Utils::getNewId<Entity>();
                 Events::OnEntityCreated event{entity.get()};
-                std::cout << "addEntity" << std::endl;
 
                 _entities.emplace(id, std::move(entity));
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
@@ -349,11 +350,31 @@ namespace ECS
              */
             template <typename T> void broadcastEvent(T data, const std::string name = "")
             {
+                using namespace std::chrono;
+
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
+
+                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
                     sub->receiveEvent(name, data);
                 }
+            }
+
+            /*====================//
+            //  Systems Handling  //
+            //====================*/
+
+            template <typename System, typename... types> void addSystem(std::string name, types &&...args)
+            {
+                _systems.emplace(name, std::make_unique<System>(*this, std::forward<types>(args)...));
+            }
+
+            template <typename System> void addSystem(std::string name)
+            {
+                _systems.emplace(name, std::make_unique<System>(*this));
             }
 
             /*==================//
@@ -374,14 +395,8 @@ namespace ECS
             // TODO : implement this tick function by calling each ticks of the systems in a thread
             void tick()
             {
-                // each<Engine::Components::RenderableComponent>(
-                //     [&](Entity *entity, ComponentHandle<Engine::Components::RenderableComponent> component) {
-                //         sf::Sprite &spr = component->sprite;
-                //         spr.setPosition(entity->getComponent<Engine::Components::PositionComponent>()->x,
-                //                         entity->getComponent<Engine::Components::PositionComponent>()->y);
-                //     });
-                _engine.window.clear(sf::Color::Black);
-                _engine.window.display();
+                for (auto &system : _systems)
+                    system.second->tick();
             }
 
         private:
@@ -456,6 +471,7 @@ namespace ECS
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
+            std::unordered_map<std::string, std::unique_ptr<BaseSystem>>                _systems;
             Clock                                                                       _clock;
             Engine::EngineClass                                                        &_engine;
     };

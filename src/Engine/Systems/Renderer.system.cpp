@@ -14,15 +14,9 @@
 
 using namespace Engine::System;
 
-void Renderer::configure([[maybe_unused]] ECS::World &world)
-{
-    return;
-}
+void Renderer::configure([[maybe_unused]] ECS::World &world) {}
 
-void Renderer::unconfigure()
-{
-    return;
-}
+void Renderer::unconfigure() {}
 
 void Renderer::tick()
 {
@@ -33,20 +27,15 @@ void Renderer::tick()
     sf::RenderWindow                                                     *window = &WINDOW;
 
     world.each<RenderableComponent>(
-        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> renderable) {
-            components[renderable->priority].push_back(renderable);
+        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> handle) {
+            components[handle->priority].push_back(handle);
         });
 
     window->clear(sf::Color::Black);
     for (auto &component : components) {
-        for (auto &renderable : component.second) {
-            if (!renderable->isDisplayed) continue;
-
-            renderable->sprite.setPosition(renderable->position.x, renderable->position.y);
-            renderable->sprite.setRotation(renderable->rotation);
-            renderable->sprite.setScale(renderable->scale.x, renderable->scale.y);
-
-            window->draw(renderable->sprite);
+        for (auto &item : component.second) {
+            if (!item->isDisplayed) continue;
+            window->draw(item->sprite);
         }
     }
     window->display();

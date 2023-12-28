@@ -7,12 +7,13 @@
 
 #pragma once
 
+#include "ECS/Components.hpp"
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Clock.hpp"
 
 namespace Engine::Components
 {
-    struct AnimationComponent {
+    struct AnimationComponent : ECS::BaseComponent {
         public:
             AnimationComponent() = default;
             AnimationComponent(int x, int y, int width, int height, int animationSpeed)

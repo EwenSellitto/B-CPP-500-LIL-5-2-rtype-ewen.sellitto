@@ -20,11 +20,11 @@ namespace ECS
 }
 
 #ifndef DEFAULT_WINDOW_SIZE_X
-#define DEFAULT_WINDOW_SIZE_X 1600
+#define DEFAULT_WINDOW_SIZE_X 800
 #endif
 
 #ifndef DEFAULT_WINDOW_SIZE_Y
-#define DEFAULT_WINDOW_SIZE_Y 900
+#define DEFAULT_WINDOW_SIZE_Y 600
 #endif
 
 #ifndef DEFAULT_WINDOW_NAME
@@ -114,5 +114,7 @@ namespace Engine
             world_factories_t _worldsFactories;
             world_t           _currentWorld;
             std::string       _startWorld;
+            std::size_t       _windowSizeX;
+            std::size_t       _windowSizeY;
     };
 } // namespace Engine
