@@ -28,7 +28,7 @@ namespace ECS
             /**
              * @brief Virtual destructor for BaseEventSubscriber, defined as pure virtual (0).
              */
-            virtual ~BaseEventSubscriber(){};
+            virtual ~BaseEventSubscriber() = default;
     };
 
     /**
@@ -43,7 +43,7 @@ namespace ECS
             /**
              * @brief Virtual destructor for EventSubscriber, defined as pure virtual (0).
              */
-            virtual ~EventSubscriber(){};
+            ~EventSubscriber() override = default;
 
             /**
              * @brief Receive and process an event.

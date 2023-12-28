@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <ctime>
 #include <functional>
 #include <iostream>
@@ -14,7 +15,7 @@
 #include <unordered_map>
 
 #include "ECS/Components.hpp"
-#include "Engine/Components/Renderable.component.hpp"
+#include "ECS/System.hpp"
 #include "Engine/Engine.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
@@ -61,7 +62,6 @@ namespace ECS
             {
                 type_t                  id = Utils::getNewId<Entity>();
                 Events::OnEntityCreated event{entity.get()};
-                std::cout << "addEntity" << std::endl;
 
                 _entities.emplace(id, std::move(entity));
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
@@ -69,6 +69,11 @@ namespace ECS
                 return id;
             }
 
+            /**
+             * @brief Create an empty entity.
+             *
+             * @return id_t The unique identifier for the created entity.
+             */
             id_t addEntity()
             {
                 std::unique_ptr<Entity> entity = std::make_unique<Entity>();
@@ -76,6 +81,16 @@ namespace ECS
                 return addEntity(std::move(entity));
             }
 
+            /**
+             * @brief Create an entity with a set of components.
+             *
+             * @tparam Components The component types to add to the entity.
+             * @param components The components to add to the entity.
+             * @return id_t The unique identifier for the created entity.
+             * @note This function utilizes perfect forwarding to ensure that the components are properly moved into the
+             * entity.
+             * @warning the components should be pointers and created with 'new'
+             */
             template <typename... Components> id_t createEntity(Components &&...components)
             {
                 id_t  id     = addEntity();
@@ -173,6 +188,24 @@ namespace ECS
                         _eachHelper<Types...>(&entity, func);
                     }
                 }
+            }
+
+            /**
+             * @brief get all entities that have a set of given components.
+             *
+             * @tparam Types The component types to filter entities.
+             * @return std::vector<Entity *> A vector of pointers to the entities.
+             */
+            template <typename... Types> std::vector<Entity *> getEntitiesWithComponents()
+            {
+                std::vector<Entity *> entities;
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<Types...>()) {
+                        entities.push_back(&entity);
+                    }
+                }
+                return entities;
             }
 
             /*=========================//
@@ -332,11 +365,31 @@ namespace ECS
              */
             template <typename T> void broadcastEvent(T data, const std::string name = "")
             {
+                using namespace std::chrono;
+
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
+
+                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
                     sub->receiveEvent(name, data);
                 }
+            }
+
+            /*====================//
+            //  Systems Handling  //
+            //====================*/
+
+            template <typename System, typename... types> void addSystem(std::string name, types &&...args)
+            {
+                _systems.emplace(name, std::make_unique<System>(*this, std::forward<types>(args)...));
+            }
+
+            template <typename System> void addSystem(std::string name)
+            {
+                _systems.emplace(name, std::make_unique<System>(*this));
             }
 
             /*==================//
@@ -357,14 +410,8 @@ namespace ECS
             // TODO : implement this tick function by calling each ticks of the systems in a thread
             void tick()
             {
-                // each<Engine::Components::RenderableComponent>(
-                //     [&](Entity *entity, ComponentHandle<Engine::Components::RenderableComponent> component) {
-                //         sf::Sprite &spr = component->sprite;
-                //         spr.setPosition(entity->getComponent<Engine::Components::PositionComponent>()->x,
-                //                         entity->getComponent<Engine::Components::PositionComponent>()->y);
-                //     });
-                _engine.window.clear(sf::Color::Black);
-                _engine.window.display();
+                for (auto &system : _systems)
+                    system.second->tick();
             }
 
         private:
@@ -439,6 +486,7 @@ namespace ECS
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
             std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
+            std::unordered_map<std::string, std::unique_ptr<BaseSystem>>                _systems;
             Clock                                                                       _clock;
             Engine::EngineClass                                                        &_engine;
     };

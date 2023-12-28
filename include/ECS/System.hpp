@@ -31,7 +31,7 @@ namespace ECS
              *
              * @param world Reference to the World object that this system is part of.
              */
-            BaseSystem(World &world) : _world(world), _entities_id(), _clock(){};
+            explicit BaseSystem(World &world) : _world(world), _entities_id(), _clock(){};
 
             /**
              * @brief Construct a new BaseSystem object and initialize it with a list of entity IDs.
@@ -65,7 +65,7 @@ namespace ECS
              * @note This method is intended to be implemented by derived classes to clean up when the system is no
              * longer needed.
              */
-            virtual void unconfigure() = 0;
+            [[maybe_unused]] virtual void unconfigure() = 0;
 
             /**
              * @brief Update method for the system to process its entities.
@@ -87,6 +87,10 @@ namespace ECS
         private:
             [[maybe_unused]] World &_world;       ///< Reference to the World this system belongs to.
             std::vector<id_t>       _entities_id; ///< List of entity IDs that this system processes.
-            [[maybe_unused]] Clock  _clock;       ///< Clock used to track the time between ticks.
+            [[maybe_unused]] Clock  _clock{};     ///< Clock used to track the time between ticks.
+    };
+
+    class HigherOrderBaseSystem : public BaseSystem
+    {
     };
 } // namespace ECS

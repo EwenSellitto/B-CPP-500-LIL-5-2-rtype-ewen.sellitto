@@ -1,0 +1,42 @@
+/*
+** EPITECH PROJECT, 2023
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Renderer.systems.cpp
+*/
+
+#include "Engine/Systems/Renderer.system.hpp"
+
+#include <map>
+
+#include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Engine.hpp"
+
+using namespace Engine::System;
+
+void Renderer::configure([[maybe_unused]] ECS::World &world) {}
+
+void Renderer::unconfigure() {}
+
+void Renderer::tick()
+{
+    using namespace Engine::Components;
+
+    ECS::World                                                           &world = getWorld();
+    std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
+    sf::RenderWindow                                                     *window = &WINDOW;
+
+    world.each<RenderableComponent>(
+        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> handle) {
+            components[handle->priority].push_back(handle);
+        });
+
+    window->clear(sf::Color::Black);
+    for (auto &component : components) {
+        for (auto &item : component.second) {
+            if (!item->isDisplayed) continue;
+            window->draw(item->sprite);
+        }
+    }
+    window->display();
+}

@@ -39,7 +39,8 @@ EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t wind
                          const std::string window_name, std::string start_world)
     : window(sf::RenderWindow(sf::VideoMode(window_size_x, window_size_y), window_name,
                               sf::Style::Close | sf::Style::Resize)),
-      _running(false), _fullscreen(false), _currentWorld(), _startWorld(start_world)
+      _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(start_world),
+      _windowSizeX(window_size_x), _windowSizeY(window_size_y)
 {
 }
 
@@ -147,7 +148,10 @@ void EngineClass::handleEvents()
 
 void EngineClass::run()
 {
-    switchWorld(_startWorld);
+    if (_worldsFactories.empty())
+        createEmptyWorld("default");
+    else if (_currentWorld.second == nullptr)
+        switchWorld(_startWorld);
 
     while (window.isOpen()) {
         handleEvents();
@@ -161,12 +165,13 @@ void EngineClass::toggleFullscreen()
     ResizeEvent event = {0, 0};
 
     window.close();
-    if (window.getSize() == sf::Vector2u(1920, 1080)) {
-        window.create(sf::VideoMode::getDesktopMode(), "default", sf::Style::Fullscreen);
+    if (_fullscreen) {
+        window.create(sf::VideoMode::getDesktopMode(), "default",
+                      sf::Style::Fullscreen | sf::Style::Close | sf::Style::Resize);
         event = ResizeEvent(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     } else {
-        event = ResizeEvent(1920, 1080);
-        window.create(sf::VideoMode(1920, 1080), "default", sf::Style::Close | sf::Style::Resize);
+        event = ResizeEvent(_windowSizeX, _windowSizeY);
+        window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close | sf::Style::Resize);
     }
     world().broadcastEvent<ResizeEvent>(event);
 }
