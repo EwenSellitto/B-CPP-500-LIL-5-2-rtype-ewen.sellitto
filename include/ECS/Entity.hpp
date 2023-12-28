@@ -8,7 +8,6 @@
 #pragma once
 
 #include <ctime>
-#include <iostream>
 #include <memory>
 #include <sys/types.h>
 #include <unordered_map>
@@ -64,11 +63,9 @@ namespace ECS
              * @throw std::runtime_error if the component already exists.
              * @warning Meant to be called by the user and the World.
              */
-            template <typename T> void addComponent(T component)
+            template <typename T> void addComponent(T *component)
             {
-                std::cout << "hello" << std::endl;
-                _components.emplace(ECS_TYPEID(T), std::make_shared<T>(component));
-                std::cout << "hello 2" << std::endl;
+                _components.emplace(ECS_TYPEID(T), std::shared_ptr<T>(component));
             }
 
             /**

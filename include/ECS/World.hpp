@@ -69,6 +69,11 @@ namespace ECS
                 return id;
             }
 
+            /**
+             * @brief Create an empty entity.
+             *
+             * @return id_t The unique identifier for the created entity.
+             */
             id_t addEntity()
             {
                 std::unique_ptr<Entity> entity = std::make_unique<Entity>();
@@ -76,6 +81,16 @@ namespace ECS
                 return addEntity(std::move(entity));
             }
 
+            /**
+             * @brief Create an entity with a set of components.
+             *
+             * @tparam Components The component types to add to the entity.
+             * @param components The components to add to the entity.
+             * @return id_t The unique identifier for the created entity.
+             * @note This function utilizes perfect forwarding to ensure that the components are properly moved into the
+             * entity.
+             * @warning the components should be pointers and created with 'new'
+             */
             template <typename... Components> id_t createEntity(Components &&...components)
             {
                 id_t  id     = addEntity();

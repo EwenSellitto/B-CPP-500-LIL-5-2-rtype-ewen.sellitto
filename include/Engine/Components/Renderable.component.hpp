@@ -30,7 +30,6 @@ namespace Engine::Components
                   scale(scale), isDisplayed(true), path(texture_path)
 
             {
-                std::cout << "helloooooo" << std::endl;
                 setTexture(texture_path);
             };
 
@@ -43,10 +42,7 @@ namespace Engine::Components
                 setTexture(texture_path);
             }
 
-            ~RenderableComponent() override
-            {
-                std::cout << "cunt" << std::endl;
-            };
+            ~RenderableComponent() override = default;
 
             sf::Texture              texture;
             sf::Sprite               sprite;
