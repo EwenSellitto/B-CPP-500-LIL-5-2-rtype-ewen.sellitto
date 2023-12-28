@@ -41,7 +41,7 @@ add_executable(r-type_client
                include/Engine/Engine.hpp
                src/main.cpp
                src/Engine/Engine.cpp
-               src/Engine/Systems/Renderer.systems.cpp
+               src/Engine/Systems/Renderer.system.cpp
 )
 
 target_link_libraries(r-type_client PRIVATE sfml-graphics)

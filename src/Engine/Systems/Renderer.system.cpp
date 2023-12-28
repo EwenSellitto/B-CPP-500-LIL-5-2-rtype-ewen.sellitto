@@ -7,10 +7,10 @@
 
 #include "Engine/Systems/Renderer.system.hpp"
 
-#include <iostream>
 #include <map>
 
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Engine.hpp"
 
 using namespace Engine::System;
 
@@ -30,7 +30,7 @@ void Renderer::tick()
 
     ECS::World                                                           &world = getWorld();
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
-    sf::RenderWindow                                                     *window = nullptr;
+    sf::RenderWindow                                                     *window = &WINDOW;
 
     world.each<RenderableComponent>(
         [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> renderable) {

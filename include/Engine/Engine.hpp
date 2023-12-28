@@ -39,6 +39,8 @@ namespace ECS
 #define BIND_ESC_TO_QUIT
 #endif
 
+#define WINDOW Engine::EngineClass::getEngine().window
+
 namespace Engine
 {
     typedef std::unordered_map<std::string, std::function<std::shared_ptr<ECS::World>()>> world_factories_t;
