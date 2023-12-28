@@ -14,7 +14,6 @@
 #include <unordered_map>
 
 #include "ECS/Components.hpp"
-#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Entity.hpp"
 #include "EventSubscriber.hpp"
@@ -173,6 +172,24 @@ namespace ECS
                         _eachHelper<Types...>(&entity, func);
                     }
                 }
+            }
+
+            /**
+             * @brief get all entities that have a set of given components.
+             *
+             * @tparam Types The component types to filter entities.
+             * @return std::vector<Entity *> A vector of pointers to the entities.
+             */
+            template <typename... Types> std::vector<Entity *> getEntitiesWithComponents()
+            {
+                std::vector<Entity *> entities;
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<Types...>()) {
+                        entities.push_back(&entity);
+                    }
+                }
+                return entities;
             }
 
             /*=========================//

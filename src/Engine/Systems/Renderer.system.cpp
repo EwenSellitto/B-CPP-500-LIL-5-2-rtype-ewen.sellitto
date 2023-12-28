@@ -40,6 +40,8 @@ void Renderer::tick()
     window->clear(sf::Color::Black);
     for (auto &component : components) {
         for (auto &renderable : component.second) {
+            if (!renderable->isDisplayed) continue;
+
             renderable->sprite.setPosition(renderable->position.x, renderable->position.y);
             renderable->sprite.setRotation(renderable->rotation);
             renderable->sprite.setScale(renderable->scale.x, renderable->scale.y);

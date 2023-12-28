@@ -204,14 +204,18 @@ class SpriteData
                 createSprite("../../assets/MainShip/assets/MainShip/MainShip-Weapons-Zapper.png", 672, 48, 48, 48);
 
             // MainShipWeapons
-            sprites["MainshipWeapon-Projectile-Autocannonbullet"] =
-                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Autocannonbullet.png", 128, 32, 32, 32);
-            sprites["MainshipWeapon-Projectile-BigSpaceGun"] =
-                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-BigSpaceGun.png", 320, 32, 32, 32);
+            sprites["MainshipWeapon-Projectile-Autocannonbullet"] = createSprite(
+                "../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Autocannonbullet.png",
+                128, 32, 32, 32);
+            sprites["MainshipWeapon-Projectile-BigSpaceGun"] = createSprite(
+                "../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-BigSpaceGun.png", 320,
+                32, 32, 32);
             sprites["MainshipWeapon-Projectile-Rocket"] =
-                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Rocket.png", 96, 32, 32, 32);
+                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Rocket.png",
+                             96, 32, 32, 32);
             sprites["MainshipWeapon-Projectile-Zapper"] =
-                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Zapper.png", 256, 32, 32, 32);
+                createSprite("../../assets/MainShipWeapons/assets/MainShipWeapons/MainshipWeapon-Projectile-Zapper.png",
+                             256, 32, 32, 32);
 
             // Nairan
             sprites["Nairan-Battlecruiser-Base"] =
@@ -224,8 +228,7 @@ class SpriteData
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Battlecruiser-Shield.png", 1024, 128, 128, 128);
             sprites["Nairan-Battlecruiser-Weapons"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Battlecruiser-Weapons.png", 1152, 128, 128, 128);
-            sprites["Nairan-Bolt"] =
-                createSprite("../../assets/Nairan/assets/Nairan/Nairan-Bolt.png", 45, 9, 9, 9);
+            sprites["Nairan-Bolt"] = createSprite("../../assets/Nairan/assets/Nairan/Nairan-Bolt.png", 45, 9, 9, 9);
             sprites["Nairan-Bomber-Base"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Bomber-Base.png", 64, 64, 64, 64);
             sprites["Nairan-Bomber-Destruction"] =
@@ -236,8 +239,8 @@ class SpriteData
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Bomber-Shield.png", 640, 64, 64, 64);
             sprites["Nairan-Dreadnought-Base"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Dreadnought-Base.png", 128, 128, 128, 128);
-            sprites["Nairan-Dreadnought-Destruction"] =
-                createSprite("../../assets/Nairan/assets/Nairan/Nairan-Dreadnought-Destruction.png", 2304, 128, 128, 128);
+            sprites["Nairan-Dreadnought-Destruction"] = createSprite(
+                "../../assets/Nairan/assets/Nairan/Nairan-Dreadnought-Destruction.png", 2304, 128, 128, 128);
             sprites["Nairan-Dreadnought-Engine"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Dreadnought-Engine.png", 1024, 128, 128, 128);
             sprites["Nairan-Dreadnought-Shield"] =
@@ -264,8 +267,7 @@ class SpriteData
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Frigate-Shield.png", 512, 64, 64, 64);
             sprites["Nairan-Frigate-Weapons"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Frigate-Weapons.png", 320, 64, 64, 64);
-            sprites["Nairan-Ray"] =
-                createSprite("../../assets/Nairan/assets/Nairan/Nairan-Ray.png", 72, 38, 18, 38);
+            sprites["Nairan-Ray"] = createSprite("../../assets/Nairan/assets/Nairan/Nairan-Ray.png", 72, 38, 18, 38);
             sprites["Nairan-Rocket"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-Rocket.png", 36, 16, 9, 16);
             sprites["Nairan-Scout-Base"] =
@@ -297,27 +299,28 @@ class SpriteData
             sprites["Nairan-TorpedoShip-Weapons"] =
                 createSprite("../../assets/Nairan/assets/Nairan/Nairan-TorpedoShip-Weapons.png", 768, 64, 64, 64);
 
-            //Pickup
+            // Pickup
             sprites["PickupIcon-Engines-BaseEngine"] =
                 createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Engines-BaseEngine.png", 480, 32, 32, 32);
-            sprites["PickupIcon-Engines-BigPulseEngine"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Engines-BigPulseEngine.png", 480, 32, 32, 32);
+            sprites["PickupIcon-Engines-BigPulseEngine"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-Engines-BigPulseEngine.png", 480, 32, 32, 32);
             sprites["PickupIcon-Engines-BurstEngine"] =
                 createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Engines-BurstEngine.png", 480, 32, 32, 32);
-            sprites["PickupIcon-Engines-SuperchargedEngine"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Engines-SuperchargedEngine.png", 480, 32, 32, 32);
-            sprites["PickupIcon-ShieldGenerator-Allaroundshield"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-Allaroundshield.png", 480, 32, 32, 32);
-            sprites["PickupIcon-ShieldGenerator-FrontandSideShield"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-FrontandSideShield.png", 480, 32, 32, 32);
-            sprites["PickupIcon-ShieldGenerator-FrontShield"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-FrontShield.png", 480, 32, 32, 32);
+            sprites["PickupIcon-Engines-SuperchargedEngine"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-Engines-SuperchargedEngine.png", 480, 32, 32, 32);
+            sprites["PickupIcon-ShieldGenerator-Allaroundshield"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-Allaroundshield.png", 480, 32, 32, 32);
+            sprites["PickupIcon-ShieldGenerator-FrontandSideShield"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-FrontandSideShield.png", 480, 32, 32, 32);
+            sprites["PickupIcon-ShieldGenerator-FrontShield"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-FrontShield.png", 480, 32, 32, 32);
             sprites["PickupIcon-ShieldGenerator-InvincibilityShield"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-InvincibilityShield.png", 480, 32, 32, 32);
+                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-ShieldGenerator-InvincibilityShield.png",
+                             480, 32, 32, 32);
             sprites["PickupIcon-Weapons-AutoCannons"] =
                 createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Weapons-AutoCannons.png", 480, 32, 32, 32);
-            sprites["PickupIcon-Weapons-BigSpaceGun2000"] =
-                createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Weapons-BigSpaceGun2000.png", 480, 32, 32, 32);
+            sprites["PickupIcon-Weapons-BigSpaceGun2000"] = createSprite(
+                "../../assets/Pickup/assets/Pickup/PickupIcon-Weapons-BigSpaceGun2000.png", 480, 32, 32, 32);
             sprites["PickupIcon-Weapons-Rockets"] =
                 createSprite("../../assets/Pickup/assets/Pickup/PickupIcon-Weapons-Rockets.png", 480, 32, 32, 32);
             sprites["PickupIcon-Weapons-Zapper"] =

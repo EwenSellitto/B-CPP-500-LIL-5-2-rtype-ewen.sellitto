@@ -29,12 +29,14 @@ namespace Engine
         struct RenderableComponent : public ECS::BaseComponent {
             public:
                 RenderableComponent()
-                    : sprite(), size({0, 0}), position({0, 0}), priority(0), rotation(0), scale({1, 1}), _path(){};
+                    : sprite(), size({0, 0}), position({0, 0}), priority(0), rotation(0), scale({1, 1}),
+                      isDisplayed(false), _path(){};
 
                 RenderableComponent(std::string texture_path, std::size_t pos_x, std::size_t pos_y, int priority,
                                     float rotation = 0, sf::Vector2<std::size_t> scale = {1, 1})
                     : texture(), sprite(), size(), position({pos_x, pos_y}), priority(priority), rotation(rotation),
-                      scale(scale), _path(texture_path)
+                      scale(scale), isDisplayed(true), _path(texture_path)
+
                 {
                     setTexture(texture_path);
                 };
@@ -42,7 +44,8 @@ namespace Engine
                 RenderableComponent(std::string texture_path, sf::Vector2<std::size_t> pos, int priority,
                                     float rotation = 0, sf::Vector2<std::size_t> scale = {1, 1})
                     : texture(), sprite(), size(), position(pos), priority(priority), rotation(rotation), scale(scale),
-                      _path(texture_path)
+                      isDisplayed(true), _path(texture_path)
+
                 {
                     setTexture(texture_path);
                 }
@@ -69,6 +72,7 @@ namespace Engine
                 int                      priority;
                 float                    rotation;
                 sf::Vector2<std::size_t> scale;
+                bool                     isDisplayed;
 
             private:
                 std::string _path;

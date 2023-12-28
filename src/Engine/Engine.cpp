@@ -164,8 +164,9 @@ void EngineClass::toggleFullscreen()
     ResizeEvent event = {0, 0};
 
     window.close();
-    if (window.getSize() == sf::Vector2u(1920, 1080)) {
-        window.create(sf::VideoMode::getDesktopMode(), "default", sf::Style::Fullscreen);
+    if (_fullscreen) {
+        window.create(sf::VideoMode::getDesktopMode(), "default",
+                      sf::Style::Fullscreen | sf::Style::Close | sf::Style::Resize);
         event = ResizeEvent(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     } else {
         event = ResizeEvent(1920, 1080);
