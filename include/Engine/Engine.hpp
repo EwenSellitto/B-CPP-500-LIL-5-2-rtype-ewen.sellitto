@@ -71,6 +71,12 @@ namespace Engine
 
         public:
             /*===================//
+            //  Getters/Setters  //
+            //===================*/
+
+            void setStartWorld(const std::string &name);
+
+            /*===================//
             //  Worlds Handling  //
             //===================*/
 

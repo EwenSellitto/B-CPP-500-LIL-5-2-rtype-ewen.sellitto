@@ -42,11 +42,21 @@ EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t wind
       _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(start_world),
       _windowSizeX(window_size_x), _windowSizeY(window_size_y)
 {
+    window.setFramerateLimit(60);
 }
 
 EngineClass::~EngineClass()
 {
     window.close();
+}
+
+/*===================//
+//  Getters/Setters  //
+//===================*/
+
+void EngineClass::setStartWorld(const std::string &name)
+{
+    _startWorld = name;
 }
 
 /*===================//

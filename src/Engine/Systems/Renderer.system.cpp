@@ -10,7 +10,9 @@
 #include <map>
 
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
+#include "ECS/Entity.hpp"
 
 using namespace Engine::System;
 
@@ -25,11 +27,22 @@ void Renderer::tick()
     ECS::World                                                           &world = getWorld();
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
     sf::RenderWindow                                                     *window = &WINDOW;
+    std::unordered_map<ECS::Entity *, ECS::ComponentHandle<ViewComponent>> ViewEntities;
 
+    ViewEntities = world.get<ViewComponent>();
+    if (ViewEntities.empty()) {
+        std::cerr << "ViewComponent missing, declare one" << std::endl;
+        exit(84);
+    } else {
+        auto it = ViewEntities.begin();
+        ECS::ComponentHandle<ViewComponent> viewComponent = it->second;
+        window->setView(viewComponent->view);
+    }
     world.each<RenderableComponent>(
         [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> handle) {
             components[handle->priority].push_back(handle);
         });
+
 
     window->clear(sf::Color::Black);
     for (auto &component : components) {
