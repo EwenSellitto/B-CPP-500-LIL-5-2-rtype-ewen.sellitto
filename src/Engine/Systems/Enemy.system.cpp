@@ -48,7 +48,7 @@ void EnemySystem::spawnEnemy()
     EnemyType type       = getRandomEnemyType();
     auto      attributes = enemyTypeAttributes.at(type);
 
-    getWorld().createEntity(new PositionComponent(rand() % DEFAULT_WINDOW_SIZE_X, rand() % DEFAULT_WINDOW_SIZE_Y),
+    getWorld().createEntity(new PositionComponent(rand() % WINDOW.getSize().x, rand() % WINDOW.getSize().y),
                             new RenderableComponent(attributes.spritePath, 20, 20, 0),
                             new EnemyComponent(attributes.health, type));
 }
