@@ -10,12 +10,15 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Moving.component.hpp"
-#include "Engine/Components/Position.compnent.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Events/Collision.event.hpp"
 #include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
@@ -58,6 +61,19 @@ class PlayerMoveReleasedSubscriber : public virtual ECS::EventSubscriber<KeyRele
         }
 };
 
+class CollisionEventSubscriber : public virtual ECS::EventSubscriber<CollisionEvent>
+{
+    public:
+        CollisionEventSubscriber()  = default;
+        ~CollisionEventSubscriber() override = default;
+        void receiveEvent(const std::string &name, const CollisionEvent &data) override
+        {
+            using namespace Engine::Components;
+
+            data.movingEntity->removeComponent<MovingComponent>();
+        }
+};
+
 std::shared_ptr<ECS::World> createWorldGame()
 {
     using namespace Engine::Components;
@@ -67,7 +83,14 @@ std::shared_ptr<ECS::World> createWorldGame()
     // View entity
     id_t ship_id =
         world->createEntity(new PositionComponent(0, 0),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
+                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
+                            new CollisionComponent(),
+                            new TypeComponent(Engine::Components::TypeComponent::player));
+    id_t ship_id_two =
+        world->createEntity(new PositionComponent(200, 0),
+                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 200, 0, 1),
+                            new CollisionComponent(),
+                            new TypeComponent(Engine::Components::TypeComponent::player));
     ECS::Entity                              &ship = world->getMutEntity(ship_id);
     ECS::ComponentHandle<RenderableComponent> shipRenderableComp(ship.getComponent<RenderableComponent>());
 
@@ -86,8 +109,10 @@ std::shared_ptr<ECS::World> createWorldGame()
     }
     auto     *sub = new PlayerMovePressedSubscriber();
     auto     *sub1 = new PlayerMoveReleasedSubscriber();
+    auto     *sub2 = new CollisionEventSubscriber();
     world->subscribe<KeyPressedEvent>(sub);
     world->subscribe<KeyReleasedEvent>(sub1);
+    world->subscribe<CollisionEvent>(sub2);
 
     return world;
 }

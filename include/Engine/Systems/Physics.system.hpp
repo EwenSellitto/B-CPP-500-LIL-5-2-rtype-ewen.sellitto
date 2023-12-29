@@ -32,6 +32,6 @@ namespace Engine::System
             void moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::MovingComponent> handle);
 
             //collision function
-            void collide();
+            void collide(ECS::Entity *entity);
     };
 } // namespace Engine::System
