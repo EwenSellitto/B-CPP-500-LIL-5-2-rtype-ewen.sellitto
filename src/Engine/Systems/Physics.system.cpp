@@ -14,6 +14,7 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Player.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Events/Collision.event.hpp"
@@ -84,12 +85,14 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
         newPosition.y = initialPos.y + moveAmount.y;
         endedMoveCounter++;
     }
-    if (!entity->has<RenderableComponent>()) return;
+    if (!entity->has<PositionComponent>() || !entity->has<RenderableComponent>()) return;
+    ECS::ComponentHandle<PositionComponent> componentPos(entity->getComponent<PositionComponent>());
     ECS::ComponentHandle<RenderableComponent> renderableComponent(entity->getComponent<RenderableComponent>());
 
     collide(entity);
 
-    renderableComponent->position = newPosition;
+    componentPos->x = static_cast<int>(newPosition.x);
+    componentPos->y = static_cast<int>(newPosition.y);
     renderableComponent->sprite.setPosition(newPosition);
     if (endedMoveCounter == 2) entity->removeComponent<MovingComponent>();
 }
