@@ -3,11 +3,11 @@
 #pragma once
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
-#include "Engine/Components/Parallax.component.hpp"
-#include "Engine/Components/Position.component.hpp"
 
-namespace Engine::System {
-    class ParallaxSystem : public ECS::BaseSystem {
+namespace Engine::System
+{
+    class ParallaxSystem : public ECS::BaseSystem
+    {
         public:
             ParallaxSystem(ECS::World &world) : ECS::BaseSystem(world) {}
 
@@ -17,4 +17,4 @@ namespace Engine::System {
 
             void tick() override;
     };
-}
+} // namespace Engine::System

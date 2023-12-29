@@ -57,6 +57,8 @@ add_executable(r-type
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/MovePlayer.system.cpp
         src/Engine/Systems/Parallax.system.cpp
+        include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         src/main.cpp
 )
 

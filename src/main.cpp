@@ -26,53 +26,8 @@
 #include "Engine/Systems/Parallax.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
-
-class PlayerMovePressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
-{
-    public:
-        PlayerMovePressedSubscriber()           = default;
-        ~PlayerMovePressedSubscriber() override = default;
-        void receiveEvent(const std::string &name, const KeyPressedEvent &data) override
-        {
-            if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
-                  data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
-                return;
-            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
-            if (!movePlayerSystem) return;
-            movePlayerSystem->addMovePlayer(data.keyEvent);
-        }
-};
-
-class PlayerMoveReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
-{
-    public:
-        PlayerMoveReleasedSubscriber()           = default;
-        ~PlayerMoveReleasedSubscriber() override = default;
-        void receiveEvent(const std::string &name, const KeyReleasedEvent &data) override
-        {
-            if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
-                  data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
-                return;
-            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
-            if (!movePlayerSystem) return;
-            movePlayerSystem->stopMovePlayer(data.keyEvent);
-        }
-};
-
-class CollisionEventSubscriber : public virtual ECS::EventSubscriber<CollisionEvent>
-{
-    public:
-        CollisionEventSubscriber()           = default;
-        ~CollisionEventSubscriber() override = default;
-        void receiveEvent(const std::string &name, const CollisionEvent &data) override
-        {
-            using namespace Engine::Components;
-
-            data.movingEntity->removeComponent<MovingComponent>();
-        }
-};
+#include "R-Type/Subscribers/Collision.subscriber.hpp"
+#include "R-Type/Subscribers/PlayerMove.subscriber.hpp"
 
 void createBackground(std::shared_ptr<ECS::World> world, const std::string &texturePath, ParallaxLayer layer,
                       float speed, bool first, int priority)
@@ -81,9 +36,10 @@ void createBackground(std::shared_ptr<ECS::World> world, const std::string &text
     using namespace Engine::Components;
     sf::Vector2f windowSize = {0, 0};
 
-    world->each<ViewComponent>([&windowSize](ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
-        windowSize = viewComp->view.getSize();
-    });
+    world->each<ViewComponent>(
+        [&windowSize]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
+            windowSize = viewComp->view.getSize();
+        });
 
     auto  renderable = new RenderableComponent(texturePath, {0, 0}, priority);
     float scaleRatio = windowSize.y / renderable->texture.getSize().y;
@@ -96,8 +52,7 @@ void createBackground(std::shared_ptr<ECS::World> world, const std::string &text
         world->createEntity(new PositionComponent(0, 0), renderable, new ParallaxComponent(layer, speed));
     } else {
         renderable->position = {trueSize.x, 0};
-        world->createEntity(new PositionComponent(trueSize.x, 0), renderable,
-                            new ParallaxComponent(layer, speed));
+        world->createEntity(new PositionComponent(trueSize.x, 0), renderable, new ParallaxComponent(layer, speed));
     }
 }
 
@@ -125,7 +80,6 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->createEntity(new ViewComponent());
     // View entity
     createParallax(world);
-
 
     id_t ship_id = world->createEntity(
         new PositionComponent(0, 0),
@@ -158,9 +112,9 @@ std::shared_ptr<ECS::World> createWorldGame()
         movePlayerSystem->setCurrentPlayer(&ship);
         movePlayerSystem->setPlayerSpeed(50);
     }
-    auto *sub  = new PlayerMovePressedSubscriber();
-    auto *sub1 = new PlayerMoveReleasedSubscriber();
-    auto *sub2 = new CollisionEventSubscriber();
+    auto *sub  = new Rtype::Subscriber::PlayerMovePressedSubscriber();
+    auto *sub1 = new Rtype::Subscriber::PlayerMoveReleasedSubscriber();
+    auto *sub2 = new Rtype::Subscriber::CollisionEventSubscriber();
     world->subscribe<KeyPressedEvent>(sub);
     world->subscribe<KeyReleasedEvent>(sub1);
     world->subscribe<CollisionEvent>(sub2);
