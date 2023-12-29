@@ -10,7 +10,7 @@
 #include <map>
 
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Position.compnent.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
 #include "ECS/Entity.hpp"
@@ -46,6 +46,7 @@ void Renderer::tick()
         }
         components[renderableComp->priority].push_back(renderableComp);
     });
+
 
     window->clear(sf::Color::Black);
     for (auto &priorityGroup : components) {

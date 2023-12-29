@@ -15,17 +15,16 @@
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "Engine/Components/Type.component.hpp"
+#include "ECS/EventSubscriber.hpp"
 
 namespace Engine::Components
 {
     struct CollisionComponent : public ECS::BaseComponent {
         public:
-            CollisionComponent(size_t collisionId) : collisionId(collisionId) {}
+            explicit CollisionComponent() {}
 
             ~CollisionComponent() override = default;
-
-            size_t collisionId;
-
         private:
     };
 } // namespace Engine::Components

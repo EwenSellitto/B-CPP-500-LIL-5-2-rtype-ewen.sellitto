@@ -9,7 +9,7 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Enemy.component.hpp"
-#include "Engine/Components/Position.compnent.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 
