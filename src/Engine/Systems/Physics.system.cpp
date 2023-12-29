@@ -26,21 +26,20 @@ void Physics::configure([[maybe_unused]] ECS::World &world) {}
 
 void Physics::unconfigure() {}
 
-void Physics::collide(ECS::Entity *entity)
+void Physics::collide(ECS::Entity *entity, int x, int y)
 {
     using namespace Engine::Components;
 
     std::vector<ECS::Entity *> collisionEntities;
     ECS::World                &world = getWorld();
 
-    ECS::ComponentHandle<PositionComponent>         entity_pos = entity->getComponent<PositionComponent>();
     ECS::ComponentHandle<CollisionComponent>        entity_col = entity->getComponent<CollisionComponent>();
     ECS::ComponentHandle<ExcludeCollisionComponent> entity_exclude_col;
     bool                                            hasExcludeCol = entity->has<ExcludeCollisionComponent>();
 
     if (hasExcludeCol) entity_exclude_col = entity->getComponent<ExcludeCollisionComponent>();
 
-    sf::FloatRect hitbox(entity_pos->x + entity_col->rect.left, entity_pos->y + entity_col->rect.top,
+    sf::FloatRect hitbox(x + entity_col->rect.left, y + entity_col->rect.top,
                          entity_col->rect.width, entity_col->rect.height);
 
     std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<CollisionComponent, PositionComponent>();
@@ -102,11 +101,14 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
     ECS::ComponentHandle<PositionComponent>   componentPos(entity->getComponent<PositionComponent>());
     ECS::ComponentHandle<RenderableComponent> renderableComponent(entity->getComponent<RenderableComponent>());
 
+    collide(entity, newPosition.x, newPosition.y);
+
+    if (!entity->has<MovingComponent>())
+        return;
+
     componentPos->x = static_cast<int>(newPosition.x);
     componentPos->y = static_cast<int>(newPosition.y);
     renderableComponent->sprite.setPosition(newPosition);
-
-    collide(entity);
 
     if (endedMoveCounter == 2) entity->removeComponent<MovingComponent>();
 }
