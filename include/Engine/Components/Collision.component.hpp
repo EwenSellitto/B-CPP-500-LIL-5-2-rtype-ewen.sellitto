@@ -9,22 +9,21 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <iostream>
-#include <tuple>
 
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "Engine/Components/Type.component.hpp"
-#include "ECS/EventSubscriber.hpp"
+#include "SFML/Graphics/Rect.hpp"
 
 namespace Engine::Components
 {
     struct CollisionComponent : public ECS::BaseComponent {
         public:
-            explicit CollisionComponent() {}
+            explicit CollisionComponent(float off_x = 0, float off_y = 0, float size_x = 0, float size_y = 0)
+                : rect(off_x, off_y, size_x, size_y)
+            {
+            }
 
             ~CollisionComponent() override = default;
-        private:
+
+            sf::FloatRect rect;
     };
 } // namespace Engine::Components

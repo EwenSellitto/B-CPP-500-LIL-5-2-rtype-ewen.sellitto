@@ -10,6 +10,7 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
@@ -79,12 +80,17 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->createEntity(new ViewComponent());
     // View entity
     id_t ship_id = world->createEntity(
-        new PositionComponent(0, 0), new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
-        new CollisionComponent(), new TypeComponent(Engine::Components::TypeComponent::player));
-    id_t ship_id_two =
-        world->createEntity(new PositionComponent(200, 0),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 200, 0, 1),
-                            new CollisionComponent(), new TypeComponent(Engine::Components::TypeComponent::player));
+        new PositionComponent(0, 0),
+        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
+        new CollisionComponent(-37, 9, 26, 30), new TypeComponent(Engine::Components::TypeComponent::player),
+        new ExcludeCollisionComponent(1));
+
+    id_t ship_id_two = world->createEntity(
+        new PositionComponent(200, 0),
+        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 200, 0, 1),
+        new CollisionComponent(9, 11, 30, 26), new TypeComponent(Engine::Components::TypeComponent::player),
+        new ExcludeCollisionComponent(0));
+
     ECS::Entity                            &ship = world->getMutEntity(ship_id);
     ECS::ComponentHandle<PositionComponent> shipRenderableComp(ship.getComponent<PositionComponent>());
 
@@ -95,7 +101,7 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->addSystem<Engine::System::Renderer>("Renderer");
     world->addSystem<Engine::System::Physics>("Physics");
     world->addSystem<Engine::System::MovePlayer>("PlayerMover");
-    world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+    // world->addSystem<Engine::System::EnemySystem>("EnemySystem");
 
     Engine::System::MovePlayer *movePlayerSystem =
         dynamic_cast<Engine::System::MovePlayer *>(world->getSystems()["PlayerMover"].get());

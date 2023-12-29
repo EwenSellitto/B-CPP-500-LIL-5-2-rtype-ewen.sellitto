@@ -92,10 +92,6 @@ bower_components/
 *.tmp
 *.temp
 
-# Fichiers de configuration de l'outil
-.doxyfile
-.clang-format
-
 # Ignorez les dossiers spécifiques aux outils et aux systèmes d'exploitation
 __pycache__/
 *.py[cod]
@@ -114,3 +110,4 @@ project.json
 
 
 _deps/r-type
+r-type
