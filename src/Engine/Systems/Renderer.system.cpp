@@ -45,6 +45,10 @@ void Renderer::tick()
             renderableComp->sprite.setPosition(positionComponent->x, positionComponent->y);
             renderableComp->sprite.setRotation(renderableComp->rotation);
             renderableComp->sprite.setScale(renderableComp->scale);
+            renderableComp->size = {static_cast<std::size_t>(renderableComp->sprite.getTexture()->getSize().x *
+                                                             renderableComp->scale.x),
+                                    static_cast<std::size_t>(renderableComp->sprite.getTexture()->getSize().y *
+                                                             renderableComp->scale.y)};
         }
         components[renderableComp->priority].push_back(renderableComp);
     });

@@ -4,9 +4,9 @@
 #include "ECS/Components.hpp"
 
 enum class ParallaxLayer {
-    FarBackground, // Le fond le plus éloigné, qui bouge le plus lentement
-    MidBackground, // Le fond intermédiaire
-    NearBackground // Le fond le plus proche, qui bouge le plus vite
+    FarBackground,
+    MidBackground,
+    NearBackground
 };
 
 namespace Engine::Components
@@ -14,7 +14,8 @@ namespace Engine::Components
     struct ParallaxComponent : public ECS::BaseComponent {
         ParallaxLayer layer;
         float speed;
-        sf::Vector2f offset; // Utilisé pour le calcul du décalage cumulé
+        sf::Vector2f offset;
+        bool first;
 
         ParallaxComponent(ParallaxLayer layer, float speed)
             : layer(layer), speed(speed), offset(0, 0) {}
