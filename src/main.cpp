@@ -58,18 +58,18 @@ void createBackground(std::shared_ptr<ECS::World> world, const std::string &text
 
 void createParallax(std::shared_ptr<ECS::World> world)
 {
-    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground,
-                     10, true, -5);
-    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground,
-                     10, false, -5);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground, 1,
+                     true, -5);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground, 1,
+                     false, -5);
     createBackground(world, "./assets/Environnement/Starrybackground-Layer02-Stars.png", ParallaxLayer::MidBackground,
-                     20, true, -4);
+                     2, true, -4);
     createBackground(world, "./assets/Environnement/Starrybackground-Layer02-Stars.png", ParallaxLayer::MidBackground,
-                     20, false, -4);
+                     2, false, -4);
     createBackground(world, "./assets/Environnement/Starrybackground-LayerX-BigStar2.png",
-                     ParallaxLayer::NearBackground, 40, true, -3);
+                     ParallaxLayer::NearBackground, 4, true, -3);
     createBackground(world, "./assets/Environnement/Starrybackground-LayerX-BigStar2.png",
-                     ParallaxLayer::NearBackground, 40, false, -3);
+                     ParallaxLayer::NearBackground, 4, false, -3);
 }
 
 std::shared_ptr<ECS::World> createWorldGame()

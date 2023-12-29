@@ -39,8 +39,8 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
 
     if (hasExcludeCol) entity_exclude_col = entity->getComponent<ExcludeCollisionComponent>();
 
-    sf::FloatRect hitbox(x + entity_col->rect.left, y + entity_col->rect.top,
-                         entity_col->rect.width, entity_col->rect.height);
+    sf::FloatRect hitbox(x + entity_col->rect.left, y + entity_col->rect.top, entity_col->rect.width,
+                         entity_col->rect.height);
 
     std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<CollisionComponent, PositionComponent>();
 
@@ -103,8 +103,7 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
 
     collide(entity, newPosition.x, newPosition.y);
 
-    if (!entity->has<MovingComponent>())
-        return;
+    if (!entity->has<MovingComponent>()) return;
 
     componentPos->x = static_cast<int>(newPosition.x);
     componentPos->y = static_cast<int>(newPosition.y);

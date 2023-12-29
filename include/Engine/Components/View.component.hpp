@@ -20,15 +20,13 @@ namespace Engine::Components
 {
     struct ViewComponent : public ECS::BaseComponent {
         public:
-            ViewComponent()
-                : position(), view()
+            ViewComponent() : position(), view()
             {
                 view.setCenter(sf::Vector2f(400, 300));
                 view.setSize(sf::Vector2f(800, 600));
             }
 
-            ViewComponent(sf::Vector2<float> position, sf::Vector2<float> size)
-                : position(position), view()
+            ViewComponent(sf::Vector2<float> position, sf::Vector2<float> size) : position(position), view()
             {
                 view.setCenter(sf::Vector2f(position.x, position.y));
                 view.setSize(sf::Vector2f(size.x, size.y));
@@ -37,7 +35,7 @@ namespace Engine::Components
             ~ViewComponent() override = default;
 
             sf::Vector2<float> position;
-            sf::View view;
+            sf::View           view;
 
         private:
     };

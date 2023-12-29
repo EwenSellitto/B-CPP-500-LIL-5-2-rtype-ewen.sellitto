@@ -12,12 +12,11 @@ enum class ParallaxLayer {
 namespace Engine::Components
 {
     struct ParallaxComponent : public ECS::BaseComponent {
-        ParallaxLayer layer;
-        float speed;
-        sf::Vector2f offset;
-        bool first;
+            ParallaxLayer layer;
+            float         speed;
+            sf::Vector2f  offset;
+            bool          first;
 
-        ParallaxComponent(ParallaxLayer layer, float speed)
-            : layer(layer), speed(speed), offset(0, 0) {}
+            ParallaxComponent(ParallaxLayer layer, float speed) : layer(layer), speed(speed), offset(0, 0) {}
     };
 } // namespace Engine::Components

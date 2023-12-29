@@ -7,18 +7,17 @@
 
 #pragma once
 
+#include <string>
+
 #include "ECS/Components.hpp"
 #include "Engine/Systems/Enemy.system.hpp"
-#include <string>
 
 namespace Engine::Components
 {
     struct EnemyComponent : ECS::BaseComponent {
         public:
-
-            EnemyComponent(int health, EnemyType enemyType)
-                : health(health), enemyType(enemyType) {}
-            int health;
+            EnemyComponent(int health, EnemyType enemyType) : health(health), enemyType(enemyType) {}
+            int       health;
             EnemyType enemyType;
     };
 } // namespace Engine::Components

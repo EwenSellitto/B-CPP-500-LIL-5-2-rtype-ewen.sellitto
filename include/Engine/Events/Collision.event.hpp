@@ -8,9 +8,10 @@
 #pragma once
 
 #include <cstddef>
+
 #include "ECS/Entity.hpp"
 
 struct CollisionEvent {
-    ECS::Entity *movingEntity;
-    ECS::Entity *collidingEntity;
+        ECS::Entity *movingEntity;
+        ECS::Entity *collidingEntity;
 };

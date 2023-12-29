@@ -20,21 +20,21 @@ void ParallaxSystem::tick()
     sf::Vector2f viewCenter = {0, 0};
 
     world.each<ViewComponent>(
-        [&windowSize, &viewCenter](ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
+        [&windowSize, &viewCenter]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
             windowSize = viewComp->view.getSize();
             viewCenter = viewComp->view.getCenter();
         });
 
-    world.each<ParallaxComponent, PositionComponent, RenderableComponent>(
-        [&windowSize](ECS::Entity *entity, ECS::ComponentHandle<ParallaxComponent> parallaxComp,
-                      ECS::ComponentHandle<PositionComponent>   positionComp,
-                      ECS::ComponentHandle<RenderableComponent> renderable) {
-            sf::Vector2f renderableSize = {static_cast<float>(renderable->size.x),
-                                           static_cast<float>(renderable->size.y)};
+    world.each<ParallaxComponent, PositionComponent,
+               RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
+                                        ECS::ComponentHandle<ParallaxComponent>   parallaxComp,
+                                        ECS::ComponentHandle<PositionComponent>   positionComp,
+                                        ECS::ComponentHandle<RenderableComponent> renderable) {
+        sf::Vector2f renderableSize = {static_cast<float>(renderable->size.x), static_cast<float>(renderable->size.y)};
 
-            if (positionComp->x + renderableSize.x <= 0) {
-                positionComp->x = renderableSize.x;
-            }
-            positionComp->x -= parallaxComp->speed;
-        });
+        if (positionComp->x + renderableSize.x <= 0) {
+            positionComp->x = renderableSize.x;
+        }
+        positionComp->x -= parallaxComp->speed;
+    });
 }
