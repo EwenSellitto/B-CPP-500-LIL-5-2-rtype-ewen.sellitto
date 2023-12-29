@@ -9,6 +9,7 @@
 
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
+#include "SFML/System/Clock.hpp"
 
 enum class EnemyType {
     Weak,
@@ -17,25 +18,34 @@ enum class EnemyType {
 };
 
 struct EnemyAttributes {
-    std::string spritePath;
-    int health;
+        std::string spritePath;
+        int         health;
 
-    EnemyAttributes(std::string sprite, int hp) : spritePath(sprite), health(hp) {}
+        EnemyAttributes(std::string sprite, int hp) : spritePath(sprite), health(hp) {}
 };
 
 const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
     {EnemyType::Weak, EnemyAttributes("./assets/Nairan/Nairan-Scout-Base.png", 50)},
     {EnemyType::Normal, EnemyAttributes("./assets/Nairan/Nairan-Battlecruiser-Base.png", 100)},
-    {EnemyType::Strong, EnemyAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150)}
-};
+    {EnemyType::Strong, EnemyAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150)}};
+
+#ifndef ENEMY_SPAWN_RATE
+#define ENEMY_SPAWN_RATE 500
+#endif
 
 namespace Engine::System
 {
     class EnemySystem : public ECS::BaseSystem
     {
         public:
-            EnemySystem(ECS::World &world) : ECS::BaseSystem(world) {}
-            EnemySystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
+            EnemySystem(ECS::World &world) : ECS::BaseSystem(world), _clock()
+            {
+                _clock.restart();
+            }
+            EnemySystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids), _clock()
+            {
+                _clock.restart();
+            }
             ~EnemySystem() override = default;
 
             void configure(ECS::World &world) override;
@@ -45,8 +55,10 @@ namespace Engine::System
             void tick() override;
 
         private:
-            bool shouldSpawnEnemy();
-            void spawnEnemy();
+            bool      shouldSpawnEnemy();
+            void      spawnEnemy();
             EnemyType getRandomEnemyType();
+
+            sf::Clock _clock;
     };
 } // namespace Engine::System

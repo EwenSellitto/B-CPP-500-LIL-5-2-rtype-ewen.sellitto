@@ -28,7 +28,7 @@ endif ()
 #     FetchContent_MakeAvailable(LIBCONFIG)
 # endif()
 
-add_executable(r-type_client
+add_executable(r-type
         include/ECS/Components.hpp
         include/ECS/EventSubscriber.hpp
         include/ECS/Clock.hpp
@@ -57,6 +57,6 @@ add_executable(r-type_client
         src/main.cpp
 )
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics)
+target_link_libraries(r-type PRIVATE sfml-graphics)
 
-install(TARGETS r-type_client DESTINATION bin)
+install(TARGETS r-type DESTINATION bin)

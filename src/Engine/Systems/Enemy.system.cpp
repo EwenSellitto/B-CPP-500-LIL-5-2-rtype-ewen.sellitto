@@ -29,31 +29,37 @@ void EnemySystem::tick()
 {
     using namespace Engine::Components;
     ECS::World                &world    = getWorld();
-    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent,
-                                                                          EnemyComponent>();
+    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent, EnemyComponent>();
 
     if (shouldSpawnEnemy()) spawnEnemy();
 }
 
 bool EnemySystem::shouldSpawnEnemy()
 {
+    if (_clock.getElapsedTime().asMilliseconds() < rand() % 1000 + ENEMY_SPAWN_RATE) return false;
+    _clock.restart();
     return rand() % 100 >= 25;
 }
 
-void EnemySystem::spawnEnemy() {
+void EnemySystem::spawnEnemy()
+{
     using namespace Engine::Components;
 
-    EnemyType type = getRandomEnemyType();
-    auto attributes = enemyTypeAttributes.at(type);
+    EnemyType type       = getRandomEnemyType();
+    auto      attributes = enemyTypeAttributes.at(type);
 
-    getWorld().createEntity(new PositionComponent(rand() % 800, rand() % 600),
+    getWorld().createEntity(new PositionComponent(rand() % DEFAULT_WINDOW_SIZE_X, rand() % DEFAULT_WINDOW_SIZE_Y),
                             new RenderableComponent(attributes.spritePath, 20, 20, 0),
                             new EnemyComponent(attributes.health, type));
 }
 
-EnemyType EnemySystem::getRandomEnemyType() {
+EnemyType EnemySystem::getRandomEnemyType()
+{
     int chance = rand() % 100;
-    if (chance < 70) return EnemyType::Weak;
-    else if (chance < 95) return EnemyType::Normal;
-    else return EnemyType::Strong;
+    if (chance < 70)
+        return EnemyType::Weak;
+    else if (chance < 95)
+        return EnemyType::Normal;
+    else
+        return EnemyType::Strong;
 }
