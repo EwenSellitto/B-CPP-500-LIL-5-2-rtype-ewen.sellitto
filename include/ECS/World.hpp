@@ -173,6 +173,19 @@ namespace ECS
                 }
             }
 
+            template <typename T, typename U, typename V>
+            void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>, ComponentHandle<V>)> func) {
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>() && entity.has<U>()) {
+                        ComponentHandle<T> componentT = entity.getComponent<T>();
+                        ComponentHandle<U> componentU = entity.getComponent<U>();
+                        ComponentHandle<V> componentV = entity.getComponent<V>();
+                        func(&entity, componentT, componentU, componentV);
+                    }
+                }
+            }
+
             /**
              * @brief Iterates over all entities that have a specific set of component types.
              *

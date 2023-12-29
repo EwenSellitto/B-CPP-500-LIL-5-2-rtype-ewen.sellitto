@@ -14,6 +14,7 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Parallax.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
@@ -24,6 +25,7 @@
 #include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "Engine/Systems/Parallax.system.hpp"
 
 class PlayerMovePressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
 {
@@ -72,6 +74,29 @@ class CollisionEventSubscriber : public virtual ECS::EventSubscriber<CollisionEv
         }
 };
 
+void createBackground(std::shared_ptr<ECS::World> world, const std::string& texturePath, ParallaxLayer layer, float speed) {
+
+    using namespace Engine::Components;
+    sf::Vector2f windowSize = {0, 0};
+
+    world->each<ViewComponent>([&windowSize](ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
+        windowSize = viewComp->view.getSize(); // Copie de la taille de la vue
+    });
+
+
+
+    auto renderable = new RenderableComponent(texturePath, {0, 0}, 0);
+    float scaleRatio = windowSize.y / renderable->texture.getSize().y;
+
+    renderable->scale = {scaleRatio, scaleRatio};
+
+    world->createEntity(
+        new PositionComponent(0, 0),
+        renderable,
+        new ParallaxComponent(layer, speed)
+    );
+}
+
 std::shared_ptr<ECS::World> createWorldGame()
 {
     using namespace Engine::Components;
@@ -79,6 +104,11 @@ std::shared_ptr<ECS::World> createWorldGame()
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
     world->createEntity(new ViewComponent());
     // View entity
+    createBackground(world, "./assets/Environnement/Starrybackground-LayerX-BigStar2.png", ParallaxLayer::NearBackground, 4);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer02-Stars.png", ParallaxLayer::MidBackground, 2);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground, 1);
+
+
     id_t ship_id = world->createEntity(
         new PositionComponent(0, 0),
         new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
@@ -101,7 +131,8 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->addSystem<Engine::System::Renderer>("Renderer");
     world->addSystem<Engine::System::Physics>("Physics");
     world->addSystem<Engine::System::MovePlayer>("PlayerMover");
-    // world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+    world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+    world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
 
     Engine::System::MovePlayer *movePlayerSystem =
         dynamic_cast<Engine::System::MovePlayer *>(world->getSystems()["PlayerMover"].get());
