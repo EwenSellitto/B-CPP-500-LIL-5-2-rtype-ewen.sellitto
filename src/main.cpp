@@ -5,36 +5,92 @@
 ** main.cpp
 */
 
+#include <SFML/Window/Event.hpp>
 #include <memory>
 
 #include "ECS/World.hpp"
-#include "Engine/Components/Animation.component.hpp"
+#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.compnent.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Systems/Animation.system.hpp"
+#include "Engine/Events/KeyPressed.event.hpp"
+#include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Systems/MovePlayer.system.hpp"
+#include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "Engine/Systems/Enemy.system.hpp"
 
-std::shared_ptr<ECS::World> createWorld()
+class PlayerMovePressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
+{
+    public:
+        PlayerMovePressedSubscriber()  = default;
+        ~PlayerMovePressedSubscriber() override = default;
+        void receiveEvent(const std::string &name, const KeyPressedEvent &data) override
+        {
+            if (!(data.keyEvent.code == sf::Keyboard::Z ||
+                data.keyEvent.code == sf::Keyboard::Q ||
+                data.keyEvent.code == sf::Keyboard::S ||
+                data.keyEvent.code == sf::Keyboard::D))
+                return;
+            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+            if (!movePlayerSystem) return;
+            movePlayerSystem->addMovePlayer(data.keyEvent);
+        }
+};
+
+class PlayerMoveReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
+{
+    public:
+        PlayerMoveReleasedSubscriber()  = default;
+        ~PlayerMoveReleasedSubscriber() override = default;
+        void receiveEvent(const std::string &name, const KeyReleasedEvent &data) override
+        {
+            if (!(data.keyEvent.code == sf::Keyboard::Z ||
+                  data.keyEvent.code == sf::Keyboard::Q ||
+                  data.keyEvent.code == sf::Keyboard::S ||
+                  data.keyEvent.code == sf::Keyboard::D))
+                return;
+            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+            if (!movePlayerSystem) return;
+            movePlayerSystem->stopMovePlayer(data.keyEvent);
+        }
+};
+
+std::shared_ptr<ECS::World> createWorldGame()
 {
     using namespace Engine::Components;
 
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
+    world->createEntity(new ViewComponent());
+    // View entity
+    id_t ship_id =
+        world->createEntity(new PositionComponent(0, 0),
+                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
+    ECS::Entity                              &ship = world->getMutEntity(ship_id);
+    ECS::ComponentHandle<PositionComponent> shipRenderableComp(ship.getComponent<PositionComponent>());
 
-    world->createEntity(new PositionComponent(0, 0),
-                        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 1));
-
-    world->createEntity(new PositionComponent(200, 200),
-                        new RenderableComponent("./assets/Nairan/Nairan-Battlecruiser-Destruction.png", 1, 90),
-                        new AnimationComponent(0, 0, 128, 128, 100, 18));
-
-    world->createEntity(new PositionComponent(400, 200),
-                        new RenderableComponent("./assets/Nairan/Nairan-Battlecruiser-Weapons.png", 1),
-                        new AnimationComponent(0, 0, 128, 128, 100, 9));
+    ship.addComponent(new MovingComponent({static_cast<float>(shipRenderableComp->x), static_cast<float>(shipRenderableComp->y)}, 1000 * 100, {0, 0}));
 
     std::cout << "Creating first world" << std::endl;
-    world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
     world->addSystem<Engine::System::Renderer>("Renderer");
+    world->addSystem<Engine::System::Physics>("Physics");
+    world->addSystem<Engine::System::MovePlayer>("PlayerMover");
+    world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+
+    Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
+        world->getSystems()["PlayerMover"].get());
+    if (movePlayerSystem) {
+        movePlayerSystem->setCurrentPlayer(&ship);
+        movePlayerSystem->setPlayerSpeed(50);
+    }
+    auto     *sub = new PlayerMovePressedSubscriber();
+    auto     *sub1 = new PlayerMoveReleasedSubscriber();
+    world->subscribe<KeyPressedEvent>(sub);
+    world->subscribe<KeyReleasedEvent>(sub1);
+
     return world;
 }
 
@@ -42,7 +98,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
     try {
-        engine.addWorldFactory("default", createWorld);
+        engine.setStartWorld("game");
+        engine.addWorldFactory("game", createWorldGame);
         engine.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

@@ -12,6 +12,8 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Events/Resize.event.hpp"
+#include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Events/KeyPressed.event.hpp"
 
 using namespace Engine;
 
@@ -42,11 +44,31 @@ EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t wind
       _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(start_world),
       _windowSizeX(window_size_x), _windowSizeY(window_size_y)
 {
+    window.setFramerateLimit(60);
 }
 
 EngineClass::~EngineClass()
 {
     window.close();
+}
+
+/*===================//
+//  Getters/Setters  //
+//===================*/
+
+void EngineClass::setStartWorld(const std::string &name)
+{
+    _startWorld = name;
+}
+
+std::size_t EngineClass::getWindowSizeX()
+{
+    return _windowSizeX;
+}
+
+std::size_t EngineClass::getWindowSizeY()
+{
+    return _windowSizeY;
 }
 
 /*===================//
@@ -108,7 +130,8 @@ void EngineClass::handleEvents()
                 else
 #endif
 
-                    world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+                world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+                world().broadcastEvent<KeyPressedEvent>(KeyPressedEvent{event.key});
                 break;
 
             case sf::Event::Resized:
@@ -119,6 +142,8 @@ void EngineClass::handleEvents()
             case sf::Event::GainedFocus:
             case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
+                world().broadcastEvent<KeyReleasedEvent>(KeyReleasedEvent{event.key});
+                break;
             case sf::Event::MouseWheelMoved:
             case sf::Event::MouseWheelScrolled:
             case sf::Event::MouseButtonPressed:
@@ -166,11 +191,12 @@ void EngineClass::toggleFullscreen()
 
     window.close();
     if (_fullscreen) {
-        window.create(sf::VideoMode::getDesktopMode(), "default", sf::Style::Fullscreen | sf::Style::Close);
+        window.create(sf::VideoMode::getDesktopMode(), "default",
+                      sf::Style::Fullscreen | sf::Style::Close | sf::Style::Resize);
         event = ResizeEvent(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     } else {
         event = ResizeEvent(_windowSizeX, _windowSizeY);
-        window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close);
+        window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close | sf::Style::Resize);
     }
     world().broadcastEvent<ResizeEvent>(event);
 }
