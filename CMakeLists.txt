@@ -18,7 +18,7 @@ if (NOT SFML_FOUND)
             GIT_REPOSITORY https://github.com/SFML/SFML.git
             GIT_TAG 2.6.x)
     FetchContent_MakeAvailable(SFML)
-endif()
+endif ()
 
 # if (NOT LIBCONFIG_FOUND)
 #     include(FetchContent)
@@ -28,28 +28,35 @@ endif()
 #     FetchContent_MakeAvailable(LIBCONFIG)
 # endif()
 
-add_executable(r-type
-               include/ECS/Components.hpp
-               include/ECS/System.hpp
-               include/ECS/World.hpp
-               include/ECS/Entity.hpp
-               include/ECS/Clock.hpp
-               include/ECS/EventSubscriber.hpp
-               include/ECS/Utilities.hpp
-               include/R-Type/sprites.hpp
-               include/Engine/Events/Resize.event.hpp
-               include/Engine/Engine.hpp
-               include/Engine/Systems/Animation.system.hpp
-               include/Engine/Systems/Renderer.system.hpp
-               include/Engine/Components/Animation.component.hpp
-               include/Engine/Components/Renderable.component.hpp
-               include/Engine/Components/Position.compnent.hpp
-               src/main.cpp
-               src/Engine/Systems/Animation.system.cpp
-               src/Engine/Systems/Renderer.system.cpp
-               src/Engine/Engine.cpp
+add_executable(r-type_client
+        include/ECS/Components.hpp
+        include/ECS/EventSubscriber.hpp
+        include/ECS/Clock.hpp
+        include/ECS/System.hpp
+        include/ECS/World.hpp
+        include/ECS/Entity.hpp
+        include/ECS/Utilities.hpp
+        include/Engine/Systems/Renderer.system.hpp
+        include/Engine/Systems/Enemy.system.hpp
+        include/Engine/Systems/Physics.system.hpp
+        include/Engine/Systems/MovePlayer.system.hpp
+        include/Engine/Components/Renderable.component.hpp
+        include/Engine/Components/Enemy.component.hpp
+        include/Engine/Components/View.component.hpp
+        include/Engine/Components/Moving.component.hpp
+        include/Engine/Components/Collision.component.hpp
+        include/Engine/Components/Player.component.hpp
+        include/Engine/Engine.hpp
+        include/Engine/Events/KeyPressed.event.hpp
+        include/Engine/Events/KeyReleased.event.hpp
+        src/Engine/Engine.cpp
+        src/Engine/Systems/Renderer.system.cpp
+        src/Engine/Systems/Enemy.system.cpp
+        src/Engine/Systems/Physics.system.cpp
+        src/Engine/Systems/MovePlayer.system.cpp
+        src/main.cpp
 )
 
-target_link_libraries(r-type PRIVATE sfml-graphics)
+target_link_libraries(r-type_client PRIVATE sfml-graphics)
 
-install(TARGETS r-type DESTINATION bin)
+install(TARGETS r-type_client DESTINATION bin)

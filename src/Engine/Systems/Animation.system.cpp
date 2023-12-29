@@ -26,15 +26,13 @@ void AnimationSystem::unconfigure()
 
 void AnimationSystem::tick()
 {
-    using namespace Engine::Components;
-
     ECS::World                &world    = getWorld();
-    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent, AnimationComponent>();
+    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<Engine::Components::RenderableComponent,
+                                                                          Engine::Components::AnimationComponent>();
 
     for (auto &entity : entities) {
-        auto renderable = entity->getComponent<RenderableComponent>();
-        auto animation  = entity->getComponent<AnimationComponent>();
-
+        auto renderable = entity->getComponent<Engine::Components::RenderableComponent>();
+        auto animation  = entity->getComponent<Engine::Components::AnimationComponent>();
         if (animation->clock.getElapsedTime().asMilliseconds() > animation->animationSpeed) {
             animation->clock.restart();
             animation->frame++;

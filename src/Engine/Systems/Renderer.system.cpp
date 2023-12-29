@@ -9,10 +9,11 @@
 
 #include <map>
 
-#include "ECS/Components.hpp"
-#include "Engine/Components/Position.compnent.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Position.compnent.hpp"
+#include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
+#include "ECS/Entity.hpp"
 
 using namespace Engine::System;
 
@@ -24,29 +25,34 @@ void Renderer::tick()
 {
     using namespace Engine::Components;
 
-    ECS::World                &world    = getWorld();
-    sf::RenderWindow          *window   = &WINDOW;
-    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent, PositionComponent>();
-    std::map<int, std::vector<ECS::Entity *>> layer_map = {};
+    ECS::World                                                           &world = getWorld();
+    std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
+    sf::RenderWindow                                                     *window = &WINDOW;
+    std::unordered_map<ECS::Entity *, ECS::ComponentHandle<ViewComponent>> ViewEntities;
 
-    for (auto entity : entities) {
-        auto renderable = entity->getComponent<RenderableComponent>();
-        layer_map[renderable->layer].push_back(entity);
+    ViewEntities = world.get<ViewComponent>();
+    if (ViewEntities.empty()) {
+        std::cerr << "ViewComponent missing, declare one" << std::endl;
+        exit(84);
+    } else {
+        auto it = ViewEntities.begin();
+        ECS::ComponentHandle<ViewComponent> viewComponent = it->second;
+        window->setView(viewComponent->view);
     }
+    world.each<RenderableComponent>([&](ECS::Entity *entity, ECS::ComponentHandle<RenderableComponent> renderableComp) {
+        if (entity->has<PositionComponent>()) {
+            auto positionComponent = entity->getComponent<PositionComponent>();
+            renderableComp->sprite.setPosition(positionComponent->x, positionComponent->y);
+        }
+        components[renderableComp->priority].push_back(renderableComp);
+    });
 
     window->clear(sf::Color::Black);
-    for (auto layers : layer_map) {
-        for (auto entity : layers.second) {
-            auto renderable = entity->getComponent<RenderableComponent>();
-            auto position   = entity->getComponent<PositionComponent>();
-
-            renderable->sprite.setPosition(position->x, position->y);
-            renderable->sprite.setRotation(renderable->rotation);
-            renderable->sprite.setScale(renderable->scale);
-
-            window->draw(renderable->sprite);
+    for (auto &priorityGroup : components) {
+        for (auto &renderableComp : priorityGroup.second) {
+            if (!renderableComp->isDisplayed) continue;
+            window->draw(renderableComp->sprite);
         }
     }
-
     window->display();
 }

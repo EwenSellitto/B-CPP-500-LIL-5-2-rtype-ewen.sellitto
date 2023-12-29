@@ -1,3 +1,4 @@
+TODO
 a.out
 example_ECS.*
 
@@ -12,7 +13,6 @@ build/
 .idea
 .cache
 r-type_client
-r-type
 compile_commands.json
 compile.sh
 
@@ -29,3 +29,88 @@ assets/MainShipWeapons/
 assets/Nairan/
 assets/Nautolan/
 assets/Pickup/
+
+# Fichiers générés par CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+CMakeScripts/
+Makefile
+*.make
+*.cmake
+
+# Dossiers de build et de cache spécifiques à l'utilisateur
+build/
+cache/
+
+# Fichiers générés par Visual Studio Code
+.vscode/
+
+# Autres fichiers et dossiers à ignorer
+*~
+.DS_Store
+Thumbs.db
+
+# Fichiers binaires et exécutables
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.out
+*.o
+*.obj
+
+# Fichiers de logs et bases de données
+*.log
+*.sql
+*.sqlite
+
+# Dossiers et fichiers dépendants de l'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignorez les fichiers de clés privées
+*.pem
+*.key
+
+# Ignorer les fichiers de configuration spécifiques à un utilisateur
+*.user
+*.userprefs
+
+# Dossiers de dépendances
+node_modules/
+bower_components/
+
+# Fichiers de sauvegarde
+*.bak
+*.tmp
+*.temp
+
+# Fichiers de configuration de l'outil
+.doxyfile
+.clang-format
+
+# Ignorez les dossiers spécifiques aux outils et aux systèmes d'exploitation
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers de package
+*.tar.gz
+*.zip
+*.rar
+*.tar
+*.7z
+
+# Fichiers de configuration de projet spécifiques
+project.yml
+project.json
+
+
+_deps/

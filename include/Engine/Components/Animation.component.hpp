@@ -16,11 +16,8 @@ namespace Engine::Components
     struct AnimationComponent : ECS::BaseComponent {
         public:
             AnimationComponent() = default;
-            AnimationComponent(int x, int y, int width, int height, int animationSpeed, int frameCount)
-                : textureRect(x, y, width, height), frameCount(frameCount), animationSpeed(animationSpeed)
-            {
-                clock.restart();
-            };
+            AnimationComponent(int x, int y, int width, int height, int animationSpeed)
+                : textureRect(x, y, width, height), animationSpeed(animationSpeed){};
             ~AnimationComponent() = default;
 
             sf::Rect<int> textureRect = {0, 0, 0, 0};
