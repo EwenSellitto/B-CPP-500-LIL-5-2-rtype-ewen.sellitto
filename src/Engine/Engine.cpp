@@ -166,12 +166,11 @@ void EngineClass::toggleFullscreen()
 
     window.close();
     if (_fullscreen) {
-        window.create(sf::VideoMode::getDesktopMode(), "default",
-                      sf::Style::Fullscreen | sf::Style::Close | sf::Style::Resize);
+        window.create(sf::VideoMode::getDesktopMode(), "default", sf::Style::Fullscreen | sf::Style::Close);
         event = ResizeEvent(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     } else {
         event = ResizeEvent(_windowSizeX, _windowSizeY);
-        window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close | sf::Style::Resize);
+        window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close);
     }
     world().broadcastEvent<ResizeEvent>(event);
 }

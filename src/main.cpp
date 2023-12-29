@@ -8,9 +8,11 @@
 #include <memory>
 
 #include "ECS/World.hpp"
+#include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Position.compnent.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
+#include "Engine/Systems/Animation.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
 
 std::shared_ptr<ECS::World> createWorld()
@@ -18,9 +20,20 @@ std::shared_ptr<ECS::World> createWorld()
     using namespace Engine::Components;
 
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
+
     world->createEntity(new PositionComponent(0, 0),
-                        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 10, 10, 1));
+                        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 1));
+
+    world->createEntity(new PositionComponent(200, 200),
+                        new RenderableComponent("./assets/Nairan/Nairan-Battlecruiser-Destruction.png", 1, 90),
+                        new AnimationComponent(0, 0, 128, 128, 100, 18));
+
+    world->createEntity(new PositionComponent(400, 200),
+                        new RenderableComponent("./assets/Nairan/Nairan-Battlecruiser-Weapons.png", 1),
+                        new AnimationComponent(0, 0, 128, 128, 100, 9));
+
     std::cout << "Creating first world" << std::endl;
+    world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
     world->addSystem<Engine::System::Renderer>("Renderer");
     return world;
 }

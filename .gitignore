@@ -12,6 +12,7 @@ build/
 .idea
 .cache
 r-type_client
+r-type
 compile_commands.json
 compile.sh
 

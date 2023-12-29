@@ -9,6 +9,8 @@
 
 #include <map>
 
+#include "ECS/Components.hpp"
+#include "Engine/Components/Position.compnent.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 
@@ -22,21 +24,29 @@ void Renderer::tick()
 {
     using namespace Engine::Components;
 
-    ECS::World                                                           &world = getWorld();
-    std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>> components{};
-    sf::RenderWindow                                                     *window = &WINDOW;
+    ECS::World                &world    = getWorld();
+    sf::RenderWindow          *window   = &WINDOW;
+    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent, PositionComponent>();
+    std::map<int, std::vector<ECS::Entity *>> layer_map = {};
 
-    world.each<RenderableComponent>(
-        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<RenderableComponent> handle) {
-            components[handle->priority].push_back(handle);
-        });
+    for (auto entity : entities) {
+        auto renderable = entity->getComponent<RenderableComponent>();
+        layer_map[renderable->layer].push_back(entity);
+    }
 
     window->clear(sf::Color::Black);
-    for (auto &component : components) {
-        for (auto &item : component.second) {
-            if (!item->isDisplayed) continue;
-            window->draw(item->sprite);
+    for (auto layers : layer_map) {
+        for (auto entity : layers.second) {
+            auto renderable = entity->getComponent<RenderableComponent>();
+            auto position   = entity->getComponent<PositionComponent>();
+
+            renderable->sprite.setPosition(position->x, position->y);
+            renderable->sprite.setRotation(renderable->rotation);
+            renderable->sprite.setScale(renderable->scale);
+
+            window->draw(renderable->sprite);
         }
     }
+
     window->display();
 }
