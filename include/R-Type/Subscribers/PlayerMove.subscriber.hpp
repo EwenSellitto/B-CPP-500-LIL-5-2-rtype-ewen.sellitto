@@ -27,7 +27,7 @@ namespace Rtype::Subscriber
                       data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
                     return;
                 Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+                    Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
                 if (!movePlayerSystem) return;
                 movePlayerSystem->addMovePlayer(data.keyEvent);
             }
@@ -44,7 +44,7 @@ namespace Rtype::Subscriber
                       data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
                     return;
                 Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+                    Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
                 if (!movePlayerSystem) return;
                 movePlayerSystem->stopMovePlayer(data.keyEvent);
             }

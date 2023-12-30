@@ -18,8 +18,14 @@ namespace Engine::System
     class MovePlayer : public ECS::BaseSystem
     {
         public:
-            MovePlayer(ECS::World &world) : ECS::BaseSystem(world){};
-            MovePlayer(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
+            explicit MovePlayer(ECS::World &world) : ECS::BaseSystem(world)
+            {
+                MovePlayer::configure(world);
+            };
+            MovePlayer(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids)
+            {
+                MovePlayer::configure(world);
+            }
             ~MovePlayer() override = default;
 
             void configure(ECS::World &world) override;
