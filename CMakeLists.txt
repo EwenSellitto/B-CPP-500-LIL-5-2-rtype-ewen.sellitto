@@ -40,11 +40,13 @@ add_executable(r-type
         include/GameWorld/Entities.hpp
         include/GameWorld/Subscribers.hpp
         include/GameWorld/Systems.hpp
+        include/Engine/Systems/UI.system.hpp
         include/Engine/Systems/Renderer.system.hpp
         include/Engine/Systems/Enemy.system.hpp
         include/Engine/Systems/Physics.system.hpp
         include/Engine/Systems/MovePlayer.system.hpp
         include/Engine/Systems/Parallax.system.hpp
+        include/Engine/Components/Button.component.hpp
         include/Engine/Components/Renderable.component.hpp
         include/Engine/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
@@ -56,6 +58,7 @@ add_executable(r-type
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp
         src/Engine/Engine.cpp
+        src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/Enemy.system.cpp
         src/Engine/Systems/Physics.system.cpp

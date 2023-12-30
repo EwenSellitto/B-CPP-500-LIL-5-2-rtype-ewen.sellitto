@@ -6,6 +6,7 @@
 #include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Enemy.system.hpp"
 #include "Engine/Systems/Parallax.system.hpp"
+#include "Engine/Systems/UI.system.hpp"
 
 namespace Systems {
     void addRenderer(std::shared_ptr<ECS::World> &world) {
@@ -26,5 +27,9 @@ namespace Systems {
 
     void addParallaxSystem(std::shared_ptr<ECS::World> &world) {
         world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
+    }
+
+    void addUISystem(std::shared_ptr<ECS::World> &world) {
+        world->addSystem<Engine::System::UI>("UISystem");
     }
 }

@@ -7,6 +7,7 @@
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/Parallax.component.hpp"
+#include "Engine/Components/Button.component.hpp"
 
 namespace Entities {
     void createViewEntity(std::shared_ptr<ECS::World> &world) {
@@ -21,6 +22,16 @@ namespace Entities {
             new Engine::Components::TypeComponent(Engine::Components::TypeComponent::player)
         );
 
+    }
+
+    void createButtonEntities(std::shared_ptr<ECS::World> &world) {
+        auto startButtonEntity = world->createEntity(
+            new Engine::Components::ButtonComponent("Start Game", []() {
+                std::cout << "Start Game" << std::endl;
+            }),
+            new Engine::Components::PositionComponent(100, 100),
+            new Engine::Components::RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true)
+        );
     }
 
     void createBackground(std::shared_ptr<ECS::World> world, const std::string &texturePath, ParallaxLayer layer,

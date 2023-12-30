@@ -22,21 +22,21 @@ namespace Engine::Components
         public:
             RenderableComponent()
                 : sprite(), size({0, 0}), position({0, 0}), priority(0), rotation(0), scale({1, 1}), isDisplayed(false),
-                  path(){};
+                  path() {}
 
             RenderableComponent(const std::string &texture_path, float pos_x, float pos_y, int priority,
-                                float rotation = 0, sf::Vector2<float> scale = {1, 1})
+                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
                 : texture(), sprite(), size(), position({pos_x, pos_y}), priority(priority), rotation(rotation),
-                  scale(scale), isDisplayed(true), path(texture_path)
+                  scale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture(texture_path);
             };
 
             RenderableComponent(const std::string &texture_path, sf::Vector2<float> pos, int priority,
-                                float rotation = 0, sf::Vector2<float> scale = {1, 1})
+                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
                 : texture(), sprite(), size(), position(pos), priority(priority), rotation(rotation), scale(scale),
-                  isDisplayed(true), path(texture_path)
+                  isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture(texture_path);
@@ -53,6 +53,7 @@ namespace Engine::Components
             sf::Vector2<float>       scale;
             bool                     isDisplayed;
             std::string              path;
+            bool                     setOrigin = false;
 
         private:
             void setTexture(const std::string &texture_path)
@@ -63,6 +64,8 @@ namespace Engine::Components
                 sprite.setScale(scale.x, scale.y);
                 sprite.setPosition(position.x, position.y);
                 size = {texture.getSize().x, texture.getSize().y};
+                if (setOrigin)
+                    sprite.setOrigin(size.x / 2, size.y / 2);
             }
     };
 } // namespace Engine::Components
