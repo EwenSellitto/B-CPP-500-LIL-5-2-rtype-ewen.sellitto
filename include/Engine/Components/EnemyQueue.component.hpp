@@ -18,14 +18,24 @@
 
 namespace Engine::Components
 {
-    struct EnemyQueue : public ECS::BaseComponent {
+    struct EnemyQueueComponent : public ECS::BaseComponent {
         public:
-            EnemyQueue() {}
+            EnemyQueueComponent() {}
+            EnemyQueueComponent(
+                std::vector<std::pair<std::tuple<size_t, float, bool>, std::function<void(float, bool)>>>
+                    enemyQueueFactories) : enemyQueueFactories(enemyQueueFactories)
+            {
+            }
 
-            ~EnemyQueue() override = default;
+            ~EnemyQueueComponent() override = default;
 
             // size_t is the x where when map progress has attained it spawns.
-            std::vector<std::pair<size_t, std::function<void(void)>>> enemyQueueFactories;
+            // float, is the y position
+            // bool is 'isAttacking' because not every enemy attacks.
+            // ==> but they will all attack the same. (within definition in the function.)
+            // then you need to call the std::function with the two floats and the bool.
+            std::vector<std::pair<std::tuple<size_t, float, bool>, std::function<void(float, bool)>>>
+                enemyQueueFactories;
         private:
     };
 } // namespace Engine::Components

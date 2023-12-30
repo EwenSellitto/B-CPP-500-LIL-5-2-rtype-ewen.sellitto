@@ -11,24 +11,27 @@
 #include "ECS/World.hpp"
 #include "SFML/System/Clock.hpp"
 
-enum class EnemyType {
-    Weak,
-    Normal,
-    Strong
-};
+namespace EnemyData
+{
+    enum class EnemyType {
+        Weak,
+        Normal,
+        Strong
+    };
 
-struct EnemyAttributes {
-        std::string spritePath;
-        int         health;
+    struct EnemyAttributes {
+            std::string spritePath;
+            int         health;
 
-        EnemyAttributes(std::string sprite, int hp) : spritePath(sprite), health(hp) {}
-};
+            EnemyAttributes(std::string sprite, int hp) : spritePath(sprite), health(hp) {}
+    };
 
-const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
-    {EnemyType::Weak, EnemyAttributes("./assets/Nairan/Nairan-Scout-Base.png", 50)},
-    {EnemyType::Normal, EnemyAttributes("./assets/Nairan/Nairan-Battlecruiser-Base.png", 100)},
-    {EnemyType::Strong, EnemyAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150)}};
+    const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
+        {EnemyType::Weak, EnemyAttributes("./assets/Nairan/Nairan-Scout-Base.png", 50)},
+        {EnemyType::Normal, EnemyAttributes("./assets/Nairan/Nairan-Battlecruiser-Base.png", 100)},
+        {EnemyType::Strong, EnemyAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150)}};
 
+}
 #ifndef ENEMY_SPAWN_RATE
 #define ENEMY_SPAWN_RATE 500
 #endif
@@ -57,7 +60,7 @@ namespace Engine::System
         private:
             bool      shouldSpawnEnemy();
             void      spawnEnemy();
-            EnemyType getRandomEnemyType();
+            EnemyData::EnemyType getRandomEnemyType();
 
             sf::Clock _clock;
     };

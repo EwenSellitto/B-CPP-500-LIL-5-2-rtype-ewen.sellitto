@@ -17,12 +17,10 @@ using namespace Engine::System;
 
 void EnemySystem::configure([[maybe_unused]] ECS::World &world)
 {
-    return;
 }
 
 void EnemySystem::unconfigure()
 {
-    return;
 }
 
 void EnemySystem::tick()
@@ -45,21 +43,21 @@ void EnemySystem::spawnEnemy()
 {
     using namespace Engine::Components;
 
-    EnemyType type       = getRandomEnemyType();
-    auto      attributes = enemyTypeAttributes.at(type);
+    EnemyData::EnemyType type       = getRandomEnemyType();
+    auto      attributes = EnemyData::enemyTypeAttributes.at(type);
 
     getWorld().createEntity(new PositionComponent(rand() % WINDOW.getSize().x, rand() % WINDOW.getSize().y),
                             new RenderableComponent(attributes.spritePath, 20, 20, 0),
                             new EnemyComponent(attributes.health, type));
 }
 
-EnemyType EnemySystem::getRandomEnemyType()
+EnemyData::EnemyType EnemySystem::getRandomEnemyType()
 {
     int chance = rand() % 100;
     if (chance < 70)
-        return EnemyType::Weak;
+        return EnemyData::EnemyType::Weak;
     else if (chance < 95)
-        return EnemyType::Normal;
+        return EnemyData::EnemyType::Normal;
     else
-        return EnemyType::Strong;
+        return EnemyData::EnemyType::Strong;
 }

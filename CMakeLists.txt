@@ -46,6 +46,7 @@ add_executable(r-type
         include/Engine/Systems/Physics.system.hpp
         include/Engine/Systems/MovePlayer.system.hpp
         include/Engine/Systems/Parallax.system.hpp
+        include/Engine/Systems/WorldMove.system.hpp
         include/Engine/Components/Button.component.hpp
         include/Engine/Components/Renderable.component.hpp
         include/Engine/Components/Enemy.component.hpp
@@ -56,6 +57,9 @@ add_executable(r-type
         include/Engine/Components/Parallax.component.hpp
         include/Engine/Components/EnemyQueue.component.hpp
         include/Engine/Components/Speed.component.hpp
+        include/Engine/Components/EnemyAttack.component.hpp
+        include/Engine/Components/WorldMoveProgress.component.hpp
+        include/Engine/Components/EnemyMovements.component.hpp
         include/Engine/Engine.hpp
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp
@@ -66,6 +70,7 @@ add_executable(r-type
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/MovePlayer.system.cpp
         src/Engine/Systems/Parallax.system.cpp
+        src/Engine/Systems/WorldMove.system.cpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         src/main.cpp

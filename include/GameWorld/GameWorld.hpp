@@ -16,13 +16,15 @@ namespace GameWorld
         Entities::createViewEntity(world);
         Entities::createParallax(world);
         Entities::createPlayerEntities(world);
+        Entities::createEnemyQueue(world);
+        Entities::createWorldMoveProgress(world);
 
         // Add systems
-        Systems::addRenderer(world);
         Systems::addPhysics(world);
         Systems::addPlayerMovement(world);
         Systems::addEnemySystem(world);
         Systems::addParallaxSystem(world);
+        Systems::addRenderer(world);
 
         // Subscribe to events
         Subscribers::subscribeToEvents(world);
