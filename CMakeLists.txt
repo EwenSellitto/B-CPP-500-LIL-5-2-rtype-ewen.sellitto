@@ -52,6 +52,7 @@ add_executable(r-type
         src/Engine/Engine.cpp
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/Enemy.system.cpp
+        src/Engine/Systems/Bullets.system.cpp
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/MovePlayer.system.cpp
         src/main.cpp

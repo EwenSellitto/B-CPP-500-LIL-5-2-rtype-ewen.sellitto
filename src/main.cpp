@@ -19,6 +19,7 @@
 #include "Engine/Events/Collision.event.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Systems/Bullets.system.hpp"
 #include "Engine/Systems/Enemy.system.hpp"
 #include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
@@ -74,7 +75,6 @@ class CollisionEventSubscriber : public virtual ECS::EventSubscriber<CollisionEv
 std::shared_ptr<ECS::World> createWorldGame()
 {
     using namespace Engine::Components;
-
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
     world->createEntity(new ViewComponent());
     // View entity
@@ -95,8 +95,15 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->addSystem<Engine::System::Renderer>("Renderer");
     world->addSystem<Engine::System::Physics>("Physics");
     world->addSystem<Engine::System::MovePlayer>("PlayerMover");
-    world->addSystem<Engine::System::EnemySystem>("EnemySystem");
-
+    // world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+    world->addSystem<Engine::System::Bullets>("Bullets");
+    Engine::System::Bullets *bulletsSystem =
+        dynamic_cast<Engine::System::Bullets *>(world->getSystems()["Bullets"].get());
+    if (bulletsSystem) {
+        bulletsSystem->spawnBullet(100, 100);
+        bulletsSystem->spawnBullet(200, 200);
+        bulletsSystem->spawnBullet(300, 300);
+    }
     Engine::System::MovePlayer *movePlayerSystem =
         dynamic_cast<Engine::System::MovePlayer *>(world->getSystems()["PlayerMover"].get());
     if (movePlayerSystem) {
