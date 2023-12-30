@@ -8,9 +8,11 @@
 #include "Engine/Systems/Enemy.system.hpp"
 
 #include "ECS/World.hpp"
+#include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Enemy.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Type.component.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Engine::System;
@@ -31,7 +33,7 @@ void EnemySystem::tick()
     ECS::World                &world    = getWorld();
     std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<RenderableComponent, EnemyComponent>();
 
-    if (shouldSpawnEnemy()) spawnEnemy();
+    // if (shouldSpawnEnemy()) spawnEnemy();
 }
 
 bool EnemySystem::shouldSpawnEnemy()
@@ -50,7 +52,20 @@ void EnemySystem::spawnEnemy()
 
     getWorld().createEntity(new PositionComponent(rand() % WINDOW.getSize().x, rand() % WINDOW.getSize().y),
                             new RenderableComponent(attributes.spritePath, 20, 20, 0),
-                            new EnemyComponent(attributes.health, type));
+                            new EnemyComponent(attributes.health, type), new TypeComponent(TypeComponent::enemy));
+}
+
+void EnemySystem::spawnEnemy(float posx, float posy)
+{
+    using namespace Engine::Components;
+
+    EnemyType type       = getRandomEnemyType();
+    auto      attributes = enemyTypeAttributes.at(type);
+
+    getWorld().createEntity(new PositionComponent(posx, posy),
+                            new RenderableComponent(attributes.spritePath, 20, 20, 0),
+                            new EnemyComponent(attributes.health, type), new CollisionComponent(0, 0, 100, 100),
+                            new TypeComponent(TypeComponent::enemy));
 }
 
 EnemyType EnemySystem::getRandomEnemyType()

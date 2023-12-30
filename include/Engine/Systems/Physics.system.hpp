@@ -7,11 +7,12 @@
 
 #pragma once
 
+#include <ctime>
+
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
-#include <ctime>
 
 namespace Engine::System
 {
@@ -28,10 +29,10 @@ namespace Engine::System
 
             void tick() override;
 
-            //move functions
+            // move functions
             void moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::MovingComponent> handle);
 
-            //collision function
-            void collide(ECS::Entity *entity);
+            // collision function
+            void collide(ECS::Entity *entity, int x, int y);
     };
 } // namespace Engine::System

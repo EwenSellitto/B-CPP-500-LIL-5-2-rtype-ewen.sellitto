@@ -41,6 +41,7 @@ namespace Engine::System
             EnemySystem(ECS::World &world) : ECS::BaseSystem(world), _clock()
             {
                 _clock.restart();
+                spawnEnemy(300, 200);
             }
             EnemySystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids), _clock()
             {
@@ -57,6 +58,7 @@ namespace Engine::System
         private:
             bool      shouldSpawnEnemy();
             void      spawnEnemy();
+            void      spawnEnemy(float posx, float posy);
             EnemyType getRandomEnemyType();
 
             sf::Clock _clock;

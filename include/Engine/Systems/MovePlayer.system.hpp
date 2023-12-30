@@ -7,11 +7,11 @@
 
 #pragma once
 
+#include <SFML/Window/Event.hpp>
+
+#include "ECS/Entity.hpp"
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
-#include "ECS/Entity.hpp"
-#include <ctime>
-#include <SFML/Window/Event.hpp>
 
 namespace Engine::System
 {
@@ -37,6 +37,6 @@ namespace Engine::System
             void setPlayerSpeed(float newSpeed);
 
             ECS::Entity *player = nullptr;
-            float speed = 10;
+            float        speed  = 10;
     };
 } // namespace Engine::System

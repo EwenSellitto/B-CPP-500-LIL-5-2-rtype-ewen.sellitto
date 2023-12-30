@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <cstddef>
 #include <SFML/Window/Event.hpp>
+#include <cstddef>
 
 struct KeyPressedEvent {
         sf::Event::KeyEvent keyEvent;

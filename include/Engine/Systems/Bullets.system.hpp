@@ -54,14 +54,12 @@ namespace Engine::System
 
             void tick() override;
 
-            void spawnBullet(float posx, float posy);
+            void spawnBullet(float posx, float posy, int direction);
 
         private:
             std::vector<ECS::Entity *> bullets = {};
             float                      speed   = 100;
-            float                      damage  = 10;
             void                       addBullet(ECS::Entity *entity);
-            void                       moveBullet();
             sf::Clock                  _clock;
     };
 } // namespace Engine::System

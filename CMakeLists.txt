@@ -40,12 +40,14 @@ add_executable(r-type
         include/Engine/Systems/Enemy.system.hpp
         include/Engine/Systems/Physics.system.hpp
         include/Engine/Systems/MovePlayer.system.hpp
+        include/Engine/Systems/Parallax.system.hpp
         include/Engine/Components/Renderable.component.hpp
         include/Engine/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Collision.component.hpp
         include/Engine/Components/Player.component.hpp
+        include/Engine/Components/Parallax.component.hpp
         include/Engine/Engine.hpp
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp
@@ -55,6 +57,10 @@ add_executable(r-type
         src/Engine/Systems/Bullets.system.cpp
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/MovePlayer.system.cpp
+        src/Engine/Systems/Parallax.system.cpp
+        include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Subscribers/PlayerMove.subscriber.hpp
+        include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
         src/main.cpp
 )
 

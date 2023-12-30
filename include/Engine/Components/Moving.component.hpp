@@ -20,23 +20,21 @@ namespace Engine::Components
 {
     struct MovingComponent : public ECS::BaseComponent {
         public:
-            MovingComponent(sf::Vector2f initialPos, size_t moveDuration,
-                            sf::Vector2f moveAmount)
+            MovingComponent(sf::Vector2f initialPos, size_t moveDuration, sf::Vector2f moveAmount)
                 : initialPos(initialPos), moveAmount(moveAmount), moveDuration(moveDuration)
             {
-                if (moveDuration == 0)
-                    this->moveDuration = 1;
-                auto now = std::chrono::high_resolution_clock::now();
-                auto epoch = now.time_since_epoch();
+                if (moveDuration == 0) this->moveDuration = 1;
+                auto now      = std::chrono::high_resolution_clock::now();
+                auto epoch    = now.time_since_epoch();
                 moveStartTime = std::chrono::duration_cast<std::chrono::milliseconds>(epoch).count();
             }
 
             ~MovingComponent() override = default;
 
-            size_t moveStartTime;
+            size_t       moveStartTime;
             sf::Vector2f initialPos;
             sf::Vector2f moveAmount;
-            size_t moveDuration;
+            size_t       moveDuration;
 
         private:
     };

@@ -175,6 +175,26 @@ namespace ECS
 
             /**
              * @brief Iterates over all entities that have a specific set of component types.
+             * @tparam T The component type to filter entities.
+             * @tparam U The component type to filter entities.
+             * @param func The callable function that will be applied to each entity and its component.
+             */
+            template <typename T, typename U, typename V>
+            void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>, ComponentHandle<V>)> func)
+            {
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>() && entity.has<U>()) {
+                        ComponentHandle<T> componentT = entity.getComponent<T>();
+                        ComponentHandle<U> componentU = entity.getComponent<U>();
+                        ComponentHandle<V> componentV = entity.getComponent<V>();
+                        func(&entity, componentT, componentU, componentV);
+                    }
+                }
+            }
+
+            /**
+             * @brief Iterates over all entities that have a specific set of component types.
              *
              * @tparam Types Component types to filter entities.
              * @param func The callable function that will be applied to each entity and its components.
@@ -369,8 +389,8 @@ namespace ECS
 
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
 
-//                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-//                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
+                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
@@ -382,11 +402,25 @@ namespace ECS
             //  Systems Handling  //
             //====================*/
 
+            /**
+             * @brief Add a system to the world.
+             *
+             * @tparam System The system type to be added.
+             * @param name The name of the system.
+             * @param args The arguments to be forwarded to the system constructor.
+             * @note This method allows for the dynamic addition of systems to the world.
+             */
             template <typename System, typename... types> void addSystem(std::string name, types &&...args)
             {
                 _systems.emplace(name, std::make_unique<System>(*this, std::forward<types>(args)...));
             }
 
+            /**
+             * @brief Add a system to the world.
+             *
+             * @tparam System The system type to be added.
+             * @param name The name of the system.
+             */
             template <typename System> void addSystem(std::string name)
             {
                 _systems.emplace(name, std::make_unique<System>(*this));
@@ -418,6 +452,11 @@ namespace ECS
             //  Getters/Setters  //
             //===================*/
 
+            /**
+             * @brief Get the engine object.
+             *
+             * @return Engine::EngineClass& A reference to the engine object.
+             */
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>> &getSystems()
             {
                 return _systems;

@@ -10,7 +10,9 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
+#include "Engine/Components/Parallax.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Type.component.hpp"
@@ -22,55 +24,55 @@
 #include "Engine/Systems/Bullets.system.hpp"
 #include "Engine/Systems/Enemy.system.hpp"
 #include "Engine/Systems/MovePlayer.system.hpp"
+#include "Engine/Systems/Parallax.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "R-Type/Subscribers/Collision.subscriber.hpp"
+#include "R-Type/Subscribers/PlayerMove.subscriber.hpp"
+#include "R-Type/Subscribers/ShootPlayer.subscriber.hpp"
 
-class PlayerMovePressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
+void createBackground(std::shared_ptr<ECS::World> world, const std::string &texturePath, ParallaxLayer layer,
+                      float speed, bool first, int priority)
 {
-    public:
-        PlayerMovePressedSubscriber()           = default;
-        ~PlayerMovePressedSubscriber() override = default;
-        void receiveEvent(const std::string &name, const KeyPressedEvent &data) override
-        {
-            if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
-                  data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
-                return;
-            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
-            if (!movePlayerSystem) return;
-            movePlayerSystem->addMovePlayer(data.keyEvent);
-        }
-};
 
-class PlayerMoveReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
+    using namespace Engine::Components;
+    sf::Vector2f windowSize = {0, 0};
+
+    world->each<ViewComponent>(
+        [&windowSize]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<ViewComponent> viewComp) {
+            windowSize = viewComp->view.getSize();
+        });
+
+    auto  renderable = new RenderableComponent(texturePath, {0, 0}, priority);
+    float scaleRatio = windowSize.y / renderable->texture.getSize().y;
+
+    renderable->scale           = {scaleRatio, scaleRatio};
+    sf::Vector2<float> trueSize = {static_cast<float>(renderable->size.x * scaleRatio),
+                                   static_cast<float>(renderable->size.y * scaleRatio)};
+    if (first) {
+        renderable->position = {0, 0};
+        world->createEntity(new PositionComponent(0, 0), renderable, new ParallaxComponent(layer, speed));
+    } else {
+        renderable->position = {trueSize.x, 0};
+        world->createEntity(new PositionComponent(trueSize.x, 0), renderable, new ParallaxComponent(layer, speed));
+    }
+}
+
+void createParallax(std::shared_ptr<ECS::World> world)
 {
-    public:
-        PlayerMoveReleasedSubscriber()           = default;
-        ~PlayerMoveReleasedSubscriber() override = default;
-        void receiveEvent(const std::string &name, const KeyReleasedEvent &data) override
-        {
-            if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
-                  data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
-                return;
-            Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
-            if (!movePlayerSystem) return;
-            movePlayerSystem->stopMovePlayer(data.keyEvent);
-        }
-};
-
-class CollisionEventSubscriber : public virtual ECS::EventSubscriber<CollisionEvent>
-{
-    public:
-        CollisionEventSubscriber()           = default;
-        ~CollisionEventSubscriber() override = default;
-        void receiveEvent(const std::string &name, const CollisionEvent &data) override
-        {
-            using namespace Engine::Components;
-
-            data.movingEntity->removeComponent<MovingComponent>();
-        }
-};
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground, 1,
+                     true, -5);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png", ParallaxLayer::FarBackground, 1,
+                     false, -5);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer02-Stars.png", ParallaxLayer::MidBackground,
+                     2, true, -4);
+    createBackground(world, "./assets/Environnement/Starrybackground-Layer02-Stars.png", ParallaxLayer::MidBackground,
+                     2, false, -4);
+    createBackground(world, "./assets/Environnement/Starrybackground-LayerX-BigStar2.png",
+                     ParallaxLayer::NearBackground, 4, true, -3);
+    createBackground(world, "./assets/Environnement/Starrybackground-LayerX-BigStar2.png",
+                     ParallaxLayer::NearBackground, 4, false, -3);
+}
 
 std::shared_ptr<ECS::World> createWorldGame()
 {
@@ -78,13 +80,20 @@ std::shared_ptr<ECS::World> createWorldGame()
     std::shared_ptr<ECS::World> world = std::make_shared<ECS::World>();
     world->createEntity(new ViewComponent());
     // View entity
+    createParallax(world);
+
     id_t ship_id = world->createEntity(
-        new PositionComponent(0, 0), new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
-        new CollisionComponent(), new TypeComponent(Engine::Components::TypeComponent::player));
-    id_t ship_id_two =
-        world->createEntity(new PositionComponent(200, 0),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 200, 0, 1),
-                            new CollisionComponent(), new TypeComponent(Engine::Components::TypeComponent::player));
+        new PositionComponent(100, 200),
+        new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 100, 200, 1, 90),
+        new CollisionComponent(-37, 9, 26, 30), new TypeComponent(Engine::Components::TypeComponent::player),
+        new ExcludeCollisionComponent(1));
+
+    // id_t ship_id_two = world->createEntity(
+    //     new PositionComponent(200, 0),
+    //     new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 200, 0, 1),
+    //     new CollisionComponent(9, 11, 30, 26), new TypeComponent(Engine::Components::TypeComponent::player),
+    //     new ExcludeCollisionComponent(0));
+
     ECS::Entity                            &ship = world->getMutEntity(ship_id);
     ECS::ComponentHandle<PositionComponent> shipRenderableComp(ship.getComponent<PositionComponent>());
 
@@ -95,27 +104,26 @@ std::shared_ptr<ECS::World> createWorldGame()
     world->addSystem<Engine::System::Renderer>("Renderer");
     world->addSystem<Engine::System::Physics>("Physics");
     world->addSystem<Engine::System::MovePlayer>("PlayerMover");
-    // world->addSystem<Engine::System::EnemySystem>("EnemySystem");
     world->addSystem<Engine::System::Bullets>("Bullets");
-    Engine::System::Bullets *bulletsSystem =
-        dynamic_cast<Engine::System::Bullets *>(world->getSystems()["Bullets"].get());
-    if (bulletsSystem) {
-        bulletsSystem->spawnBullet(100, 100);
-        bulletsSystem->spawnBullet(200, 200);
-        bulletsSystem->spawnBullet(300, 300);
-    }
+    world->addSystem<Engine::System::EnemySystem>("EnemySystem");
+    world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
+
     Engine::System::MovePlayer *movePlayerSystem =
         dynamic_cast<Engine::System::MovePlayer *>(world->getSystems()["PlayerMover"].get());
     if (movePlayerSystem) {
         movePlayerSystem->setCurrentPlayer(&ship);
         movePlayerSystem->setPlayerSpeed(50);
     }
-    auto *sub  = new PlayerMovePressedSubscriber();
-    auto *sub1 = new PlayerMoveReleasedSubscriber();
-    auto *sub2 = new CollisionEventSubscriber();
+    auto *sub  = new Rtype::Subscriber::PlayerMovePressedSubscriber();
+    auto *sub1 = new Rtype::Subscriber::PlayerMoveReleasedSubscriber();
+    auto *sub2 = new Rtype::Subscriber::CollisionEventSubscriber();
+    auto *sub3 = new Rtype::Subscriber::ShootPlayerPressedSubscriber();
+    auto *sub4 = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
     world->subscribe<KeyPressedEvent>(sub);
     world->subscribe<KeyReleasedEvent>(sub1);
     world->subscribe<CollisionEvent>(sub2);
+    world->subscribe<KeyPressedEvent>(sub3);
+    world->subscribe<KeyReleasedEvent>(sub4);
 
     return world;
 }

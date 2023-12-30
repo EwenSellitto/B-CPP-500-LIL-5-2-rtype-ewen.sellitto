@@ -4,7 +4,7 @@
 COMMIT_MSG_FILE=$1
 
 # Regular expression for commit message validation
-COMMIT_REGEX='^(feat|fix|docs|style|refactor|perf|test|chore|BREAKING CHANGE)(\(.+\))?!?: .+'
+COMMIT_REGEX='^(feat|fix|docs|style|refactor|perf|test|chore|BREAKING CHANGE|merge|Merge)(\(.+\))?!?: .+'
 BREAKING_CHANGE_FOOTER_REGEX='BREAKING CHANGE: .+'
 
 # Read commit message

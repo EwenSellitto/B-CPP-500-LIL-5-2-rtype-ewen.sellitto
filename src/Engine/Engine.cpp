@@ -11,9 +11,9 @@
 #include <vector>
 
 #include "ECS/World.hpp"
-#include "Engine/Events/Resize.event.hpp"
-#include "Engine/Events/KeyReleased.event.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
+#include "Engine/Events/KeyReleased.event.hpp"
+#include "Engine/Events/Resize.event.hpp"
 
 using namespace Engine;
 
@@ -130,7 +130,7 @@ void EngineClass::handleEvents()
                 else
 #endif
 
-                world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+                    world().broadcastEvent<sf::Event::KeyEvent>(event.key);
                 world().broadcastEvent<KeyPressedEvent>(KeyPressedEvent{event.key});
                 break;
 

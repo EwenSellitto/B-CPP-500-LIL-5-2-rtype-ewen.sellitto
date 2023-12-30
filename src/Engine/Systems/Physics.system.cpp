@@ -9,15 +9,16 @@
 
 #include <map>
 
+#include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
-#include "Engine/Components/Player.component.hpp"
-#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Position.component.hpp"
-#include "Engine/Components/View.component.hpp"
+#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Events/Collision.event.hpp"
+#include "SFML/Graphics/Rect.hpp"
 
 using namespace Engine::System;
 
@@ -25,26 +26,37 @@ void Physics::configure([[maybe_unused]] ECS::World &world) {}
 
 void Physics::unconfigure() {}
 
-void Physics::collide(ECS::Entity *entity)
+void Physics::collide(ECS::Entity *entity, int x, int y)
 {
     using namespace Engine::Components;
 
-    ECS::World                &world = getWorld();
     std::vector<ECS::Entity *> collisionEntities;
+    ECS::World                &world = getWorld();
 
-    if (!entity->has<CollisionComponent>() || !entity->has<RenderableComponent>()) return;
-    ECS::ComponentHandle<RenderableComponent> entityRenderableComp = entity->getComponent<RenderableComponent>();
+    ECS::ComponentHandle<CollisionComponent>        entity_col = entity->getComponent<CollisionComponent>();
+    ECS::ComponentHandle<ExcludeCollisionComponent> entity_exclude_col;
+    bool                                            hasExcludeCol = entity->has<ExcludeCollisionComponent>();
 
-    world.each<CollisionComponent>([&]([[maybe_unused]] ECS::Entity                                    *currentEntity,
-                                       [[maybe_unused]] const ECS::ComponentHandle<CollisionComponent> &handle) {
-        if (currentEntity != entity && currentEntity->has<RenderableComponent>()) {
-            ECS::ComponentHandle<RenderableComponent> currentEntityRenderableComp =
-                currentEntity->getComponent<RenderableComponent>();
-            if (entityRenderableComp->sprite.getGlobalBounds().intersects(
-                    currentEntityRenderableComp->sprite.getGlobalBounds()))
-                collisionEntities.push_back(currentEntity);
-        }
-    });
+    if (hasExcludeCol) entity_exclude_col = entity->getComponent<ExcludeCollisionComponent>();
+
+    sf::FloatRect hitbox(x + entity_col->rect.left, y + entity_col->rect.top, entity_col->rect.width,
+                         entity_col->rect.height);
+
+    std::vector<ECS::Entity *> entities = world.getEntitiesWithComponents<CollisionComponent, PositionComponent>();
+
+    for (auto ent : entities) {
+        if (ent == entity) continue;
+        if (hasExcludeCol && ent->has<ExcludeCollisionComponent>() &&
+            entity_exclude_col->id == ent->getComponent<ExcludeCollisionComponent>()->id)
+            continue;
+        ECS::ComponentHandle<PositionComponent>  pos = ent->getComponent<PositionComponent>();
+        ECS::ComponentHandle<CollisionComponent> col = ent->getComponent<CollisionComponent>();
+
+        sf::FloatRect hit(pos->x + col->rect.left, pos->y + col->rect.top, col->rect.width, col->rect.height);
+
+        if (hitbox.intersects(hit)) collisionEntities.push_back(ent);
+    }
+
     if (collisionEntities.empty()) return;
     for (auto &collisionEntity : collisionEntities)
         world.broadcastEvent<CollisionEvent>({entity, collisionEntity});
@@ -86,14 +98,17 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
         endedMoveCounter++;
     }
     if (!entity->has<PositionComponent>() || !entity->has<RenderableComponent>()) return;
-    ECS::ComponentHandle<PositionComponent> componentPos(entity->getComponent<PositionComponent>());
+    ECS::ComponentHandle<PositionComponent>   componentPos(entity->getComponent<PositionComponent>());
     ECS::ComponentHandle<RenderableComponent> renderableComponent(entity->getComponent<RenderableComponent>());
 
-    collide(entity);
+    collide(entity, newPosition.x, newPosition.y);
+
+    if (!entity->has<MovingComponent>()) return;
 
     componentPos->x = static_cast<int>(newPosition.x);
     componentPos->y = static_cast<int>(newPosition.y);
     renderableComponent->sprite.setPosition(newPosition);
+
     if (endedMoveCounter == 2) entity->removeComponent<MovingComponent>();
 }
 
