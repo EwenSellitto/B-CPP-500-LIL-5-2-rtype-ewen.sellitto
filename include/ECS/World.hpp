@@ -175,6 +175,26 @@ namespace ECS
 
             /**
              * @brief Iterates over all entities that have a specific set of component types.
+             *
+             * @tparam T The component type to filter entities.
+             * @tparam U The component type to filter entities.
+             * @param func The callable function that will be applied to each entity and its component.
+             */
+            template <typename T, typename U>
+            void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>)> func)
+            {
+                for (auto &pair : _entities) {
+                    Entity &entity = *pair.second;
+                    if (entity.has<T>() && entity.has<U>()) {
+                        ComponentHandle<T> componentT = entity.getComponent<T>();
+                        ComponentHandle<U> componentU = entity.getComponent<U>();
+                        func(&entity, componentT, componentU);
+                    }
+                }
+            }
+
+            /**
+             * @brief Iterates over all entities that have a specific set of component types.
              * @tparam T The component type to filter entities.
              * @tparam U The component type to filter entities.
              * @param func The callable function that will be applied to each entity and its component.

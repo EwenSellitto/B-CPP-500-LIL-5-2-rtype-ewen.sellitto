@@ -6,6 +6,7 @@
 #include "Engine/Systems/Parallax.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "Engine/Systems/UI.system.hpp"
 
 namespace Systems
 {
@@ -33,4 +34,8 @@ namespace Systems
     {
         world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
     }
-} // namespace Systems
+
+    void addUISystem(std::shared_ptr<ECS::World> &world) {
+        world->addSystem<Engine::System::UI>("UISystem");
+    }
+}

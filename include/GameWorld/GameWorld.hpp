@@ -31,4 +31,23 @@ namespace GameWorld
         engine.setStartWorld("game");
         engine.addWorldFactory("game", [world]() { return world; });
     }
-} // namespace GameWorld
+
+    std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine) {
+        auto world = std::make_shared<ECS::World>();
+
+        // Ajouter des boutons au monde
+        Entities::createViewEntity(world);
+        Entities::createButtonEntities(world);
+
+        // ... ajouter plus de boutons si nécessaire ...
+
+        // Ajouter des systèmes au monde
+        Systems::addRenderer(world);
+        Systems::addUISystem(world);
+
+        engine.setStartWorld("game");
+        engine.addWorldFactory("game", [world]() { return world; });
+
+        return world;
+    }
+}
