@@ -54,6 +54,8 @@ add_executable(r-type
         include/Engine/Components/Collision.component.hpp
         include/Engine/Components/Player.component.hpp
         include/Engine/Components/Parallax.component.hpp
+        include/Engine/Components/EnemyQueue.component.hpp
+        include/Engine/Components/Speed.component.hpp
         include/Engine/Engine.hpp
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp

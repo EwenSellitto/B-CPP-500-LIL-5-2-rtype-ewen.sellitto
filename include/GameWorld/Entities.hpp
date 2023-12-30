@@ -9,6 +9,8 @@
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/Parallax.component.hpp"
 #include "Engine/Components/Button.component.hpp"
+#include "Engine/Components/Speed.component.hpp"
+#include "Engine/Components/Player.component.hpp"
 
 namespace Entities
 {
@@ -19,20 +21,27 @@ namespace Entities
 
     inline void createPlayerEntities(std::shared_ptr<ECS::World> &world)
     {
+        using namespace Engine::Components;
+
         id_t ship_id = world->createEntity(
-            new Engine::Components::PositionComponent(0, 0),
-            new Engine::Components::RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
-            new Engine::Components::CollisionComponent(),
-            new Engine::Components::TypeComponent(Engine::Components::TypeComponent::player));
+            new PlayerComponent(),
+            new PositionComponent(0, 0),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
+            new CollisionComponent(),
+            new TypeComponent(TypeComponent::player),
+            new SpeedComponent(150));
     }
 
-    void createButtonEntities(std::shared_ptr<ECS::World> &world) {
+    void createButtonEntities(std::shared_ptr<ECS::World> &world)
+    {
+        using namespace Engine::Components;
+
         auto startButtonEntity = world->createEntity(
-            new Engine::Components::ButtonComponent("Start Game", []() {
+            new ButtonComponent("Start Game", []() {
                 std::cout << "Start Game" << std::endl;
             }),
-            new Engine::Components::PositionComponent(100, 100),
-            new Engine::Components::RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true)
+            new PositionComponent(100, 100),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true)
         );
     }
 

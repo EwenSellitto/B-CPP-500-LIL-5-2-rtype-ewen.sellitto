@@ -12,33 +12,16 @@
 
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Moving.component.hpp"
+#include "Engine/Components/Player.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Speed.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Engine::System;
 
-void MovePlayer::configure([[maybe_unused]] ECS::World &world)
-{
-    using namespace Engine::Components;
-
-    std::vector<ECS::Entity *> entitiesWithType = world.getEntitiesWithComponents<TypeComponent>();
-    ECS::Entity               *playerEntity;
-
-    for (auto &entity : entitiesWithType) {
-        if (entity->getComponent<TypeComponent>()->type == Components::TypeComponent::player) {
-            playerEntity = entity;
-            break;
-        }
-    }
-    if (!playerEntity) {
-        std::cerr << "entity with typeComponent 'player' must be declared in world before movePlayer system creation"
-                  << std::endl;
-        return;
-    }
-    player = playerEntity;
-}
+void MovePlayer::configure([[maybe_unused]] ECS::World &world) {}
 
 void MovePlayer::unconfigure() {}
 
@@ -46,11 +29,25 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    if (!player) return;
-    if (!player->has<PositionComponent>()) return;
+    ECS::Entity *player = EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+    if (!player) {
+        std::cerr << "PlayerMissing: entity with typeComponent 'player' must be declared in world before movePlayer "
+                     "system creation, it must have a speedComponent"
+                  << std::endl;
+        return;
+    }
+
+    if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) {
+        std::cerr << "SpeedComponent or PositionComponent missing: entity with typeComponent 'player' must be declared "
+                     "in world before movePlayer system creation, it must have a speedComponent"
+                  << std::endl;
+        return;
+    }
+    ECS::ComponentHandle<SpeedComponent> speedComponent = player->getComponent<SpeedComponent>();
+    float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
@@ -92,11 +89,15 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
+    ECS::Entity *player = EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
     if (!player) return;
-    if (!player->has<PositionComponent>()) return;
+
+    if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) return;
+    ECS::ComponentHandle<SpeedComponent> speedComponent = player->getComponent<SpeedComponent>();
+    float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(
@@ -113,27 +114,4 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
     }
 }
 
-void MovePlayer::setPlayerSpeed(float newSpeed)
-{
-    speed = newSpeed;
-}
-
-void MovePlayer::setCurrentPlayer(ECS::Entity *entity)
-{
-    player = entity;
-}
-
-void MovePlayer::tick()
-{
-    //    using namespace Engine::Components;
-    //
-    //    ECS::World                                                           &world = getWorld();
-    //    std::map<int, std::vector<ECS::ComponentHandle<>>> components{};
-    //    sf::RenderWindow                                                     *window = &WINDOW;
-    //    std::unordered_map<ECS::Entity *, ECS::ComponentHandle<>> ViewEntities;
-    //
-    //    world.each<>(
-    //        [&]([[maybe_unused]] ECS::Entity *_, ECS::ComponentHandle<> handle) {
-    //            components[handle->priority].push_back(handle);
-    //        });
-}
+void MovePlayer::tick() {}

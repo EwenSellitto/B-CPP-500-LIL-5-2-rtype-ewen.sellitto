@@ -112,3 +112,6 @@ project.json
 _deps/r-type
 _deps/
 r-type
+
+#templates
+include/Engine/Components/Template.component.hpp

@@ -248,6 +248,22 @@ namespace ECS
                 return entities;
             }
 
+            /**
+             * @brief get the first entity that have a set of given components.
+             *
+             * @tparam Types The component types to filter entities.
+             * @return Entity * A pointer to the entity.
+             */
+            template <typename... Types> Entity * getEntityWithComponents()
+            {
+                std::vector<Entity *> entities = getEntitiesWithComponents<Types...>();
+
+                if (entities.empty())
+                    return nullptr;
+
+                return entities[0];
+            }
+
             /*=========================//
             //  GlobalEntity Handling  //
             //=========================*/
@@ -409,8 +425,8 @@ namespace ECS
 
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
 
-                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+//                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
+//                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
