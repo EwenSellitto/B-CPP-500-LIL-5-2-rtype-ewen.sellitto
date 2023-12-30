@@ -8,7 +8,7 @@
 
 namespace GameWorld
 {
-    inline void setup(Engine::EngineClass &engine)
+    inline void createGameWorld(Engine::EngineClass &engine)
     {
         auto world = std::make_shared<ECS::World>();
 
@@ -28,25 +28,20 @@ namespace GameWorld
         Subscribers::subscribeToEvents(world);
 
         // Set up the world in the engine
-        engine.setStartWorld("game");
         engine.addWorldFactory("game", [world]() { return world; });
     }
 
     std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine) {
         auto world = std::make_shared<ECS::World>();
 
-        // Ajouter des boutons au monde
         Entities::createViewEntity(world);
         Entities::createButtonEntities(world);
 
-        // ... ajouter plus de boutons si nécessaire ...
-
-        // Ajouter des systèmes au monde
         Systems::addRenderer(world);
         Systems::addUISystem(world);
 
-        engine.setStartWorld("game");
-        engine.addWorldFactory("game", [world]() { return world; });
+        engine.setStartWorld("menu");
+        engine.addWorldFactory("menu", [world]() { return world; });
 
         return world;
     }

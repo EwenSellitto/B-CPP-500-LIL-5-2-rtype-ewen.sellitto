@@ -18,6 +18,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
 
     try {
         GameWorld::createMenuWorld(engine);
+        GameWorld::createGameWorld(engine);
         engine.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

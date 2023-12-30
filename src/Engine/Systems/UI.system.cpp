@@ -50,10 +50,8 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent> but
 
     sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
 
-    // Réinitialiser l'état visuel du bouton
     resetButtonVisual(renderable);
 
-    // Mise à jour de l'état du bouton en fonction de la position de la souris
     if (buttonRect.contains(worldPos)) {
         hoverEffect(buttonComp, renderable);
         handleClick(buttonComp, renderable);
@@ -73,7 +71,13 @@ void UI::resetButtonVisual(ECS::ComponentHandle<Components::RenderableComponent>
 void UI::hoverEffect(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
                      ECS::ComponentHandle<Components::RenderableComponent> renderable) {
     buttonComp->isHovered = true;
-    renderable->sprite.setColor(sf::Color(255, 255, 255, 200)); // Effet visuel pour le survol
+    renderable->sprite.setColor(sf::Color(255, 255, 255, 200));
+}
+
+void UI::handleStartGame()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("game");
 }
 
 void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
@@ -84,8 +88,11 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent> buttonCom
             buttonComp->isClicked = true;
         }
     } else if (buttonComp->isClicked) {
-        buttonComp->onClick(); // Déclencher l'action si le bouton est relâché dessus
+        buttonComp->onClick();
         buttonComp->isClicked = false;
+
+        if (buttonComp->text == "Start Game")
+            handleStartGame();
     }
 }
 

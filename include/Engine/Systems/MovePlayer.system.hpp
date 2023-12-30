@@ -20,11 +20,9 @@ namespace Engine::System
         public:
             explicit MovePlayer(ECS::World &world) : ECS::BaseSystem(world)
             {
-                MovePlayer::configure(world);
             };
             MovePlayer(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids)
             {
-                MovePlayer::configure(world);
             }
             ~MovePlayer() override = default;
 
@@ -36,13 +34,5 @@ namespace Engine::System
 
             void addMovePlayer(sf::Event::KeyEvent key);
             void stopMovePlayer(sf::Event::KeyEvent key);
-
-            // TODO: if the entity get destroyed, this will crash.
-
-            void setCurrentPlayer(ECS::Entity *entity);
-            void setPlayerSpeed(float newSpeed);
-
-            ECS::Entity *player = nullptr;
-            float        speed  = 10;
     };
 } // namespace Engine::System

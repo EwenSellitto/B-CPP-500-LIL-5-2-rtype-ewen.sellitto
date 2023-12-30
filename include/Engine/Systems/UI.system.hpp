@@ -31,6 +31,7 @@ namespace Engine::System
             void tick() override;
 
         private:
+            void handleStartGame();
             void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
                            ECS::ComponentHandle<Components::RenderableComponent> renderable,
                            const sf::Vector2f& worldPos);
