@@ -7,6 +7,7 @@
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
+#include "Engine/Systems/Bullets.system.hpp"
 
 namespace Systems
 {
@@ -37,5 +38,9 @@ namespace Systems
 
     void addUISystem(std::shared_ptr<ECS::World> &world) {
         world->addSystem<Engine::System::UI>("UISystem");
+    }
+
+    void addBulletSystem(std::shared_ptr<ECS::World> &world) {
+        world->addSystem<Engine::System::Bullets>("Bullets");
     }
 }

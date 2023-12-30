@@ -9,6 +9,7 @@
 
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Components/Moving.component.hpp"
+#include "Engine/Components/Type.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 
 namespace Rtype::Subscriber
@@ -21,7 +22,11 @@ namespace Rtype::Subscriber
             void receiveEvent([[maybe_unused]] const std::string &name, const CollisionEvent &data) override
             {
                 using namespace Engine::Components;
-
+                if (data.collidingEntity->has<TypeComponent>() && data.movingEntity->has<TypeComponent>() &&
+                    data.collidingEntity->getComponent<TypeComponent>()->type == TypeComponent::enemy &&
+                    data.movingEntity->getComponent<TypeComponent>()->type == TypeComponent::missile) {
+                    std::cout << "hit ! " << std::endl;
+                }
                 data.movingEntity->removeComponent<MovingComponent>();
             }
     };

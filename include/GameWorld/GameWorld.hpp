@@ -24,6 +24,7 @@ namespace GameWorld
         Systems::addPlayerMovement(world);
         Systems::addEnemySystem(world);
         Systems::addParallaxSystem(world);
+        Systems::addBulletSystem(world);
         Systems::addRenderer(world);
 
         // Subscribe to events

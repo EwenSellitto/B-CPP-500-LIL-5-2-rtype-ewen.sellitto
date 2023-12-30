@@ -6,7 +6,7 @@ set(CMAKE_CXX_COMPILER clang++)
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2 ")
 
 include_directories(include)
 
@@ -67,12 +67,14 @@ add_executable(r-type
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/Enemy.system.cpp
+        src/Engine/Systems/Bullets.system.cpp
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/MovePlayer.system.cpp
         src/Engine/Systems/Parallax.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
+        include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
         src/main.cpp
 )
 
