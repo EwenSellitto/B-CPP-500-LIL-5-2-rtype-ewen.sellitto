@@ -36,6 +36,10 @@ add_executable(r-type
         include/ECS/World.hpp
         include/ECS/Entity.hpp
         include/ECS/Utilities.hpp
+        include/GameWorld/GameWorld.hpp
+        include/GameWorld/Entities.hpp
+        include/GameWorld/Subscribers.hpp
+        include/GameWorld/Systems.hpp
         include/Engine/Systems/Renderer.system.hpp
         include/Engine/Systems/Enemy.system.hpp
         include/Engine/Systems/Physics.system.hpp
