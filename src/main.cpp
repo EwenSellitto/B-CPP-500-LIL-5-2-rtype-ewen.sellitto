@@ -7,11 +7,13 @@
 
 #include <SFML/Window/Event.hpp>
 #include <memory>
+
 #include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
 #include "GameWorld/GameWorld.hpp"
 
-int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
+{
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
 
     try {

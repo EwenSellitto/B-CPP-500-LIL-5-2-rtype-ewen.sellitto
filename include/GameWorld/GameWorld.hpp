@@ -2,12 +2,14 @@
 #pragma once
 #include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
+#include "GameWorld/Entities.hpp"
 #include "GameWorld/Subscribers.hpp"
 #include "GameWorld/Systems.hpp"
-#include "GameWorld/Entities.hpp"
 
-namespace GameWorld {
-    void setup(Engine::EngineClass &engine) {
+namespace GameWorld
+{
+    inline void setup(Engine::EngineClass &engine)
+    {
         auto world = std::make_shared<ECS::World>();
 
         // Setup view and create entities
@@ -29,4 +31,4 @@ namespace GameWorld {
         engine.setStartWorld("game");
         engine.addWorldFactory("game", [world]() { return world; });
     }
-}
+} // namespace GameWorld

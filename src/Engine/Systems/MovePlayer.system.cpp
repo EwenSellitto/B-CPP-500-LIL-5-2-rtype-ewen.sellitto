@@ -13,8 +13,8 @@
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Type.component.hpp"
 #include "Engine/Engine.hpp"
 
 using namespace Engine::System;
@@ -50,7 +50,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
     if (!player->has<PositionComponent>()) return;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
@@ -96,7 +96,7 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
     if (!player->has<PositionComponent>()) return;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(
