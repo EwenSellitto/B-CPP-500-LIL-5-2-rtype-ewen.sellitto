@@ -40,7 +40,7 @@ namespace Rtype::Subscriber
 
                 ECS::ComponentHandle<Engine::Components::PositionComponent> pos =
                     player->getComponent<Engine::Components::PositionComponent>();
-                bulletsSystem->spawnBullet(static_cast<float>(pos->x), static_cast<float>(pos->y), 1);
+                bulletsSystem->spawnBullet(false, static_cast<float>(pos->x), static_cast<float>(pos->y), {1000, 0}, 200);
             }
     };
 
@@ -53,7 +53,6 @@ namespace Rtype::Subscriber
             {
                 using namespace Engine::Components;
 
-                using namespace Engine::Components;
                 if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
                       data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
                     return;

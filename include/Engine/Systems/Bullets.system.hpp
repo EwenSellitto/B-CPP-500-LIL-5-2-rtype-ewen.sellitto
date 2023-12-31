@@ -37,15 +37,8 @@ namespace Engine::System
     class Bullets : public ECS::BaseSystem
     {
         public:
-            Bullets(ECS::World &world) : ECS::BaseSystem(world), _clock()
-            {
-
-                _clock.restart();
-            }
-            Bullets(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids), _clock()
-            {
-                _clock.restart();
-            }
+            Bullets(ECS::World &world) : ECS::BaseSystem(world) {}
+            Bullets(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
             ~Bullets() override = default;
 
             void configure(ECS::World &world) override;
@@ -54,12 +47,8 @@ namespace Engine::System
 
             void tick() override;
 
-            void spawnBullet(float posx, float posy, int direction);
+            void spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time);
 
         private:
-            std::vector<ECS::Entity *> bullets = {};
-            float                      speed   = 100;
-            void                       addBullet(ECS::Entity *entity);
-            sf::Clock                  _clock;
     };
 } // namespace Engine::System

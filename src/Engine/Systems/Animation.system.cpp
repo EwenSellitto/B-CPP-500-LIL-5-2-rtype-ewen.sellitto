@@ -39,7 +39,12 @@ void AnimationSystem::tick()
             if (animation->frame >= animation->frameCount) animation->frame = 0;
         }
         renderable->sprite.setTextureRect(
-            sf::Rect<int>(animation->textureRect.left + animation->textureRect.width * animation->frame,
-                          animation->textureRect.top, animation->textureRect.width, animation->textureRect.height));
+            sf::Rect<int>(
+                animation->textureRect.left + animation->tileSize.x * animation->frame,
+                animation->textureRect.top,
+                animation->textureRect.width,
+                animation->textureRect.height
+                )
+        );
     }
 }

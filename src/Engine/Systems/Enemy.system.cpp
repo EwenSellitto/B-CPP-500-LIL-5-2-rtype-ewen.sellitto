@@ -83,6 +83,11 @@ void EnemySystem::tryChangeEnemiesMovement()
     }
 }
 
+void EnemySystem::tryMakeEnemyAttack()
+{
+
+}
+
 void EnemySystem::tick()
 {
     using namespace Engine::Components;
@@ -90,6 +95,7 @@ void EnemySystem::tick()
 
     trySpawnEnemies();
     tryChangeEnemiesMovement();
+    tryMakeEnemyAttack();
 }
 
 bool EnemySystem::shouldSpawnEnemy()

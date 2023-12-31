@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "SFML/System/Clock.hpp"
@@ -23,13 +25,13 @@ namespace EnemyData
             std::string spritePath;
             int         health;
 
-            EnemyAttributes(std::string sprite, int hp) : spritePath(sprite), health(hp) {}
+            EnemyAttributes(std::string sprite, int hp) : spritePath(std::move(sprite)), health(hp) {}
     };
 
     const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
-        {EnemyType::Weak, EnemyAttributes("./assets/Nairan/Nairan-Scout-Base.png", 50)},
-        {EnemyType::Normal, EnemyAttributes("./assets/Nairan/Nairan-Battlecruiser-Base.png", 100)},
-        {EnemyType::Strong, EnemyAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150)}};
+        {EnemyType::Weak, EnemyAttributes("./assets/klaed/Klaed-Scout-Base.png", 50)},
+        {EnemyType::Normal, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
+        {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
 
 }
 #ifndef ENEMY_SPAWN_RATE
@@ -44,7 +46,6 @@ namespace Engine::System
             EnemySystem(ECS::World &world) : ECS::BaseSystem(world), _clock()
             {
                 _clock.restart();
-//                spawnEnemy(300, 200);
             }
             EnemySystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids), _clock()
             {
@@ -60,6 +61,7 @@ namespace Engine::System
 
             void tryChangeEnemiesMovement();
             void trySpawnEnemies();
+            void tryMakeEnemyAttack();
 
             // this spawnEnemy is deprecated, a factory inside EnemyQueue is used instead;
             size_t      spawnEnemy(float posx, float posy);

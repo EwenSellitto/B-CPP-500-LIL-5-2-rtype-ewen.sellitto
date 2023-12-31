@@ -8,6 +8,7 @@
 #pragma once
 
 #include "ECS/EventSubscriber.hpp"
+#include "Engine/Components/BaseBullet.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
@@ -22,12 +23,27 @@ namespace Rtype::Subscriber
             void receiveEvent([[maybe_unused]] const std::string &name, const CollisionEvent &data) override
             {
                 using namespace Engine::Components;
-                if (data.collidingEntity->has<TypeComponent>() && data.movingEntity->has<TypeComponent>() &&
-                    data.collidingEntity->getComponent<TypeComponent>()->type == TypeComponent::enemy &&
-                    data.movingEntity->getComponent<TypeComponent>()->type == TypeComponent::missile) {
-                    std::cout << "hit ! " << std::endl;
+
+                if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
+                    std::cout << "YOU LOSE" << std::endl;
+                    data.movingEntity->removeAllComponents();
+                    return;
                 }
-                data.movingEntity->removeComponent<MovingComponent>();
+                if (data.movingEntity->has<BaseBulletComponent>()) {
+                    if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
+                        data.collidingEntity->has<PlayerComponent>()) {
+                        std::cout << "YOU LOSE" << std::endl;
+                        data.movingEntity->removeAllComponents();
+                        data.collidingEntity->removeAllComponents();
+                        return;
+                    }
+                    if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
+                        data.collidingEntity->has<EnemyComponent>()) {
+                        data.movingEntity->removeAllComponents();
+                        data.collidingEntity->removeAllComponents();
+                        return;
+                    }
+                }
             }
     };
 } // namespace Rtype::Subscriber

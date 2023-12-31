@@ -489,13 +489,23 @@ namespace ECS
             //===================*/
 
             /**
-             * @brief Get the engine object.
+             * @brief Get the systems of the world.
              *
-             * @return Engine::EngineClass& A reference to the engine object.
+             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Systems unordered_map.
              */
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>> &getSystems()
             {
                 return _systems;
+            }
+
+            /**
+             * @brief Get the entities of the world.
+             *
+             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Entities unordered_map.
+             */
+            std::unordered_map<id_t, std::unique_ptr<Entity>> &getEntities()
+            {
+                return _entities;
             }
 
         private:

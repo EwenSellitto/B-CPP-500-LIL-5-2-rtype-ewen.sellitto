@@ -15,6 +15,7 @@
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
+#include "Engine/Components/ExcludeCollision.component.hpp"
 
 namespace Entities
 {
@@ -28,9 +29,9 @@ namespace Entities
         using namespace Engine::Components;
 
         id_t ship_id = world->createEntity(
-            new PlayerComponent(), new PositionComponent(0, 0),
-            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1),
-            new CollisionComponent(), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
+            new PlayerComponent(), new PositionComponent(100, 100),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
+            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
 
     void createButtonEntities(std::shared_ptr<ECS::World> &world)
@@ -95,7 +96,9 @@ namespace Entities
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
         id_t enemyId = world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
                                           new RenderableComponent(attributes.spritePath, 20, 20, 0),
-                                          new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak));
+                                          new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
+                                          new CollisionComponent(21, 23, 22, 22),
+                                          new ExcludeCollisionComponent(0));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 

@@ -17,8 +17,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
 
     try {
+        engine.setStartWorld("menu");
         GameWorld::createMenuWorld(engine);
-        GameWorld::createGameWorld(engine);
+        engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

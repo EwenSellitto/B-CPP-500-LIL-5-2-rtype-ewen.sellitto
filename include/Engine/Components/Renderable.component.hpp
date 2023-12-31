@@ -63,6 +63,7 @@ namespace Engine::Components
                 sprite = sf::Sprite(texture);
                 sprite.setScale(scale.x, scale.y);
                 sprite.setPosition(position.x, position.y);
+                sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
                 if (setOrigin)
                     sprite.setOrigin(size.x / 2, size.y / 2);

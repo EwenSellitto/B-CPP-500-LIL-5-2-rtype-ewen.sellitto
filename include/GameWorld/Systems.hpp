@@ -9,6 +9,7 @@
 #include "Engine/Systems/UI.system.hpp"
 #include "Engine/Systems/Bullets.system.hpp"
 #include "Engine/Systems/WorldMove.system.hpp"
+#include "Engine/Systems/Animation.system.hpp"
 
 namespace Systems
 {
@@ -47,5 +48,9 @@ namespace Systems
 
     void addWorldMoveSystem(std::shared_ptr<ECS::World> &world) {
         world->addSystem<Engine::System::WorldMoveSystem>("WorldMoveSystem");
+    }
+
+    void addAnimationSystem(std::shared_ptr<ECS::World> &world) {
+        world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
     }
 }
