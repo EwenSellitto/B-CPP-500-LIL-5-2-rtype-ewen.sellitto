@@ -27,7 +27,6 @@ namespace Rtype::Subscriber
                 if (data.movingEntity->has<BulletComponent>() && data.collidingEntity->has<EnemyComponent>()) {
 
                     for (auto &entity : Engine::EngineClass::getEngine().world().getEntities()) {
-                        std::cout << "entity id: " << entity.first << std::endl;
                         if (entity.second.get() == data.movingEntity) {
                             std::cout << "found the entity" << std::endl;
                             std::cout << "entity id: " << entity.first << std::endl;
