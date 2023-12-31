@@ -48,6 +48,8 @@ namespace Engine::System
             void tick() override;
 
             void spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time);
+            void spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time,
+                             float rotation);
 
         private:
     };

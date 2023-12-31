@@ -30,7 +30,7 @@ namespace Entities
 
         id_t ship_id = world->createEntity(
             new PlayerComponent(), new PositionComponent(100, 100),
-            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
 
@@ -44,7 +44,7 @@ namespace Entities
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
-    void createBackground(std::shared_ptr<ECS::World> world, const std::string &texturePath, ParallaxLayer layer,
+    void createBackground(const std::shared_ptr<ECS::World>& world, const std::string &texturePath, ParallaxLayer layer,
                           float speed, bool first, int priority)
     {
 
@@ -102,7 +102,7 @@ namespace Entities
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
-        if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, -500 * 3}, 4000 * 3));
+        if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
         enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
             {std::make_pair(800, sf::Vector2f(-100, 100)),
