@@ -113,7 +113,10 @@ namespace ECS
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
                     broadcastEvent<Events::OnEntityDestroyed>(event);
             }
-
+            const std::unordered_map<id_t, std::unique_ptr<Entity>> &getEntities() const
+            {
+                return _entities;
+            }
             /**
              * @brief Get an immutable reference to an entity.
              *

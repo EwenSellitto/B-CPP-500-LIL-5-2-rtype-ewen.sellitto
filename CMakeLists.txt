@@ -45,6 +45,7 @@ add_executable(r-type
         include/Engine/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/Moving.component.hpp
+        include/Engine/Components/Bullet.component.hpp
         include/Engine/Components/Collision.component.hpp
         include/Engine/Components/Player.component.hpp
         include/Engine/Components/Parallax.component.hpp

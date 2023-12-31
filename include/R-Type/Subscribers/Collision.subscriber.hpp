@@ -8,6 +8,8 @@
 #pragma once
 
 #include "ECS/EventSubscriber.hpp"
+#include "Engine/Components/Bullet.component.hpp"
+#include "Engine/Components/Enemy.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
@@ -22,9 +24,15 @@ namespace Rtype::Subscriber
             void receiveEvent([[maybe_unused]] const std::string &name, const CollisionEvent &data) override
             {
                 using namespace Engine::Components;
-                if (data.collidingEntity->has<TypeComponent>() && data.movingEntity->has<TypeComponent>() &&
-                    data.collidingEntity->getComponent<TypeComponent>()->type == TypeComponent::enemy &&
-                    data.movingEntity->getComponent<TypeComponent>()->type == TypeComponent::missile) {
+                if (data.movingEntity->has<BulletComponent>() && data.collidingEntity->has<EnemyComponent>()) {
+
+                    for (auto &entity : Engine::EngineClass::getEngine().world().getEntities()) {
+                        std::cout << "entity id: " << entity.first << std::endl;
+                        if (entity.second.get() == data.movingEntity) {
+                            std::cout << "found the entity" << std::endl;
+                            std::cout << "entity id: " << entity.first << std::endl;
+                        }
+                    }
                     std::cout << "hit ! " << std::endl;
                 }
                 data.movingEntity->removeComponent<MovingComponent>();

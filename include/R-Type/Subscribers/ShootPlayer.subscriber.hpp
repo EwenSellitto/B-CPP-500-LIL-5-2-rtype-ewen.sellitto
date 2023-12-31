@@ -33,7 +33,7 @@ namespace Rtype::Subscriber
                 if (!movePlayerSystem) return;
                 ECS::ComponentHandle<Engine::Components::PositionComponent> pos =
                     movePlayerSystem->player->getComponent<Engine::Components::PositionComponent>();
-                bulletsSystem->spawnBullet(pos->x, pos->y, 1);
+                bulletsSystem->spawnBullet(pos->x, pos->y, 1, 100);
             }
     };
 
