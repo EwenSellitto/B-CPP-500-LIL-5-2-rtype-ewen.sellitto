@@ -86,7 +86,7 @@ namespace Entities
                          ParallaxLayer::NearBackground, 4, false, -3);
     }
 
-    void basicEnemyMaker(float y, bool isAttacking)
+    size_t basicEnemyMaker(float y, bool isAttacking)
     {
         using namespace Engine::Components;
 
@@ -102,21 +102,24 @@ namespace Entities
         if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, -500 * 3}, 4000 * 3));
 
         enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            {std::make_pair(800, sf::Vector2f(-100, -100)), std::make_pair(800, sf::Vector2f(-100, 100))}));
+            {std::make_pair(800, sf::Vector2f(-100, 100)),
+             std::make_pair(800, sf::Vector2f(-100, -100))}));
+        return enemyId;
     }
 
     inline void createEnemyQueue(std::shared_ptr<ECS::World> &world)
     {
         using namespace Engine::Components;
 
-        world->createEntity(
-            new EnemyQueueComponent({std::make_pair(std::make_tuple(100, 50, false), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker),
-                                     std::make_pair(std::make_tuple(400, 110, true), basicEnemyMaker)}));
+        world->createEntity(new EnemyQueueComponent({
+             std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
+             std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), basicEnemyMaker))
+            }));
     }
 
     inline void createWorldMoveProgress(std::shared_ptr<ECS::World> &world)

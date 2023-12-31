@@ -16,6 +16,7 @@
 #include "Engine/Events/KeyReleased.event.hpp"
 #include "Engine/Systems/Bullets.system.hpp"
 #include "Engine/Systems/MovePlayer.system.hpp"
+#include "Engine/Components/WorldMoveProgress.component.hpp"
 
 namespace Rtype::Subscriber
 {
@@ -30,9 +31,9 @@ namespace Rtype::Subscriber
 
                 if (data.keyEvent.code != sf::Keyboard::Space) return;
                 Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+                    Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
                 Engine::System::Bullets *bulletsSystem = dynamic_cast<Engine::System::Bullets *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["Bullets"].get());
+                    Engine::EngineClass::getEngine().world().getSystems()["BulletsSystem"].get());
                 ECS::Entity *player =
                     Engine::EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
                 if (!player || !movePlayerSystem) return;
@@ -50,11 +51,14 @@ namespace Rtype::Subscriber
             ~ShootPlayerReleasedSubscriber() override = default;
             void receiveEvent([[maybe_unused]] const std::string &name, const KeyReleasedEvent &data) override
             {
+                using namespace Engine::Components;
+
+                using namespace Engine::Components;
                 if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
                       data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
                     return;
                 // Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                //     Engine::EngineClass::getEngine().world().getSystems()["PlayerMover"].get());
+                //     Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
                 // if (!movePlayerSystem) return;
                 // movePlayerSystem->stopMovePlayer(data.keyEvent);
             }

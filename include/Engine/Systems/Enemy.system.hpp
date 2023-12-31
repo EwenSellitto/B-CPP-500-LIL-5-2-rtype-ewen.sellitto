@@ -44,7 +44,7 @@ namespace Engine::System
             EnemySystem(ECS::World &world) : ECS::BaseSystem(world), _clock()
             {
                 _clock.restart();
-                spawnEnemy(300, 200);
+//                spawnEnemy(300, 200);
             }
             EnemySystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids), _clock()
             {
@@ -58,11 +58,15 @@ namespace Engine::System
 
             void tick() override;
 
-        private:
+            void tryChangeEnemiesMovement();
+            void trySpawnEnemies();
+
+            // this spawnEnemy is deprecated, a factory inside EnemyQueue is used instead;
+            size_t      spawnEnemy(float posx, float posy);
             bool      shouldSpawnEnemy();
             EnemyData::EnemyType getRandomEnemyType();
-            void      spawnEnemy(float posx, float posy);
 
+        private:
             sf::Clock _clock;
     };
 } // namespace Engine::System
