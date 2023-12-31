@@ -20,6 +20,7 @@
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Systems/Bullets.system.hpp"
+#include <cmath>
 
 using namespace Engine::System;
 
