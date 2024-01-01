@@ -6,9 +6,7 @@
 */
 
 #include <SFML/Window/Event.hpp>
-#include <memory>
 
-#include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
 #include "GameWorld/GameWorld.hpp"
 
@@ -18,7 +16,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
 
     try {
         engine.setStartWorld("game");
-//        GameWorld::createMenuWorld(engine);
+        //        GameWorld::createMenuWorld(engine);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.run();
     } catch (std::exception &e) {

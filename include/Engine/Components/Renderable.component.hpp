@@ -22,7 +22,9 @@ namespace Engine::Components
         public:
             RenderableComponent()
                 : sprite(), size({0, 0}), position({0, 0}), priority(0), rotation(0), scale({1, 1}), isDisplayed(false),
-                  path() {}
+                  path()
+            {
+            }
 
             RenderableComponent(const std::string &texture_path, float pos_x, float pos_y, int priority,
                                 float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
@@ -65,8 +67,7 @@ namespace Engine::Components
                 sprite.setPosition(position.x, position.y);
                 sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
-                if (setOrigin)
-                    sprite.setOrigin(size.x / 2, size.y / 2);
+                if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
             }
     };
 } // namespace Engine::Components

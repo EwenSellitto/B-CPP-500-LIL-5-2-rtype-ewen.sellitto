@@ -33,7 +33,7 @@ namespace EnemyData
         {EnemyType::Normal, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
         {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
 
-}
+} // namespace EnemyData
 #ifndef ENEMY_SPAWN_RATE
 #define ENEMY_SPAWN_RATE 500
 #endif
@@ -64,8 +64,8 @@ namespace Engine::System
             void tryMakeEnemyAttack();
 
             // this spawnEnemy is deprecated, a factory inside EnemyQueue is used instead;
-            size_t      spawnEnemy(float posx, float posy);
-            bool      shouldSpawnEnemy();
+            size_t               spawnEnemy(float posx, float posy);
+            bool                 shouldSpawnEnemy();
             EnemyData::EnemyType getRandomEnemyType();
 
         private:

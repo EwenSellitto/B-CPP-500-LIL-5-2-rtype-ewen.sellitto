@@ -30,7 +30,8 @@ namespace Engine::Components
             // these are the arguments to be passed to MovingComponent, they will be called each one after the other
             // in a loop.
             std::vector<std::pair<size_t, sf::Vector2f>> movementsQueueLoop;
-            size_t currentMove;
+            size_t                                       currentMove;
+
         private:
     };
 } // namespace Engine::Components

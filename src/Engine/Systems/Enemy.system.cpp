@@ -7,6 +7,8 @@
 
 #include "Engine/Systems/Enemy.system.hpp"
 
+#include <cmath>
+
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Enemy.component.hpp"
@@ -20,7 +22,6 @@
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Systems/Bullets.system.hpp"
-#include <cmath>
 
 using namespace Engine::System;
 
@@ -105,12 +106,10 @@ void EnemySystem::tryMakeEnemyAttack()
 
         Engine::System::Bullets *bulletsSystem = dynamic_cast<Engine::System::Bullets *>(
             Engine::EngineClass::getEngine().world().getSystems()["BulletsSystem"].get());
-        if (!bulletsSystem)
-            return;
-        bulletsSystem->spawnBullet(
-            true, static_cast<float>(currentEnemy->getComponent<PositionComponent>()->x),
-            static_cast<float>(currentEnemy->getComponent<PositionComponent>()->y), comp->bulletDestination,
-            comp->bulletDuration, angle);
+        if (!bulletsSystem) return;
+        bulletsSystem->spawnBullet(true, static_cast<float>(currentEnemy->getComponent<PositionComponent>()->x),
+                                   static_cast<float>(currentEnemy->getComponent<PositionComponent>()->y),
+                                   comp->bulletDestination, comp->bulletDuration, angle);
     }
 }
 

@@ -22,8 +22,10 @@ namespace Engine::Components
         public:
             EnemyQueueComponent() {}
             EnemyQueueComponent(
-                std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
-                    enemyQueueFactories) : enemyQueueFactories(enemyQueueFactories)
+                std::vector<
+                    std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
+                    enemyQueueFactories)
+                : enemyQueueFactories(enemyQueueFactories)
             {
             }
 
@@ -39,6 +41,7 @@ namespace Engine::Components
             // then you need to call the std::function with the two floats and the bool.
             std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
                 enemyQueueFactories;
+
         private:
     };
 } // namespace Engine::Components

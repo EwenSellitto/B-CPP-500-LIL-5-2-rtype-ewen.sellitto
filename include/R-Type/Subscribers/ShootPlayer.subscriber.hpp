@@ -12,11 +12,11 @@
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Components/Player.component.hpp"
 #include "Engine/Components/Position.component.hpp"
+#include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
 #include "Engine/Systems/Bullets.system.hpp"
 #include "Engine/Systems/MovePlayer.system.hpp"
-#include "Engine/Components/WorldMoveProgress.component.hpp"
 
 namespace Rtype::Subscriber
 {
@@ -40,7 +40,8 @@ namespace Rtype::Subscriber
 
                 ECS::ComponentHandle<Engine::Components::PositionComponent> pos =
                     player->getComponent<Engine::Components::PositionComponent>();
-                bulletsSystem->spawnBullet(false, static_cast<float>(pos->x), static_cast<float>(pos->y), {1000, 0}, 200);
+                bulletsSystem->spawnBullet(false, static_cast<float>(pos->x), static_cast<float>(pos->y), {1000, 0},
+                                           200);
             }
     };
 

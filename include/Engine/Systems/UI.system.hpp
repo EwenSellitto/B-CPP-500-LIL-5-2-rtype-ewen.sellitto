@@ -7,13 +7,11 @@
 
 #pragma once
 
+#include "ECS/Components.hpp"
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
-
-#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Button.component.hpp"
-
-#include "ECS/Components.hpp"
+#include "Engine/Components/Renderable.component.hpp"
 
 namespace Engine::System
 {
@@ -32,13 +30,13 @@ namespace Engine::System
 
         private:
             void handleStartGame();
-            void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
-                           ECS::ComponentHandle<Components::RenderableComponent> renderable,
-                           const sf::Vector2f& worldPos);
+            void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
+                                   ECS::ComponentHandle<Components::RenderableComponent> renderable,
+                                   const sf::Vector2f                                   &worldPos);
             void resetButtonVisual(ECS::ComponentHandle<Components::RenderableComponent> renderable);
-            void hoverEffect(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
-                     ECS::ComponentHandle<Components::RenderableComponent> renderable);
-            void handleClick(ECS::ComponentHandle<Components::ButtonComponent> buttonComp,
-                     ECS::ComponentHandle<Components::RenderableComponent> renderable);
+            void hoverEffect(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
+                             ECS::ComponentHandle<Components::RenderableComponent> renderable);
+            void handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
+                             ECS::ComponentHandle<Components::RenderableComponent> renderable);
     };
 } // namespace Engine::System

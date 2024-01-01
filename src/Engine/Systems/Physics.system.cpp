@@ -33,8 +33,7 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
     std::vector<ECS::Entity *> collisionEntities;
     ECS::World                &world = getWorld();
 
-    if (!entity->has<CollisionComponent>())
-        return;
+    if (!entity->has<CollisionComponent>()) return;
 
     ECS::ComponentHandle<CollisionComponent>        entity_col = entity->getComponent<CollisionComponent>();
     ECS::ComponentHandle<ExcludeCollisionComponent> entity_exclude_col;

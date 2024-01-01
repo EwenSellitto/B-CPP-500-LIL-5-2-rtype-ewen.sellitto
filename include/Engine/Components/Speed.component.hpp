@@ -25,6 +25,7 @@ namespace Engine::Components
             ~SpeedComponent() override = default;
 
             float speed;
+
         private:
     };
 } // namespace Engine::Components

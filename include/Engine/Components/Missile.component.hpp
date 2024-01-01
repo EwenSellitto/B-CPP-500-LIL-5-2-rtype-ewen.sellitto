@@ -24,7 +24,6 @@ namespace Engine::Components
 
             ~MissileComponent() override = default;
 
-
         private:
     };
 } // namespace Engine::Components

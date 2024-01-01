@@ -13,7 +13,7 @@ namespace Subscribers
         auto *subMovePressed  = new Rtype::Subscriber::PlayerMovePressedSubscriber();
         auto *subMoveReleased = new Rtype::Subscriber::PlayerMoveReleasedSubscriber();
         auto *subCollision    = new Rtype::Subscriber::CollisionEventSubscriber();
-        auto *subShootPlayer = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
+        auto *subShootPlayer  = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
         auto *subShootPlayer2 = new Rtype::Subscriber::ShootPlayerPressedSubscriber();
 
         world->subscribe<KeyPressedEvent>(subMovePressed);

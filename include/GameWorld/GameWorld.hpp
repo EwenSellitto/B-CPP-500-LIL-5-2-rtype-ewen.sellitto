@@ -8,7 +8,7 @@
 
 namespace GameWorld
 {
-    std::shared_ptr<ECS::World> createGameWorld()
+    inline std::shared_ptr<ECS::World> createGameWorld()
     {
         auto world = std::make_shared<ECS::World>();
 
@@ -35,7 +35,8 @@ namespace GameWorld
         return world;
     }
 
-    std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine) {
+    inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)
+    {
         auto world = std::make_shared<ECS::World>();
 
         Entities::createViewEntity(world);

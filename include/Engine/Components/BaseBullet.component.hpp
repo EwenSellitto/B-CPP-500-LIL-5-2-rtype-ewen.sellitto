@@ -24,6 +24,7 @@ namespace Engine::Components
             ~BaseBulletComponent() override = default;
 
             bool fromEnemy;
+
         private:
     };
 } // namespace Engine::Components

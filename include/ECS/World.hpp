@@ -254,12 +254,11 @@ namespace ECS
              * @tparam Types The component types to filter entities.
              * @return Entity * A pointer to the entity.
              */
-            template <typename... Types> Entity * getEntityWithComponents()
+            template <typename... Types> Entity *getEntityWithComponents()
             {
                 std::vector<Entity *> entities = getEntitiesWithComponents<Types...>();
 
-                if (entities.empty())
-                    return nullptr;
+                if (entities.empty()) return nullptr;
 
                 return entities[0];
             }
@@ -425,8 +424,9 @@ namespace ECS
 
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
 
-//                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-//                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
+                //                std::cout << "[" <<
+                //                duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
+                //                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
@@ -491,7 +491,8 @@ namespace ECS
             /**
              * @brief Get the systems of the world.
              *
-             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Systems unordered_map.
+             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Systems
+             * unordered_map.
              */
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>> &getSystems()
             {
@@ -501,7 +502,8 @@ namespace ECS
             /**
              * @brief Get the entities of the world.
              *
-             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Entities unordered_map.
+             * @return std::unordered_map<std::string, std::unique_ptr<BaseSystem>> A reference to Entities
+             * unordered_map.
              */
             std::unordered_map<id_t, std::unique_ptr<Entity>> &getEntities()
             {
