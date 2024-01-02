@@ -477,7 +477,13 @@ namespace ECS
                 return _clock.getElapsedTime();
             }
 
-            // TODO : implement this tick function by calling each ticks of the systems in a thread
+            /**
+             * @brief Tick the world.
+             * @note This function will call the tick function of all the systems in the world.
+             * @warning This function should only be called by the Engine.
+             * @see Engine::EngineClass
+             * @see ECS::BaseSystem
+             */
             void tick()
             {
                 BaseSystem *renderer;
