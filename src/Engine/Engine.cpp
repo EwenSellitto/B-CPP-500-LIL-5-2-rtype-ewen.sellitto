@@ -14,6 +14,7 @@
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
 #include "Engine/Events/Resize.event.hpp"
+#include "Engine/Systems/Renderer.system.hpp"
 
 using namespace Engine;
 
@@ -90,6 +91,7 @@ void EngineClass::switchWorld(const std::string name)
     auto it = _worldsFactories.find(name);
     if (it == _worldsFactories.end()) throw std::runtime_error("World not found");
     _currentWorld = std::make_pair(name, it->second());
+    _currentWorld.second->addSystem<System::Renderer>("Renderer");
 }
 
 std::vector<std::string> EngineClass::getWorldsNames()

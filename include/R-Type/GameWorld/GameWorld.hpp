@@ -27,7 +27,6 @@ namespace GameWorld
         Systems::addBulletSystem(world);
         Systems::addWorldMoveSystem(world);
         Systems::addAnimationSystem(world);
-        Systems::addRenderer(world);
 
         // Subscribe to events
         Subscribers::subscribeToEvents(world);
@@ -42,7 +41,6 @@ namespace GameWorld
         Entities::createViewEntity(world);
         Entities::createButtonEntities(world);
 
-        Systems::addRenderer(world);
         Systems::addUISystem(world);
 
         engine.setStartWorld("menu");
