@@ -53,16 +53,17 @@ jobs:
           cmake ..
           make -j$(nproc)
 
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Install dependencies
-  #       run: |
-  #         choco install llvm
+      - name: Install dependencies
+        run: |
+          choco install llvm
 
-  #     - name: Build with CMake and Clang
-  #       run: |
-  #         mkdir build && cd build
-  #         cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G "Unix Makefiles" ..
-  #         make
+      - name: Build with CMake and Clang
+        run: |
+          mkdir build && cd build
+          cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ ..
+          cmake --build .
