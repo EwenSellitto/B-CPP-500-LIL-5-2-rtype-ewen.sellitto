@@ -41,8 +41,10 @@ namespace GameWorld
 
         Entities::createViewEntity(world);
         Entities::createButtonEntities(world);
-
+        Entities::createParallax(world);
         Systems::addUISystem(world);
+
+        Systems::addParallaxSystem(world);
 
         // Disclaimer: this hasn't been done by me, but trying to make it pretty it crashes, as I think when we switch
         // world while being in one doing a function, it crashes, so we should keep a shared_ptr of the world

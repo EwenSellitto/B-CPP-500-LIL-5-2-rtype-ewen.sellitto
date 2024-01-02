@@ -8,9 +8,11 @@
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
+#include "Engine/Components/Text.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
+#include "Engine/Systems/UI.system.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
@@ -37,11 +39,19 @@ namespace Entities
     void createButtonEntities(ECS::World *world)
     {
         using namespace Engine::Components;
+        world->createEntity(
+            new ButtonComponent("Quit", []() { std::cout << " Quit " << std::endl; }), new PositionComponent(400, 400),
+            new TextComponent("jkjhkjhjkhkjh"),
+            new RenderableComponent("./assets/menu/button_skewed/button_back_disabled.png", 0, 0, 1, 0, {1, 1}, true));
 
-        auto startButtonEntity = world->createEntity(
-            new ButtonComponent("Start Game", []() { std::cout << "Start Game" << std::endl; }),
-            new PositionComponent(100, 100),
-            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));
+        world->createEntity(
+            new ButtonComponent("Start Game",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleStartGame();
+                                }),
+            new PositionComponent(400, 300),
+            new RenderableComponent("./assets/menu/button_skewed/button_back_normal.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
     void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,

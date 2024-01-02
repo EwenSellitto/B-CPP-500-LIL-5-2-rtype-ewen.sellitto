@@ -74,6 +74,12 @@ void UI::hoverEffect(ECS::ComponentHandle<Components::ButtonComponent>     butto
     renderable->sprite.setColor(sf::Color(255, 255, 255, 200));
 }
 
+void UI::handleQuitGame()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.window.close();
+}
+
 void UI::handleStartGame()
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
@@ -93,5 +99,6 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
         buttonComp->isClicked = false;
 
         if (buttonComp->text == "Start Game") handleStartGame();
+        if (buttonComp->text == "Quit") handleQuitGame();
     }
 }

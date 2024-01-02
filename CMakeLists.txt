@@ -51,6 +51,7 @@ add_executable(r-type
         include/Engine/Components/Renderable.component.hpp
         include/R-Type/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
+        include/Engine/Components/Text.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Collision.component.hpp
         include/R-Type/Components/Player.component.hpp
