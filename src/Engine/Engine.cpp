@@ -62,11 +62,19 @@ void EngineClass::setStartWorld(const std::string &name)
     _startWorld = name;
 }
 
+/**
+ * @brief Get the Window Size X object
+ * @return std::size_t
+ */
 std::size_t EngineClass::getWindowSizeX()
 {
     return _windowSizeX;
 }
 
+/**
+ * @brief Get the Window Size Y object
+ * @return std::size_t
+ */
 std::size_t EngineClass::getWindowSizeY()
 {
     return _windowSizeY;
@@ -76,22 +84,51 @@ std::size_t EngineClass::getWindowSizeY()
 //  Worlds Handling  //
 //===================*/
 
+/**
+ * @brief Creates an empty world with the given name
+ * @param name The name of the world
+ * @return void
+ * @note If the world already exists, it will be overwritten
+ * @note This function will throw an error if the world doesn't exist
+ */
 void EngineClass::createEmptyWorld(const std::string name)
 {
-    _currentWorld = std::make_pair(name, std::make_unique<ECS::World>());
+    _currentWorld = std::make_pair(name, new ECS::World());
 }
 
-void EngineClass::addWorldFactory(std::string name, std::function<std::shared_ptr<ECS::World>()> factory)
+/**
+ * @brief Adds a world factory to the engine
+ * @param name The name of the world
+ * @param factory The factory function
+ * @return void
+ * @note The factory function must return a shared_ptr to a world
+ * @note If the world already exists, it will be overwritten
+ */
+void EngineClass::addWorldFactory(std::string name, std::function<ECS::World *()> factory)
 {
     _worldsFactories[name] = factory;
 }
 
+/**
+ * @brief Switches the current world to the one with the given name
+ * @param name The name of the world to switch to
+ * @throw std::runtime_error if the world doesn't exist
+ * @return void
+ * @note This function will throw an error if the world doesn't exist
+ * @note You can define DONT_ADD_RENDERER_SYSTEM to not add the renderer system to the world automatically
+ */
 void EngineClass::switchWorld(const std::string name)
 {
     auto it = _worldsFactories.find(name);
+    auto c  = _currentWorld;
     if (it == _worldsFactories.end()) throw std::runtime_error("World not found");
     _currentWorld = std::make_pair(name, it->second());
+
+#ifdef ADD_RENDERER_SYSTEM
     _currentWorld.second->addSystem<System::Renderer>("Renderer");
+#endif
+
+    _pending_destroy.push_back(c);
 }
 
 std::vector<std::string> EngineClass::getWorldsNames()
@@ -140,12 +177,13 @@ void EngineClass::handleEvents()
                 world().broadcastEvent<ResizeEvent>(ResizeEvent(event.size.width, event.size.height));
                 break;
 
-            case sf::Event::LostFocus:
-            case sf::Event::GainedFocus:
-            case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
                 world().broadcastEvent<KeyReleasedEvent>(KeyReleasedEvent{event.key});
                 break;
+
+            case sf::Event::TextEntered:
+            case sf::Event::LostFocus:
+            case sf::Event::GainedFocus:
             case sf::Event::MouseWheelMoved:
             case sf::Event::MouseWheelScrolled:
             case sf::Event::MouseButtonPressed:
@@ -181,6 +219,7 @@ void EngineClass::run()
         switchWorld(_startWorld);
 
     while (window.isOpen()) {
+        destroyPendingWorlds();
         handleEvents();
         world().tick();
     }
@@ -201,4 +240,16 @@ void EngineClass::toggleFullscreen()
         window.create(sf::VideoMode(_windowSizeX, _windowSizeY), "default", sf::Style::Close | sf::Style::Resize);
     }
     world().broadcastEvent<ResizeEvent>(event);
+}
+
+/*===================//
+//  Private Methods  //
+//===================*/
+
+void EngineClass::destroyPendingWorlds()
+{
+    if (_pending_destroy.empty()) return;
+    for (auto &world : _pending_destroy)
+        delete world.second;
+    _pending_destroy.clear();
 }

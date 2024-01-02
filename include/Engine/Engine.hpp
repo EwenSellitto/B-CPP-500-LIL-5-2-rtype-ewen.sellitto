@@ -39,12 +39,16 @@ namespace ECS
 #define BIND_ESC_TO_QUIT
 #endif
 
+#ifndef DONT_ADD_RENDERER_SYSTEM
+#define ADD_RENDERER_SYSTEM
+#endif
+
 #define WINDOW Engine::EngineClass::getEngine().window
 
 namespace Engine
 {
-    typedef std::unordered_map<std::string, std::function<std::shared_ptr<ECS::World>()>> world_factories_t;
-    typedef std::pair<std::string, std::shared_ptr<ECS::World>>                           world_t;
+    typedef std::unordered_map<std::string, std::function<ECS::World *()>> world_factories_t;
+    typedef std::pair<std::string, ECS::World *>                           world_t;
 
     class EngineClass
     {
@@ -85,7 +89,7 @@ namespace Engine
 
             void createEmptyWorld(std::string name);
 
-            void addWorldFactory(std::string name, std::function<std::shared_ptr<ECS::World>()>);
+            void addWorldFactory(std::string name, std::function<ECS::World *()>);
 
             void switchWorld(std::string name);
 
@@ -118,12 +122,19 @@ namespace Engine
             //  Attributes  //
             //==============*/
 
-            bool              _running;
-            bool              _fullscreen;
-            world_factories_t _worldsFactories;
-            world_t           _currentWorld;
-            std::string       _startWorld;
-            std::size_t       _windowSizeX;
-            std::size_t       _windowSizeY;
+            bool                 _running;
+            bool                 _fullscreen;
+            world_factories_t    _worldsFactories;
+            world_t              _currentWorld;
+            std::vector<world_t> _pending_destroy;
+            std::string          _startWorld;
+            std::size_t          _windowSizeX;
+            std::size_t          _windowSizeY;
+
+            /*===================//
+            //  Private Methods  //
+            //===================*/
+
+            void destroyPendingWorlds();
     };
 } // namespace Engine

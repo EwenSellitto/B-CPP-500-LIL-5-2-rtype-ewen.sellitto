@@ -19,12 +19,12 @@
 
 namespace Entities
 {
-    inline void createViewEntity(std::shared_ptr<ECS::World> &world)
+    inline void createViewEntity(ECS::World *world)
     {
         world->createEntity(new Engine::Components::ViewComponent());
     }
 
-    inline void createPlayerEntities(std::shared_ptr<ECS::World> &world)
+    inline void createPlayerEntities(ECS::World *world)
     {
         using namespace Engine::Components;
 
@@ -34,7 +34,7 @@ namespace Entities
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
 
-    void createButtonEntities(std::shared_ptr<ECS::World> &world)
+    void createButtonEntities(ECS::World *world)
     {
         using namespace Engine::Components;
 
@@ -44,8 +44,8 @@ namespace Entities
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
-    void createBackground(const std::shared_ptr<ECS::World> &world, const std::string &texturePath, ParallaxLayer layer,
-                          float speed, bool first, int priority)
+    void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,
+                          bool first, int priority)
     {
 
         using namespace Engine::Components;
@@ -71,7 +71,7 @@ namespace Entities
         }
     }
 
-    inline void createParallax(std::shared_ptr<ECS::World> &world)
+    inline void createParallax(ECS::World *world)
     {
         createBackground(world, "./assets/Environnement/Starrybackground-Layer01-Void.png",
                          ParallaxLayer::FarBackground, 1, true, -5);
@@ -108,7 +108,7 @@ namespace Entities
         return enemyId;
     }
 
-    inline void createEnemyQueue(std::shared_ptr<ECS::World> &world)
+    inline void createEnemyQueue(ECS::World *world)
     {
         using namespace Engine::Components;
 
@@ -122,7 +122,7 @@ namespace Entities
              std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), basicEnemyMaker))}));
     }
 
-    inline void createWorldMoveProgress(std::shared_ptr<ECS::World> &world)
+    inline void createWorldMoveProgress(ECS::World *world)
     {
         using namespace Engine::Components;
 

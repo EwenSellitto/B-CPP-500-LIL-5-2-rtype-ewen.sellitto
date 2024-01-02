@@ -114,6 +114,7 @@ namespace ECS
              */
             template <typename T> bool has() const
             {
+                if (_components.empty()) return false;
                 return _components.find(ECS_TYPEID(T)) != _components.end();
             }
 
