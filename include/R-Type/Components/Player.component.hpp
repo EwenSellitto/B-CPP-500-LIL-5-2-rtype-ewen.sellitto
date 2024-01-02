@@ -7,22 +7,22 @@
 
 #pragma once
 
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <tuple>
 
 #include "ECS/Components.hpp"
+#include "SFML/Graphics/RenderTexture.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Vector2.hpp"
 
 namespace Engine::Components
 {
-    struct MissileComponent : public ECS::BaseComponent {
+    struct PlayerComponent : public ECS::BaseComponent {
         public:
-            MissileComponent() {}
+            PlayerComponent(){};
 
-            ~MissileComponent() override = default;
+            ~PlayerComponent() override = default;
 
         private:
     };

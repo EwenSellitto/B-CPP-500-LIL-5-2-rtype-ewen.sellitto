@@ -8,15 +8,15 @@
 #include <SFML/Window/Event.hpp>
 
 #include "Engine/Engine.hpp"
-#include "GameWorld/GameWorld.hpp"
+#include "R-Type/GameWorld/GameWorld.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
 
     try {
-        engine.setStartWorld("game");
-        //        GameWorld::createMenuWorld(engine);
+        engine.setStartWorld("menu");
+        GameWorld::createMenuWorld(engine);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.run();
     } catch (std::exception &e) {

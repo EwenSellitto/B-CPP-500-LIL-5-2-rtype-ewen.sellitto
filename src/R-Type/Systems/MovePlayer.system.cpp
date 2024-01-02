@@ -5,19 +5,16 @@
 ** MovePlayer.systems.cpp
 */
 
-#include "Engine/Systems/MovePlayer.system.hpp"
+#include "R-Type/Systems/MovePlayer.system.hpp"
 
 #include <SFML/Window/Event.hpp>
-#include <map>
 
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Moving.component.hpp"
-#include "Engine/Components/Player.component.hpp"
 #include "Engine/Components/Position.component.hpp"
-#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Engine.hpp"
+#include "R-Type/Components/Player.component.hpp"
 
 using namespace Engine::System;
 

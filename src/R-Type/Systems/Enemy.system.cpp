@@ -5,23 +5,23 @@
 ** Animation.system.cpp
 */
 
-#include "Engine/Systems/Enemy.system.hpp"
+#include "R-Type/Systems/Enemy.system.hpp"
 
 #include <cmath>
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Enemy.component.hpp"
-#include "Engine/Components/EnemyAttack.component.hpp"
-#include "Engine/Components/EnemyMovements.component.hpp"
-#include "Engine/Components/EnemyQueue.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
-#include "Engine/Systems/Bullets.system.hpp"
+#include "R-Type/Components/Enemy.component.hpp"
+#include "R-Type/Components/EnemyAttack.component.hpp"
+#include "R-Type/Components/EnemyMovements.component.hpp"
+#include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/Systems/Bullets.system.hpp"
 
 using namespace Engine::System;
 

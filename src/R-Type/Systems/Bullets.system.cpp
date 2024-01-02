@@ -5,18 +5,17 @@
 ** Animation.system.cpp
 */
 
-#include "Engine/Systems/Bullets.system.hpp"
+#include "R-Type/Systems/Bullets.system.hpp"
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Animation.component.hpp"
-#include "Engine/Components/BaseBullet.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Missile.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Engine.hpp"
+#include "R-Type/Components/BaseBullet.component.hpp"
+#include "R-Type/Components/Missile.component.hpp"
 
 using namespace Engine::System;
 

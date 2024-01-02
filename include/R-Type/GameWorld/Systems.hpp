@@ -2,14 +2,14 @@
 #pragma once
 #include "ECS/World.hpp"
 #include "Engine/Systems/Animation.system.hpp"
-#include "Engine/Systems/Bullets.system.hpp"
-#include "Engine/Systems/Enemy.system.hpp"
-#include "Engine/Systems/MovePlayer.system.hpp"
 #include "Engine/Systems/Parallax.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
 #include "Engine/Systems/WorldMove.system.hpp"
+#include "R-Type/Systems/Bullets.system.hpp"
+#include "R-Type/Systems/Enemy.system.hpp"
+#include "R-Type/Systems/MovePlayer.system.hpp"
 
 namespace Systems
 {
@@ -38,22 +38,22 @@ namespace Systems
         world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
     }
 
-    void addUISystem(std::shared_ptr<ECS::World> &world)
+    inline void addUISystem(std::shared_ptr<ECS::World> &world)
     {
         world->addSystem<Engine::System::UI>("UISystem");
     }
 
-    void addBulletSystem(std::shared_ptr<ECS::World> &world)
+    inline void addBulletSystem(std::shared_ptr<ECS::World> &world)
     {
         world->addSystem<Engine::System::Bullets>("BulletsSystem");
     }
 
-    void addWorldMoveSystem(std::shared_ptr<ECS::World> &world)
+    inline void addWorldMoveSystem(std::shared_ptr<ECS::World> &world)
     {
         world->addSystem<Engine::System::WorldMoveSystem>("WorldMoveSystem");
     }
 
-    void addAnimationSystem(std::shared_ptr<ECS::World> &world)
+    inline void addAnimationSystem(std::shared_ptr<ECS::World> &world)
     {
         world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
     }

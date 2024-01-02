@@ -10,7 +10,7 @@
 #include <string>
 
 #include "ECS/Components.hpp"
-#include "Engine/Systems/Enemy.system.hpp"
+#include "R-Type/Systems/Enemy.system.hpp"
 
 namespace Engine::Components
 {

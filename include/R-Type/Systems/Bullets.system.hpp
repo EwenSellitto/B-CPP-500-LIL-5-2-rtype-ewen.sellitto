@@ -8,9 +8,8 @@
 #pragma once
 
 #include "ECS/System.hpp"
+#include "ECS/Utilities.hpp"
 #include "ECS/World.hpp"
-#include "SFML/System/Clock.hpp"
-#include "SFML/Window/Event.hpp"
 
 enum class bulletType {
     Weak,

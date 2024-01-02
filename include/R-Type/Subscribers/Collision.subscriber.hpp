@@ -8,10 +8,10 @@
 #pragma once
 
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/BaseBullet.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
+#include "R-Type/Components/BaseBullet.component.hpp"
 
 namespace Rtype::Subscriber
 {

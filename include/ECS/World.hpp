@@ -480,8 +480,16 @@ namespace ECS
             // TODO : implement this tick function by calling each ticks of the systems in a thread
             void tick()
             {
-                for (auto &system : _systems)
+                BaseSystem *renderer;
+
+                for (auto &system : _systems) {
+                    if (system.first == "Renderer") {
+                        renderer = system.second.get();
+                        continue;
+                    }
                     system.second->tick();
+                }
+                renderer->tick();
             }
 
             /*===================//

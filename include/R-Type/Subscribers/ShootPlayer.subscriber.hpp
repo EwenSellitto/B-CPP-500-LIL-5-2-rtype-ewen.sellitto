@@ -10,13 +10,12 @@
 #include <SFML/Window/Event.hpp>
 
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/Player.component.hpp"
 #include "Engine/Components/Position.component.hpp"
-#include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
-#include "Engine/Systems/Bullets.system.hpp"
-#include "Engine/Systems/MovePlayer.system.hpp"
+#include "R-Type/Components/Player.component.hpp"
+#include "R-Type/Systems/Bullets.system.hpp"
+#include "R-Type/Systems/MovePlayer.system.hpp"
 
 namespace Rtype::Subscriber
 {

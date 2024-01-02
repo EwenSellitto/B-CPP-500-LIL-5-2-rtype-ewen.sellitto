@@ -36,31 +36,30 @@ add_executable(r-type
         include/ECS/World.hpp
         include/ECS/Entity.hpp
         include/ECS/Utilities.hpp
-        include/GameWorld/GameWorld.hpp
-        include/GameWorld/Entities.hpp
-        include/GameWorld/Subscribers.hpp
-        include/GameWorld/Systems.hpp
+        include/R-Type/GameWorld/GameWorld.hpp
+        include/R-Type/GameWorld/Entities.hpp
+        include/R-Type/GameWorld/Subscribers.hpp
+        include/R-Type/GameWorld/Systems.hpp
+
         include/Engine/Systems/UI.system.hpp
         include/Engine/Systems/Renderer.system.hpp
-        include/Engine/Systems/Enemy.system.hpp
         include/Engine/Systems/Physics.system.hpp
-        include/Engine/Systems/MovePlayer.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
         include/Engine/Systems/Animation.system.hpp
         include/Engine/Components/Button.component.hpp
         include/Engine/Components/Renderable.component.hpp
-        include/Engine/Components/Enemy.component.hpp
+        include/R-Type/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Collision.component.hpp
-        include/Engine/Components/Player.component.hpp
+        include/R-Type/Components/Player.component.hpp
         include/Engine/Components/Parallax.component.hpp
-        include/Engine/Components/EnemyQueue.component.hpp
+        include/R-Type/Components/EnemyQueue.component.hpp
         include/Engine/Components/Speed.component.hpp
-        include/Engine/Components/EnemyAttack.component.hpp
+        include/R-Type/Components/EnemyAttack.component.hpp
         include/Engine/Components/WorldMoveProgress.component.hpp
-        include/Engine/Components/EnemyMovements.component.hpp
+        include/R-Type/Components/EnemyMovements.component.hpp
         include/Engine/Components/Animation.component.hpp
         include/Engine/Engine.hpp
         include/Engine/Events/KeyPressed.event.hpp
@@ -68,16 +67,21 @@ add_executable(r-type
         src/Engine/Engine.cpp
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Renderer.system.cpp
-        src/Engine/Systems/Enemy.system.cpp
-        src/Engine/Systems/Bullets.system.cpp
         src/Engine/Systems/Physics.system.cpp
-        src/Engine/Systems/MovePlayer.system.cpp
         src/Engine/Systems/Parallax.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
+
+        include/R-Type/Systems/MovePlayer.system.hpp
+        include/R-Type/Systems/Bullets.system.hpp
+        include/R-Type/Systems/Enemy.system.hpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
+        src/R-Type/Systems/MovePlayer.system.cpp
+        src/R-Type/Systems/Enemy.system.cpp
+        src/R-Type/Systems/Bullets.system.cpp
+
         src/main.cpp
 )
 

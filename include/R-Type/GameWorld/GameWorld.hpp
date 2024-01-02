@@ -2,9 +2,9 @@
 #pragma once
 #include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
-#include "GameWorld/Entities.hpp"
-#include "GameWorld/Subscribers.hpp"
-#include "GameWorld/Systems.hpp"
+#include "Entities.hpp"
+#include "Subscribers.hpp"
+#include "Systems.hpp"
 
 namespace GameWorld
 {
