@@ -15,6 +15,7 @@
 
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
+#include "R-Type/GameWorld/EnemyMakers.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
@@ -26,9 +27,7 @@ namespace Engine::Components
         public:
             EnemyQueueComponent() {}
             EnemyQueueComponent(
-                std::vector<
-                    std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
-                    enemyQueueFactories)
+                std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, size_t>>> enemyQueueFactories)
                 : enemyQueueFactories(enemyQueueFactories)
             {
             }
@@ -49,13 +48,9 @@ namespace Engine::Components
                     oss.write(reinterpret_cast<const char *>(&y), sizeof(float));
                     oss.write(reinterpret_cast<const char *>(&isAttacking), sizeof(bool));
 
-                    // Sérialiser les données retournées par la std::function
-                    // std::vector<size_t> functionData = item.second.second(y, isAttacking);
-                    // size_t functionDataSize = functionData.size();
-                    // oss.write(reinterpret_cast<const char*>(&functionDataSize), sizeof(size_t));
-                    // for (const auto& data : functionData) {
-                    //     oss.write(reinterpret_cast<const char*>(&data), sizeof(size_t));
-                    // }
+                    // Sérialiser l'ID de la fonction
+                    const size_t functionId = item.second.second;
+                    oss.write(reinterpret_cast<const char *>(&functionId), sizeof(size_t));
                 }
                 const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
@@ -83,29 +78,20 @@ namespace Engine::Components
                     iss.read(reinterpret_cast<char *>(&y), sizeof(float));
                     iss.read(reinterpret_cast<char *>(&isAttacking), sizeof(bool));
 
-                    // Désérialiser les données retournées par la std::function
-                    // size_t functionDataSize;
-                    // iss.read(reinterpret_cast<char*>(&functionDataSize), sizeof(size_t));
-                    // std::vector<size_t> functionData(functionDataSize);
-                    // for (size_t& data : functionData) {
-                    //     iss.read(reinterpret_cast<char*>(&data), sizeof(size_t));
-                    // }
-
-                    // Ajouter l'élément reconstruit à enemyQueueFactories
-                    // Note: Ici, vous devez remplacer std::function par une fonction valide
+                    // Désérialiser l'ID de la fonction
+                    size_t functionId;
+                    iss.read(reinterpret_cast<char *>(&functionId), sizeof(size_t));
 
                     if (component == nullptr) {
                         component = new EnemyQueueComponent(
-                            std::vector<std::pair<
-                                bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>(
-                                {std::make_pair(hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking),
-                                                                           std::function<size_t(float, bool)>()))}));
+                            std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, size_t>>>(
+                                {std::make_pair(hasSpawned,
+                                                std::make_pair(std::make_tuple(x, y, isAttacking), functionId))}));
                     } else {
                         EnemyQueueComponent *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
                         if (enemyQueueComponent == nullptr) return nullptr;
                         enemyQueueComponent->enemyQueueFactories.push_back(
-                            std::make_pair(hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking),
-                                                                      std::function<size_t(float, bool)>())));
+                            std::make_pair(hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking), functionId)));
                     }
                 }
                 return component;
@@ -119,7 +105,6 @@ namespace Engine::Components
             // bool is 'isAttacking' because not every enemy attacks.
             // ==> but they will all attack the same. (within definition in the function.)
             // then you need to call the std::function with the two floats and the bool.
-            std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
-                enemyQueueFactories = {};
+            std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, size_t>>> enemyQueueFactories = {};
     };
 } // namespace Engine::Components

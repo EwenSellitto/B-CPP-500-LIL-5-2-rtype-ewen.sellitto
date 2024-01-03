@@ -21,6 +21,7 @@
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/GameWorld/EnemyMakers.hpp"
 #include "R-Type/Systems/Bullets.system.hpp"
 
 using namespace Engine::System;
@@ -42,8 +43,9 @@ void EnemySystem::trySpawnEnemies()
         if (element.first) continue;
         if (std::get<0>(element.second.first) > worldProgress->getComponent<WorldMoveProgressComponent>()->progress)
             continue;
-        element.first  = true;
-        size_t enemyId = element.second.second(std::get<1>(element.second.first), std::get<2>(element.second.first));
+        element.first = true;
+        size_t enemyId =
+            functionMap[element.second.second](std::get<1>(element.second.first), std::get<2>(element.second.first));
         ECS::Entity &currentEnemy = world.getMutEntity(enemyId);
         if (!currentEnemy.has<PositionComponent>() || !currentEnemy.has<EnemyMovementsComponent>()) return;
         currentEnemy.addComponent<MovingComponent>(

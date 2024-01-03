@@ -38,6 +38,7 @@ add_executable(r-type
         include/ECS/Utilities.hpp
         include/R-Type/GameWorld/GameWorld.hpp
         include/R-Type/GameWorld/Entities.hpp
+        include/R-Type/GameWorld/EnemyMakers.hpp
         include/R-Type/GameWorld/Subscribers.hpp
         include/R-Type/GameWorld/Systems.hpp
 
@@ -78,6 +79,7 @@ add_executable(r-type
         include/R-Type/Subscribers/Collision.subscriber.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
+        src/R-Type/EnemyMakers.cpp
         src/R-Type/Systems/MovePlayer.system.cpp
         src/R-Type/Systems/Enemy.system.cpp
         src/R-Type/Systems/Bullets.system.cpp

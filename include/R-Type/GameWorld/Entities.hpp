@@ -16,6 +16,7 @@
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
+#include "R-Type/GameWorld/EnemyMakers.hpp"
 
 namespace Entities
 {
@@ -87,39 +88,18 @@ namespace Entities
                          ParallaxLayer::NearBackground, 4, false, -3);
     }
 
-    size_t basicEnemyMaker(float y, bool isAttacking)
-    {
-        using namespace Engine::Components;
-
-        ECS::World &world       = Engine::EngineClass::getEngine().world();
-        auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
-        size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
-        id_t enemyId = world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-                                          new RenderableComponent(attributes.spritePath, 20, 20, 0),
-                                          new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
-                                          new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
-
-        ECS::Entity &enemy = world.getMutEntity(enemyId);
-
-        if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
-
-        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
-        return enemyId;
-    }
-
     inline void createEnemyQueue(std::shared_ptr<ECS::World> &world)
     {
         using namespace Engine::Components;
 
-        auto test = world->createEntity(new EnemyQueueComponent(
-            {std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), basicEnemyMaker))}));
+        auto test = world->createEntity(
+            new EnemyQueueComponent({std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), 0)),
+                                     std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), 0))}));
 
         std::vector<char> bonjour = world->getMutEntity(test).getComponent<EnemyQueueComponent>()->serialize();
         Engine::Components::EnemyQueueComponent::deserialize(bonjour);
