@@ -67,7 +67,7 @@ jobs:
       - name: Create project archive
         run: |
           mkdir release
-          Compress-Archive -Path r-type.exe, assets/*, *.dll -DestinationPath r-type.zip
+          Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath r-type.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -87,3 +87,4 @@ jobs:
           prerelease: false
           body: "New version of the Rtype"
           assets: r-type.zip
+          message: "New version of rtype"
