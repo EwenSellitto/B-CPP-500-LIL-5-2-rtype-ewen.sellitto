@@ -28,9 +28,31 @@ namespace Engine::Components
 
             ~WorldMoveProgressComponent() override = default;
 
-            std::vector<char> serialize(void) override
-            {
-                return std::vector<char>();
+            std::vector<char> serialize(void) override {
+                std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char*>(&startingTime), sizeof(startingTime));
+                oss.write(reinterpret_cast<const char*>(&progress), sizeof(progress));
+                oss.write(reinterpret_cast<const char*>(&speed), sizeof(speed));
+
+                const std::string& str = oss.str();
+                return std::vector<char>(str.begin(), str.end());
+            }
+
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
+                WorldMoveProgressComponent* worldMoveProgressComponent;
+                if (component == nullptr) {
+                    worldMoveProgressComponent = new WorldMoveProgressComponent(0, 0, 0);
+                } else {
+                    worldMoveProgressComponent = dynamic_cast<WorldMoveProgressComponent*>(component);
+                    if (worldMoveProgressComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char*>(&worldMoveProgressComponent->startingTime), sizeof(worldMoveProgressComponent->startingTime));
+                iss.read(reinterpret_cast<char*>(&worldMoveProgressComponent->progress), sizeof(worldMoveProgressComponent->progress));
+                iss.read(reinterpret_cast<char*>(&worldMoveProgressComponent->speed), sizeof(worldMoveProgressComponent->speed));
+
+                return worldMoveProgressComponent;
             }
 
             // in epoch milliseconds

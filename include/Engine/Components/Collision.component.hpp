@@ -26,9 +26,33 @@ namespace Engine::Components
 
             ~CollisionComponent() override = default;
 
-            std::vector<char> serialize(void) override
-            {
-                return std::vector<char>();
+            std::vector<char> serialize(void) override {
+                std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char*>(&rect.left), sizeof(rect.left));
+                oss.write(reinterpret_cast<const char*>(&rect.top), sizeof(rect.top));
+                oss.write(reinterpret_cast<const char*>(&rect.width), sizeof(rect.width));
+                oss.write(reinterpret_cast<const char*>(&rect.height), sizeof(rect.height));
+
+                const std::string& str = oss.str();
+                return std::vector<char>(str.begin(), str.end());
+            }
+
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
+                CollisionComponent* collisionComponent;
+                if (component == nullptr) {
+                    collisionComponent = new CollisionComponent();
+                } else {
+                    collisionComponent = dynamic_cast<CollisionComponent*>(component);
+                    if (collisionComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char*>(&collisionComponent->rect.left), sizeof(collisionComponent->rect.left));
+                iss.read(reinterpret_cast<char*>(&collisionComponent->rect.top), sizeof(collisionComponent->rect.top));
+                iss.read(reinterpret_cast<char*>(&collisionComponent->rect.width), sizeof(collisionComponent->rect.width));
+                iss.read(reinterpret_cast<char*>(&collisionComponent->rect.height), sizeof(collisionComponent->rect.height));
+
+                return collisionComponent;
             }
 
             sf::FloatRect rect;

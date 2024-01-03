@@ -22,36 +22,29 @@ namespace Engine::Components
             explicit PositionComponent(int x, int y) : x(x), y(y){};
             ~PositionComponent() override = default;
 
-            std::vector<char> serialize(void) override
-            {
+            std::vector<char> serialize(void) override {
                 std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char*>(&x), sizeof(x));
+                oss.write(reinterpret_cast<const char*>(&y), sizeof(y));
 
-                oss.write(reinterpret_cast<const char*>(&x), sizeof(int));
-                oss.write(reinterpret_cast<const char*>(&y), sizeof(int));
                 const std::string& str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(const std::vector<char>& vec, ECS::BaseComponent* component = nullptr)
-            {
-                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
+                PositionComponent* positionComponent;
+                if (component == nullptr) {
+                    positionComponent = new PositionComponent();
+                } else {
+                    positionComponent = dynamic_cast<PositionComponent*>(component);
+                    if (positionComponent == nullptr) return nullptr;
+                }
 
-                if (component != nullptr) {
-                    auto* enemyQueueComponent = dynamic_cast<PositionComponent*>(component);
-                    if (enemyQueueComponent == nullptr) return nullptr;
-                }
-                while (iss.tellg() < vec.size()) {
-                    PositionComponent_serialized_t data;
-                    iss.read(reinterpret_cast<char*>(&data.first), sizeof(int));
-                    iss.read(reinterpret_cast<char*>(&data.second), sizeof(int));
-                    if (component == nullptr) {
-                        component = new PositionComponent(data.first, data.second);
-                    } else {
-                        auto* positionComponent = dynamic_cast<PositionComponent*>(component);
-                        if (positionComponent == nullptr) return nullptr;
-                    }
-                }
-                return component;
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char*>(&positionComponent->x), sizeof(positionComponent->x));
+                iss.read(reinterpret_cast<char*>(&positionComponent->y), sizeof(positionComponent->y));
+
+                return positionComponent;
             }
 
             int x;

@@ -24,7 +24,29 @@ namespace Engine::Components
             ~TypeComponent() override = default;
 
             std::vector<char> serialize(void) override {
-                return std::vector<char>();
+                std::ostringstream oss(std::ios::binary);
+                auto typeInt = static_cast<std::underlying_type<entityType_t>::type>(type);
+                oss.write(reinterpret_cast<const char*>(&typeInt), sizeof(typeInt));
+
+                const std::string& str = oss.str();
+                return std::vector<char>(str.begin(), str.end());
+            }
+
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
+                TypeComponent* typeComponent;
+                if (component == nullptr) {
+                    typeComponent = new TypeComponent(player); // 'player' est un choix par défaut
+                } else {
+                    typeComponent = dynamic_cast<TypeComponent*>(component);
+                    if (typeComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                std::underlying_type<entityType_t>::type typeInt;
+                iss.read(reinterpret_cast<char*>(&typeInt), sizeof(typeInt));
+                typeComponent->type = static_cast<entityType_t>(typeInt);
+
+                return typeComponent;
             }
 
             entityType_t type;
