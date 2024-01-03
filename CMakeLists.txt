@@ -6,7 +6,11 @@ set(CMAKE_CXX_COMPILER clang++)
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -g -Og")
+if(MSVC)
+    add_compile_options(/W4) # High warning level
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+endif()
 
 include_directories(include)
 
@@ -19,14 +23,6 @@ if (NOT SFML_FOUND)
             GIT_TAG 2.6.x)
     FetchContent_MakeAvailable(SFML)
 endif ()
-
-# if (NOT LIBCONFIG_FOUND)
-#     include(FetchContent)
-#     FetchContent_Declare(LIBCONFIG
-#             GIT_REPOSITORY https://github.com/hyperrealm/libconfig.git
-#             GIT_TAG master)
-#     FetchContent_MakeAvailable(LIBCONFIG)
-# endif()
 
 add_executable(r-type
         include/ECS/Components.hpp
@@ -85,6 +81,30 @@ add_executable(r-type
         src/main.cpp
 )
 
-target_link_libraries(r-type PRIVATE sfml-graphics)
+target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio)
 
+
+if(MSVC)
+add_custom_command(TARGET r-type POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-graphics-2.dll"
+        "${CMAKE_SOURCE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-window-2.dll"
+        "${CMAKE_SOURCE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-system-2.dll"
+        "${CMAKE_SOURCE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-network-2.dll"
+        "${CMAKE_SOURCE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-audio-2.dll"
+        "${CMAKE_SOURCE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/r-type.exe"
+        "${CMAKE_SOURCE_DIR}"
+)
+else()
 install(TARGETS r-type DESTINATION bin)
+endif()
