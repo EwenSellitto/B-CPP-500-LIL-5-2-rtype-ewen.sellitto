@@ -7,7 +7,29 @@ on:
     branches: [main, develop]
 
 jobs:
+  create-release:
+  runs-on: ubuntu-latest
+  outputs:
+    upload_url: ${{ steps.create_release.outputs.upload_url }}
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: Release_${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
+        body: "New version of the Rtype"
+        message: "New version of rtype"
+
   build-linux:
+    needs: create-release
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +39,8 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt upgrade -y
-          sudo apt install cmake \
+          sudo apt install zip \
+            cmake \
             build-essential \
             libtool \
             autoconf \
@@ -53,7 +76,31 @@ jobs:
           cmake ..
           make -j$(nproc)
 
+      - name: Create project archive
+        run: |
+          mkdir Linux
+          cp r-type Linux
+          cp -r assets Linux
+          zip Linux.zip Linux
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: r-type
+          path: ${{ github.workspace }}/Linux.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/Linux.zip
+          asset_name: Linux.zip
+          asset_content_type: application/zip
+
   build-windows:
+    needs: create-release
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -66,34 +113,20 @@ jobs:
 
       - name: Create project archive
         run: |
-          mkdir release
-          Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath r-type.zip
+          Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath Windows.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: r-type
-          path: ${{ github.workspace }}/r-type.zip
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: Release_${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
-          draft: false
-          prerelease: false
-          body: "New version of the Rtype"
-          message: "New version of rtype"
+          path: ${{ github.workspace }}/Windows.zip
 
       - name: Upload Artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/r-type.zip
-          asset_name: r-type.zip
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/Windows.zip
+          asset_name: Windows.zip
           asset_content_type: application/zip
