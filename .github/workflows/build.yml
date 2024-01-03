@@ -8,25 +8,25 @@ on:
 
 jobs:
   create-release:
-  runs-on: ubuntu-latest
-  outputs:
-    upload_url: ${{ steps.create_release.outputs.upload_url }}
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: Release_${{ github.run_number }}
-        release_name: Release ${{ github.run_number }}
-        draft: false
-        prerelease: false
-        body: "New version of the Rtype"
-        message: "New version of rtype"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: Release_${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          body: "New version of the Rtype"
+          message: "New version of rtype"
 
   build-linux:
     needs: create-release
