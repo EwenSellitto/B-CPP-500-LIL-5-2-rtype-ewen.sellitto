@@ -63,3 +63,27 @@ jobs:
           mkdir build && cd build
           cmake -G "Visual Studio 17" -A x64 ..
           cmake --build . --config Release
+
+      - name: Create project archive
+        run: |
+          mkdir release
+          Compress-Archive -Path r-type.exe, assets/*, *.dll -DestinationPath r-type.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: r-type release
+          path: r-type.zip
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          body: "New version of the Rtype"
+          assets: r-type.zip
