@@ -28,13 +28,13 @@ namespace Entities
     {
         using namespace Engine::Components;
 
-        id_t ship_id = world->createEntity(
+        ECS::id_t ship_id = world->createEntity(
             new PlayerComponent(), new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
 
-    void createButtonEntities(ECS::World *world)
+    inline void createButtonEntities(ECS::World *world)
     {
         using namespace Engine::Components;
 
@@ -44,8 +44,8 @@ namespace Entities
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
-    void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,
-                          bool first, int priority)
+    inline void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,
+                                 bool first, int priority)
     {
 
         using namespace Engine::Components;
@@ -87,17 +87,18 @@ namespace Entities
                          ParallaxLayer::NearBackground, 4, false, -3);
     }
 
-    size_t basicEnemyMaker(float y, bool isAttacking)
+    inline size_t basicEnemyMaker(float y, bool isAttacking)
     {
         using namespace Engine::Components;
 
         ECS::World &world       = Engine::EngineClass::getEngine().world();
         auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
-        id_t enemyId = world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-                                          new RenderableComponent(attributes.spritePath, 20, 20, 0),
-                                          new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
-                                          new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
+        ECS::id_t   enemyId =
+            world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
+                               new RenderableComponent(attributes.spritePath, 20, 20, 0),
+                               new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
+                               new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
