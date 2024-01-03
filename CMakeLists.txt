@@ -60,6 +60,7 @@ add_executable(r-type
         include/Engine/Engine.hpp
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp
+        include/Engine/Utils/Math.hpp
         src/Engine/Engine.cpp
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Renderer.system.cpp

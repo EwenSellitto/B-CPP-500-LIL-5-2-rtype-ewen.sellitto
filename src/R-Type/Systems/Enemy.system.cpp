@@ -17,6 +17,7 @@
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
+#include "Engine/Utils/Math.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
@@ -100,7 +101,7 @@ void EnemySystem::tryMakeEnemyAttack()
         comp->lastAttack = currentTime;
 
         float angleRadians = std::atan2(comp->bulletDestination.y, comp->bulletDestination.x);
-        float angle        = angleRadians * 180.0f / static_cast<float>(M_PI);
+        float angle        = angleRadians * 180.0f / static_cast<float>(PI);
         angle += 90.0f;
         if (angle < 0) angle += 360.0f;
 
