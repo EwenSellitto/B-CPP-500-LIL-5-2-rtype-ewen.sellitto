@@ -115,3 +115,5 @@ r-type
 
 #templates
 include/Engine/Components/Template.component.hpp
+test.cpp
+test

@@ -85,6 +85,7 @@ add_executable(r-type
         src/R-Type/Systems/Bullets.system.cpp
 
         include/Server/Server.hpp
+        include/Server/Network.hpp
         src/Server.cpp
 
         src/main.cpp

@@ -10,15 +10,15 @@
 
 #include "Engine/Engine.hpp"
 #include "R-Type/GameWorld/GameWorld.hpp"
-#include "Server/Server.hpp"
+#include "Server/Network.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-    Server               server(9555);
+    Network              network;
 
     // Création du thread pour le serveur
-    std::thread serverThread([&]() { server.run(); });
+    std::thread serverThread([&]() { network.startServer(5555); });
 
     try {
         engine.setStartWorld("menu");
