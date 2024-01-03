@@ -24,25 +24,27 @@ namespace Engine::Components
 
             ~SpeedComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 std::ostringstream oss(std::ios::binary);
-                oss.write(reinterpret_cast<const char*>(&speed), sizeof(speed));
+                oss.write(reinterpret_cast<const char *>(&speed), sizeof(speed));
 
-                const std::string& str = oss.str();
+                const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
-                SpeedComponent* speedComponent;
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            {
+                SpeedComponent *speedComponent;
                 if (component == nullptr) {
                     speedComponent = new SpeedComponent(0.0f);
                 } else {
-                    speedComponent = dynamic_cast<SpeedComponent*>(component);
+                    speedComponent = dynamic_cast<SpeedComponent *>(component);
                     if (speedComponent == nullptr) return nullptr;
                 }
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-                iss.read(reinterpret_cast<char*>(&speedComponent->speed), sizeof(speedComponent->speed));
+                iss.read(reinterpret_cast<char *>(&speedComponent->speed), sizeof(speedComponent->speed));
 
                 return speedComponent;
             }

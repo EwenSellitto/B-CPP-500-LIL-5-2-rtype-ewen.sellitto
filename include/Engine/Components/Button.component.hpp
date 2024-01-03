@@ -20,7 +20,8 @@ namespace Engine::Components
 
             ~ButtonComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 return std::vector<char>();
             }
     };

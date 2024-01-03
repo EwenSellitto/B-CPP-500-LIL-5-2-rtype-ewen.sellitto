@@ -34,27 +34,29 @@ namespace Engine::Components
 
             ~ViewComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 std::ostringstream oss(std::ios::binary);
-                oss.write(reinterpret_cast<const char*>(&position.x), sizeof(position.x));
-                oss.write(reinterpret_cast<const char*>(&position.y), sizeof(position.y));
+                oss.write(reinterpret_cast<const char *>(&position.x), sizeof(position.x));
+                oss.write(reinterpret_cast<const char *>(&position.y), sizeof(position.y));
 
-                const std::string& str = oss.str();
+                const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
-                ViewComponent* viewComponent;
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            {
+                ViewComponent *viewComponent;
                 if (component == nullptr) {
                     viewComponent = new ViewComponent();
                 } else {
-                    viewComponent = dynamic_cast<ViewComponent*>(component);
+                    viewComponent = dynamic_cast<ViewComponent *>(component);
                     if (viewComponent == nullptr) return nullptr;
                 }
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-                iss.read(reinterpret_cast<char*>(&viewComponent->position.x), sizeof(viewComponent->position.x));
-                iss.read(reinterpret_cast<char*>(&viewComponent->position.y), sizeof(viewComponent->position.y));
+                iss.read(reinterpret_cast<char *>(&viewComponent->position.x), sizeof(viewComponent->position.x));
+                iss.read(reinterpret_cast<char *>(&viewComponent->position.y), sizeof(viewComponent->position.y));
 
                 // Configurer view en fonction de position
                 viewComponent->view.setCenter(sf::Vector2f(viewComponent->position.x, viewComponent->position.y));

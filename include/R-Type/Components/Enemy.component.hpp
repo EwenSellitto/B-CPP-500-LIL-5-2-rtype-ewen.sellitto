@@ -20,29 +20,31 @@ namespace Engine::Components
 
             ~EnemyComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 std::ostringstream oss(std::ios::binary);
-                oss.write(reinterpret_cast<const char*>(&health), sizeof(health));
+                oss.write(reinterpret_cast<const char *>(&health), sizeof(health));
                 auto enemyTypeInt = static_cast<std::underlying_type<EnemyData::EnemyType>::type>(enemyType);
-                oss.write(reinterpret_cast<const char*>(&enemyTypeInt), sizeof(enemyTypeInt));
+                oss.write(reinterpret_cast<const char *>(&enemyTypeInt), sizeof(enemyTypeInt));
 
-                const std::string& str = oss.str();
+                const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
-                EnemyComponent* enemyComponent;
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            {
+                EnemyComponent *enemyComponent;
                 if (component == nullptr) {
                     enemyComponent = new EnemyComponent(0, EnemyData::EnemyType::Weak); // Choix par défaut
                 } else {
-                    enemyComponent = dynamic_cast<EnemyComponent*>(component);
+                    enemyComponent = dynamic_cast<EnemyComponent *>(component);
                     if (enemyComponent == nullptr) return nullptr;
                 }
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-                iss.read(reinterpret_cast<char*>(&enemyComponent->health), sizeof(enemyComponent->health));
+                iss.read(reinterpret_cast<char *>(&enemyComponent->health), sizeof(enemyComponent->health));
                 std::underlying_type<EnemyData::EnemyType>::type enemyTypeInt;
-                iss.read(reinterpret_cast<char*>(&enemyTypeInt), sizeof(enemyTypeInt));
+                iss.read(reinterpret_cast<char *>(&enemyTypeInt), sizeof(enemyTypeInt));
                 enemyComponent->enemyType = static_cast<EnemyData::EnemyType>(enemyTypeInt);
 
                 return enemyComponent;

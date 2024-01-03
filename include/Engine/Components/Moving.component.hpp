@@ -31,35 +31,43 @@ namespace Engine::Components
 
             ~MovingComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 std::ostringstream oss(std::ios::binary);
-                oss.write(reinterpret_cast<const char*>(&initialPos.x), sizeof(initialPos.x));
-                oss.write(reinterpret_cast<const char*>(&initialPos.y), sizeof(initialPos.y));
-                oss.write(reinterpret_cast<const char*>(&moveAmount.x), sizeof(moveAmount.x));
-                oss.write(reinterpret_cast<const char*>(&moveAmount.y), sizeof(moveAmount.y));
-                oss.write(reinterpret_cast<const char*>(&moveDuration), sizeof(moveDuration));
-                oss.write(reinterpret_cast<const char*>(&moveStartTime), sizeof(moveStartTime));
+                oss.write(reinterpret_cast<const char *>(&initialPos.x), sizeof(initialPos.x));
+                oss.write(reinterpret_cast<const char *>(&initialPos.y), sizeof(initialPos.y));
+                oss.write(reinterpret_cast<const char *>(&moveAmount.x), sizeof(moveAmount.x));
+                oss.write(reinterpret_cast<const char *>(&moveAmount.y), sizeof(moveAmount.y));
+                oss.write(reinterpret_cast<const char *>(&moveDuration), sizeof(moveDuration));
+                oss.write(reinterpret_cast<const char *>(&moveStartTime), sizeof(moveStartTime));
 
-                const std::string& str = oss.str();
+                const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
-                MovingComponent* movingComponent;
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            {
+                MovingComponent *movingComponent;
                 if (component == nullptr) {
                     movingComponent = new MovingComponent({0, 0}, 0, {0, 0});
                 } else {
-                    movingComponent = dynamic_cast<MovingComponent*>(component);
+                    movingComponent = dynamic_cast<MovingComponent *>(component);
                     if (movingComponent == nullptr) return nullptr;
                 }
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-                iss.read(reinterpret_cast<char*>(&movingComponent->initialPos.x), sizeof(movingComponent->initialPos.x));
-                iss.read(reinterpret_cast<char*>(&movingComponent->initialPos.y), sizeof(movingComponent->initialPos.y));
-                iss.read(reinterpret_cast<char*>(&movingComponent->moveAmount.x), sizeof(movingComponent->moveAmount.x));
-                iss.read(reinterpret_cast<char*>(&movingComponent->moveAmount.y), sizeof(movingComponent->moveAmount.y));
-                iss.read(reinterpret_cast<char*>(&movingComponent->moveDuration), sizeof(movingComponent->moveDuration));
-                iss.read(reinterpret_cast<char*>(&movingComponent->moveStartTime), sizeof(movingComponent->moveStartTime));
+                iss.read(reinterpret_cast<char *>(&movingComponent->initialPos.x),
+                         sizeof(movingComponent->initialPos.x));
+                iss.read(reinterpret_cast<char *>(&movingComponent->initialPos.y),
+                         sizeof(movingComponent->initialPos.y));
+                iss.read(reinterpret_cast<char *>(&movingComponent->moveAmount.x),
+                         sizeof(movingComponent->moveAmount.x));
+                iss.read(reinterpret_cast<char *>(&movingComponent->moveAmount.y),
+                         sizeof(movingComponent->moveAmount.y));
+                iss.read(reinterpret_cast<char *>(&movingComponent->moveDuration),
+                         sizeof(movingComponent->moveDuration));
+                iss.read(reinterpret_cast<char *>(&movingComponent->moveStartTime),
+                         sizeof(movingComponent->moveStartTime));
 
                 return movingComponent;
             }

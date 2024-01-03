@@ -23,25 +23,27 @@ namespace Engine::Components
             explicit BaseBulletComponent(bool fromEnemy) : fromEnemy(fromEnemy) {}
             ~BaseBulletComponent() override = default;
 
-            std::vector<char> serialize(void) override {
+            std::vector<char> serialize(void) override
+            {
                 std::ostringstream oss(std::ios::binary);
-                oss.write(reinterpret_cast<const char*>(&fromEnemy), sizeof(fromEnemy));
+                oss.write(reinterpret_cast<const char *>(&fromEnemy), sizeof(fromEnemy));
 
-                const std::string& str = oss.str();
+                const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr) {
-                BaseBulletComponent* bulletComponent;
+            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            {
+                BaseBulletComponent *bulletComponent;
                 if (component == nullptr) {
                     bulletComponent = new BaseBulletComponent(false);
                 } else {
-                    bulletComponent = dynamic_cast<BaseBulletComponent*>(component);
+                    bulletComponent = dynamic_cast<BaseBulletComponent *>(component);
                     if (bulletComponent == nullptr) return nullptr;
                 }
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-                iss.read(reinterpret_cast<char*>(&bulletComponent->fromEnemy), sizeof(bulletComponent->fromEnemy));
+                iss.read(reinterpret_cast<char *>(&bulletComponent->fromEnemy), sizeof(bulletComponent->fromEnemy));
 
                 return bulletComponent;
             }
