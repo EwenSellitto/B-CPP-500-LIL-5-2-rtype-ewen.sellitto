@@ -81,10 +81,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: Release
           release_name: Release ${{ github.run_number }}
           draft: false
           prerelease: false
           body: "New version of the Rtype"
           assets: r-type.zip
-          message: "New version of rtype"
