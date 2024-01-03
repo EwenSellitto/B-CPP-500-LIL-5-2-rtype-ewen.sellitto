@@ -40,7 +40,8 @@ namespace GameWorld
         auto world = new ECS::World();
 
         Entities::createViewEntity(world);
-        Entities::createButtonEntities(world);
+        // Entities::createButtonEntities(world);
+        Entities::createMenuEntities(world);
         Entities::createParallax(world);
         Systems::addUISystem(world);
 

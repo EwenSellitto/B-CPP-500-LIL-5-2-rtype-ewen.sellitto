@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -g -Og
 
 include_directories(include)
 
-find_package(SFML 2.6 COMPONENTS graphics QUIET)
+find_package(SFML 2.6 COMPONENTS graphics QUIET )
 
 if (NOT SFML_FOUND)
     include(FetchContent)
@@ -46,12 +46,14 @@ add_executable(r-type
         include/Engine/Systems/Physics.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
+        include/Engine/Systems/Sound.system.hpp
         include/Engine/Systems/Animation.system.hpp
         include/Engine/Components/Button.component.hpp
         include/Engine/Components/Renderable.component.hpp
         include/R-Type/Components/Enemy.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/Text.component.hpp
+        include/Engine/Components/Music.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Collision.component.hpp
         include/R-Type/Components/Player.component.hpp
@@ -70,6 +72,7 @@ add_executable(r-type
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/Physics.system.cpp
         src/Engine/Systems/Parallax.system.cpp
+        src/Engine/Systems/Sound.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
 
@@ -86,6 +89,6 @@ add_executable(r-type
         src/main.cpp
 )
 
-target_link_libraries(r-type PRIVATE sfml-graphics)
+target_link_libraries(r-type PRIVATE sfml-graphics sfml-audio )
 
 install(TARGETS r-type DESTINATION bin)

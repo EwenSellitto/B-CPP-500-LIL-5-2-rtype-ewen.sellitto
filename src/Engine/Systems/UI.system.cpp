@@ -33,7 +33,7 @@ void UI::tick()
     sf::Vector2f      worldPos      = window->mapPixelToCoords(mousePosition);
 
     auto &world = getWorld();
-
+    // std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
     world.each<ButtonComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                          ECS::ComponentHandle<ButtonComponent>     buttonComp,
                                                          ECS::ComponentHandle<RenderableComponent> renderable) {
@@ -64,7 +64,7 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>    
 void UI::resetButtonVisual(ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     renderable->sprite.setColor(sf::Color(255, 255, 255, 255));
-    renderable->scale = {1, 1};
+    renderable->scale = renderable->savedScale;
 }
 
 void UI::hoverEffect(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
@@ -90,15 +90,13 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        renderable->scale = {0.9f, 0.9f};
+        renderable->scale = {static_cast<float>(renderable->scale.x * 0.9),
+                             static_cast<float>(renderable->scale.y * 0.9)};
         if (!buttonComp->isClicked) {
             buttonComp->isClicked = true;
         }
     } else if (buttonComp->isClicked) {
         buttonComp->onClick();
         buttonComp->isClicked = false;
-
-        if (buttonComp->text == "Start Game") handleStartGame();
-        if (buttonComp->text == "Quit") handleQuitGame();
     }
 }
