@@ -6,7 +6,7 @@ set(CMAKE_CXX_COMPILER clang++)
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -g -Og")
 
 include_directories(include)
 

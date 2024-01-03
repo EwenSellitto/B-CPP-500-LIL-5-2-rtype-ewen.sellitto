@@ -8,9 +8,9 @@
 
 namespace GameWorld
 {
-    inline std::shared_ptr<ECS::World> createGameWorld()
+    inline ECS::World *createGameWorld()
     {
-        auto world = std::make_shared<ECS::World>();
+        auto world = new ECS::World();
 
         // Setup view and create entities
         Entities::createViewEntity(world);
@@ -34,20 +34,20 @@ namespace GameWorld
         return world;
     }
 
-    inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)
+    // inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)
+    inline ECS::World *createMenuWorld()
     {
-        auto world = std::make_shared<ECS::World>();
+        auto world = new ECS::World();
 
         Entities::createViewEntity(world);
         Entities::createButtonEntities(world);
 
         Systems::addUISystem(world);
 
-        engine.setStartWorld("menu");
         // Disclaimer: this hasn't been done by me, but trying to make it pretty it crashes, as I think when we switch
         // world while being in one doing a function, it crashes, so we should keep a shared_ptr of the world
         // while we're in it, and remove it safely when we've truly exited the world
-        engine.addWorldFactory("menu", [world]() { return world; });
+        // engine.addWorldFactory("menu", [world]() { return world; });
 
         return world;
     }
