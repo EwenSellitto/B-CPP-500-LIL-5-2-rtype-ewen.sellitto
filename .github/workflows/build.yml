@@ -75,7 +75,7 @@ jobs:
           mkdir build && cd build
           cmake ..
           make -j$(nproc)
-          mv rtype ..
+          mv r-type ..
 
       - name: Create project archive
         run: |
