@@ -21,6 +21,10 @@
 #include "EventSubscriber.hpp"
 #include "Utilities.hpp"
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+typedef long int Int64;
+#endif
+
 namespace ECS
 {
 
