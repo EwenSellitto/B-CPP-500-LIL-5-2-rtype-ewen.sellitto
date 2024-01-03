@@ -17,6 +17,14 @@ namespace Engine::Components
     struct EnemyComponent : ECS::BaseComponent {
         public:
             EnemyComponent(int health, EnemyData::EnemyType enemyType) : health(health), enemyType(enemyType) {}
+
+            ~EnemyComponent() override = default;
+
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             int                  health;
             EnemyData::EnemyType enemyType;
     };

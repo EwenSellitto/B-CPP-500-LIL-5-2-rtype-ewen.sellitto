@@ -28,6 +28,11 @@ namespace Engine::Components
 
             ~WorldMoveProgressComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             // in epoch milliseconds
             size_t startingTime;
 

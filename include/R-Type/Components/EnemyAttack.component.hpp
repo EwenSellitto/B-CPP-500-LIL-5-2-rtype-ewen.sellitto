@@ -29,6 +29,11 @@ namespace Engine::Components
 
             ~EnemyAttackComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             // last millisecond from epoch.
             size_t lastAttack;
             size_t attackRate;

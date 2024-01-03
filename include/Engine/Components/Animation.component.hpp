@@ -21,6 +21,11 @@ namespace Engine::Components
                   frameCount(frameCount){};
             ~AnimationComponent() = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             // x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,
             //                   its x, y after looking are : 13, 10
             // width, height; ex: the 5, 18 in question.

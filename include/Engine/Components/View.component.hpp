@@ -34,6 +34,11 @@ namespace Engine::Components
 
             ~ViewComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             sf::Vector2<float> position;
             sf::View           view;
 

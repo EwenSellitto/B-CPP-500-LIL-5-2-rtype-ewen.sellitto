@@ -8,6 +8,9 @@
 #pragma once
 
 #include "ECS/Components.hpp"
+#include <sstream>
+#include <iostream>
+#include <vector>
 
 namespace Engine::Components
 {
@@ -19,14 +22,36 @@ namespace Engine::Components
             explicit PositionComponent(int x, int y) : x(x), y(y){};
             ~PositionComponent() override = default;
 
-            static PositionComponent_serialized_t serialize(PositionComponent &data)
+            std::vector<char> serialize(void) override
             {
-                return std::make_pair(data.x, data.y);
+                std::ostringstream oss(std::ios::binary);
+
+                oss.write(reinterpret_cast<const char*>(&x), sizeof(int));
+                oss.write(reinterpret_cast<const char*>(&y), sizeof(int));
+                const std::string& str = oss.str();
+                return std::vector<char>(str.begin(), str.end());
             }
 
-            static PositionComponent deserialize(PositionComponent_serialized_t data)
+            static ECS::BaseComponent *deserialize(const std::vector<char>& vec, ECS::BaseComponent* component = nullptr)
             {
-                return PositionComponent(data.first, data.second);
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                if (component != nullptr) {
+                    auto* enemyQueueComponent = dynamic_cast<PositionComponent*>(component);
+                    if (enemyQueueComponent == nullptr) return nullptr;
+                }
+                while (iss.tellg() < vec.size()) {
+                    PositionComponent_serialized_t data;
+                    iss.read(reinterpret_cast<char*>(&data.first), sizeof(int));
+                    iss.read(reinterpret_cast<char*>(&data.second), sizeof(int));
+                    if (component == nullptr) {
+                        component = new PositionComponent(data.first, data.second);
+                    } else {
+                        auto* positionComponent = dynamic_cast<PositionComponent*>(component);
+                        if (positionComponent == nullptr) return nullptr;
+                    }
+                }
+                return component;
             }
 
             int x;

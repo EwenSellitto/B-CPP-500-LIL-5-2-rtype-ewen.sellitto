@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 namespace ECS
 {
@@ -24,6 +25,8 @@ namespace ECS
              * @brief Virtual destructor for BaseComponent
              */
             virtual ~BaseComponent() = default;
+
+            virtual std::vector<char> serialize() = 0;
     };
 
     /**

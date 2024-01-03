@@ -31,6 +31,11 @@ namespace Engine::Components
 
             ~MovingComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             size_t       moveStartTime;
             sf::Vector2f initialPos;
             sf::Vector2f moveAmount;

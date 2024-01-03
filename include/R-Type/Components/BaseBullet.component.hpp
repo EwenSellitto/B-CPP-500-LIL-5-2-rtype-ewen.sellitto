@@ -23,6 +23,11 @@ namespace Engine::Components
             explicit BaseBulletComponent(bool fromEnemy) : fromEnemy(fromEnemy) {}
             ~BaseBulletComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             bool fromEnemy;
 
         private:

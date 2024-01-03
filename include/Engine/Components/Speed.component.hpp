@@ -24,6 +24,11 @@ namespace Engine::Components
 
             ~SpeedComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             float speed;
 
         private:

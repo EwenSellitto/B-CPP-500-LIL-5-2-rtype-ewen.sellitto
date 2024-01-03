@@ -24,6 +24,11 @@ namespace Engine::Components
 
             ~MissileComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
         private:
     };
 } // namespace Engine::Components

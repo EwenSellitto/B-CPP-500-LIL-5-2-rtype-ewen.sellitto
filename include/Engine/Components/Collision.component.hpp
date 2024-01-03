@@ -26,6 +26,11 @@ namespace Engine::Components
 
             ~CollisionComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             sf::FloatRect rect;
     };
 } // namespace Engine::Components

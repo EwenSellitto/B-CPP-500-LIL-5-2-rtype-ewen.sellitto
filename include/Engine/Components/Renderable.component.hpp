@@ -46,6 +46,11 @@ namespace Engine::Components
 
             ~RenderableComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             sf::Texture              texture;
             sf::Sprite               sprite;
             sf::Vector2<std::size_t> size;

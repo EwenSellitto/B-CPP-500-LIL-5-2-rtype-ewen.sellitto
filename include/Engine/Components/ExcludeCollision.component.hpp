@@ -16,6 +16,11 @@ namespace Engine::Components
             ExcludeCollisionComponent(std::size_t id) : id(id) {}
             ~ExcludeCollisionComponent() override = default;
 
+            std::vector<char> serialize(void) override
+            {
+                return std::vector<char>();
+            }
+
             std::size_t id;
     };
 } // namespace Engine::Components

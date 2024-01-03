@@ -10,7 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
 
 include_directories(include)
 
-find_package(SFML 2.6 COMPONENTS graphics QUIET)
+find_package(SFML 2.6 COMPONENTS graphics network QUIET)
 
 if (NOT SFML_FOUND)
     include(FetchContent)
@@ -82,9 +82,12 @@ add_executable(r-type
         src/R-Type/Systems/Enemy.system.cpp
         src/R-Type/Systems/Bullets.system.cpp
 
+        include/Server/Server.hpp
+        src/Server.cpp
+
         src/main.cpp
 )
 
-target_link_libraries(r-type PRIVATE sfml-graphics)
+target_link_libraries(r-type PRIVATE sfml-graphics sfml-network)
 
 install(TARGETS r-type DESTINATION bin)

@@ -23,6 +23,10 @@ namespace Engine::Components
             explicit TypeComponent(entityType_t type) : type(type){};
             ~TypeComponent() override = default;
 
+            std::vector<char> serialize(void) override {
+                return std::vector<char>();
+            }
+
             entityType_t type;
     };
 } // namespace Engine::Components
