@@ -75,12 +75,11 @@ jobs:
           mkdir build && cd build
           cmake ..
           make -j$(nproc)
-          mv r-type ..
 
       - name: Create project archive
         run: |
           mkdir Linux
-          cp r-type Linux
+          cp build/r-type Linux
           cp -r assets Linux
           zip Linux.zip Linux
 
