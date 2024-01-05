@@ -29,7 +29,7 @@ namespace Entities
     {
         using namespace Engine::Components;
 
-        id_t ship_id = world->createEntity(
+        [[maybe_unused]] id_t ship_id = world->createEntity(
             new PlayerComponent(), new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
@@ -39,7 +39,7 @@ namespace Entities
     {
         using namespace Engine::Components;
 
-        auto startButtonEntity = world->createEntity(
+        [[maybe_unused]] auto startButtonEntity = world->createEntity(
             new ButtonComponent("Start Game", []() { std::cout << "Start Game" << std::endl; }),
             new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));

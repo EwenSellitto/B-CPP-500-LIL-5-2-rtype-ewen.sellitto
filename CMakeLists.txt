@@ -6,7 +6,11 @@ set(CMAKE_CXX_COMPILER clang++)
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+if(MSVC)
+    add_compile_options(/W4) # High warning level
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+endif()
 
 include_directories(include)
 

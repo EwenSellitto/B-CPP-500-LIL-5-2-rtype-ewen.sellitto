@@ -7,7 +7,11 @@
 
 #pragma once
 
+#include <vector>
+#include <sstream>
+
 #include "ECS/Components.hpp"
+
 namespace Engine::Components
 {
     class ExcludeCollisionComponent : public ECS::BaseComponent

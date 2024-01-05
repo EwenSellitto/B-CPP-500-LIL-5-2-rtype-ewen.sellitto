@@ -11,6 +11,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <tuple>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
@@ -31,7 +33,7 @@ namespace Engine::Components
 
             ~MovingComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&initialPos.x), sizeof(initialPos.x));
@@ -42,7 +44,7 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&moveStartTime), sizeof(moveStartTime));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)

@@ -15,22 +15,20 @@
 
 namespace Engine::Components
 {
-    typedef std::pair<long int, long int> PositionComponent_serialized_t;
-
     struct PositionComponent : public ECS::BaseComponent {
         public:
             PositionComponent() : x(0), y(0){};
             explicit PositionComponent(int x, int y) : x(x), y(y){};
             ~PositionComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&x), sizeof(x));
                 oss.write(reinterpret_cast<const char *>(&y), sizeof(y));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)

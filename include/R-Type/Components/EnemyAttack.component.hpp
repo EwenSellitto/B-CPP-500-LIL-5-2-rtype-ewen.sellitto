@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <tuple>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -29,7 +31,7 @@ namespace Engine::Components
 
             ~EnemyAttackComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&lastAttack), sizeof(lastAttack));
@@ -40,7 +42,7 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&bulletDuration), sizeof(bulletDuration));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)

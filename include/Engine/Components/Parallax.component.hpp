@@ -1,6 +1,15 @@
-// ParallaxComponent.hpp
+/*
+** EPITECH PROJECT, 2023
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** ExcludeCollision.component.hpp
+*/
 
 #pragma once
+
+#include <vector>
+#include <sstream>
+
 #include "ECS/Components.hpp"
 
 enum class ParallaxLayer {

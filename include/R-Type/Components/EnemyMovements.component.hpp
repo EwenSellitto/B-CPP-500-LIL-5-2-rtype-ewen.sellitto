@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <tuple>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -63,7 +65,7 @@ namespace Engine::Components
 
                 // Désérialiser movementsQueueLoop
                 enemyMovement->movementsQueueLoop.clear();
-                while (iss.tellg() < vec.size()) {
+                while (iss.tellg() < static_cast<long long>(vec.size())) {
                     size_t moveType;
                     float  x, y;
                     iss.read(reinterpret_cast<char *>(&moveType), sizeof(size_t));

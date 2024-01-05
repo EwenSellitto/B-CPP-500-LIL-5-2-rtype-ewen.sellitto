@@ -25,8 +25,8 @@ namespace Engine::Components
 {
     struct EnemyQueueComponent : public ECS::BaseComponent {
         public:
-            EnemyQueueComponent() {}
-            EnemyQueueComponent(
+            EnemyQueueComponent() = default;
+            explicit EnemyQueueComponent(
                 std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, size_t>>> enemyQueueFactories)
                 : enemyQueueFactories(enemyQueueFactories)
             {
@@ -53,7 +53,7 @@ namespace Engine::Components
                     oss.write(reinterpret_cast<const char *>(&functionId), sizeof(size_t));
                 }
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(const std::vector<char> &vec,
@@ -65,7 +65,7 @@ namespace Engine::Components
                     auto *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
                     if (enemyQueueComponent == nullptr) return nullptr;
                 }
-                while (iss.tellg() < vec.size()) {
+                while (iss.tellg() < static_cast<long long>(vec.size())) {
                     // Désérialiser le premier booléen
                     bool hasSpawned;
                     iss.read(reinterpret_cast<char *>(&hasSpawned), sizeof(bool));
@@ -88,10 +88,10 @@ namespace Engine::Components
                                 {std::make_pair(hasSpawned,
                                                 std::make_pair(std::make_tuple(x, y, isAttacking), functionId))}));
                     } else {
-                        EnemyQueueComponent *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
+                        auto *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
                         if (enemyQueueComponent == nullptr) return nullptr;
-                        enemyQueueComponent->enemyQueueFactories.push_back(
-                            std::make_pair(hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking), functionId)));
+                        enemyQueueComponent->enemyQueueFactories.emplace_back(
+                            hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking), functionId));
                     }
                 }
                 return component;

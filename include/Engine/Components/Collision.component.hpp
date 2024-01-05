@@ -11,6 +11,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <map>
 #include <string>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Rect.hpp"
@@ -26,7 +28,7 @@ namespace Engine::Components
 
             ~CollisionComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&rect.left), sizeof(rect.left));
@@ -35,7 +37,7 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&rect.height), sizeof(rect.height));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)

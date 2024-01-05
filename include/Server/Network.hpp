@@ -137,7 +137,7 @@ class Network
 
         WaitingRoom                                                  waitingRoom;
         sf::UdpSocket                                                socket;
-        bool                                                         isServer = true;
+        [[maybe_unused]] bool                                        isServer = true;
         bool                                                         running  = true;
         std::unordered_map<sf::IpAddress, ClientInfo, IpAddressHash> clientsInfo;
 };

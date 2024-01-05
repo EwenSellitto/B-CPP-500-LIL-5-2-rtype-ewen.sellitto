@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <tuple>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"

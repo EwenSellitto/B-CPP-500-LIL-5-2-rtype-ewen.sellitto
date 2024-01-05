@@ -8,6 +8,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "R-Type/Systems/Enemy.system.hpp"

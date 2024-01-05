@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <tuple>
+#include <vector>
+#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -20,13 +22,13 @@ namespace Engine::Components
 {
     struct PlayerComponent : public ECS::BaseComponent {
         public:
-            PlayerComponent(){};
+            PlayerComponent()= default;
 
             ~PlayerComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
-                return std::vector<char>();
+                return {};
             }
 
         private:

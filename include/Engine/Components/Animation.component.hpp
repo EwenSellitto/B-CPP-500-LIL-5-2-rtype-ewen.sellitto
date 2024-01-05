@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <vector>
+#include <sstream>
+
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Clock.hpp"

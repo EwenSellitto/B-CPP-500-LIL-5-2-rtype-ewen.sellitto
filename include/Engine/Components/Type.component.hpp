@@ -7,11 +7,15 @@
 
 #pragma once
 
+#include <vector>
+#include <sstream>
+
 #include "ECS/Components.hpp"
 
 namespace Engine::Components
 {
     struct TypeComponent : public ECS::BaseComponent {
+            // TODO class vouée à être supprimée
         public:
             typedef enum entityType {
                 player,
@@ -23,14 +27,14 @@ namespace Engine::Components
             explicit TypeComponent(entityType_t type) : type(type){};
             ~TypeComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 auto               typeInt = static_cast<std::underlying_type<entityType_t>::type>(type);
                 oss.write(reinterpret_cast<const char *>(&typeInt), sizeof(typeInt));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
             static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
