@@ -13,47 +13,47 @@
 
 namespace Systems
 {
-    inline void addRenderer(std::shared_ptr<ECS::World> &world)
+    inline void addRenderer(ECS::World *world)
     {
         world->addSystem<Engine::System::Renderer>("Renderer");
     }
 
-    inline void addPhysics(std::shared_ptr<ECS::World> &world)
+    inline void addPhysics(ECS::World *world)
     {
         world->addSystem<Engine::System::Physics>("Physics");
     }
 
-    inline void addPlayerMovement(std::shared_ptr<ECS::World> &world)
+    inline void addPlayerMovement(ECS::World *world)
     {
         world->addSystem<Engine::System::MovePlayer>("MovePlayer");
     }
 
-    inline void addEnemySystem(std::shared_ptr<ECS::World> &world)
+    inline void addEnemySystem(ECS::World *world)
     {
         world->addSystem<Engine::System::EnemySystem>("EnemySystem");
     }
 
-    inline void addParallaxSystem(std::shared_ptr<ECS::World> &world)
+    inline void addParallaxSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::ParallaxSystem>("ParallaxSystem");
     }
 
-    inline void addUISystem(std::shared_ptr<ECS::World> &world)
+    inline void addUISystem(ECS::World *world)
     {
         world->addSystem<Engine::System::UI>("UISystem");
     }
 
-    inline void addBulletSystem(std::shared_ptr<ECS::World> &world)
+    inline void addBulletSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::Bullets>("BulletsSystem");
     }
 
-    inline void addWorldMoveSystem(std::shared_ptr<ECS::World> &world)
+    inline void addWorldMoveSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::WorldMoveSystem>("WorldMoveSystem");
     }
 
-    inline void addAnimationSystem(std::shared_ptr<ECS::World> &world)
+    inline void addAnimationSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
     }

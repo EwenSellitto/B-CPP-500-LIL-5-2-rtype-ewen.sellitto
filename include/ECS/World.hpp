@@ -21,6 +21,10 @@
 #include "EventSubscriber.hpp"
 #include "Utilities.hpp"
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+typedef long int Int64;
+#endif
+
 namespace ECS
 {
 
@@ -38,13 +42,24 @@ namespace ECS
             World()
                 : _entities(), _global_entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine())
             {
+                std::cout << "New world created" << std::endl;
             }
 
             /**
              * @brief Destroy the World object.
              * @note This will also destroy all entities and global entities within the world.
              */
-            ~World() = default;
+            ~World()
+            {
+                _systems.clear();
+                _entities.clear();
+                for (auto &sub : _subscribers) {
+                    for (auto &pair : sub.second) {
+                        delete pair.second;
+                    }
+                }
+                std::cout << "World destroyed" << std::endl;
+            }
 
             /*===================//
             //  Entity Handling  //

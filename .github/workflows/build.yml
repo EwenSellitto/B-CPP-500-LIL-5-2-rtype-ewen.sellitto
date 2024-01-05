@@ -2,12 +2,34 @@ name: C++ CI
 
 on:
   push:
-    branches: [main, develop, feature/CI]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: Release_${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          body: "New version of the Rtype"
+          message: "New version of rtype"
+
   build-linux:
+    needs: create-release
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +39,8 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt upgrade -y
-          sudo apt install cmake \
+          sudo apt install zip \
+            cmake \
             build-essential \
             libtool \
             autoconf \
@@ -53,16 +76,57 @@ jobs:
           cmake ..
           make -j$(nproc)
 
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
+      - name: Create project archive
+        run: |
+          mkdir Linux
+          cp build/r-type Linux
+          cp -r assets Linux
+          zip Linux.zip Linux
 
-  #     - name: Install dependencies
-  #       run: |
-  #         choco install llvm
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: r-type
+          path: ${{ github.workspace }}/Linux.zip
 
-  #     - name: Build with CMake and Clang
-  #       run: |
-  #         mkdir build && cd build
-  #         cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G "Unix Makefiles" ..
-  #         make
+      - name: Upload Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/Linux.zip
+          asset_name: Linux.zip
+          asset_content_type: application/zip
+
+  build-windows:
+    needs: create-release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build with CMake and MSVC
+        run: |
+          mkdir build && cd build
+          cmake -G "Visual Studio 17" -A x64 ..
+          cmake --build . --config Release
+
+      - name: Create project archive
+        run: |
+          Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath Windows.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: r-type
+          path: ${{ github.workspace }}/Windows.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/Windows.zip
+          asset_name: Windows.zip
+          asset_content_type: application/zip
