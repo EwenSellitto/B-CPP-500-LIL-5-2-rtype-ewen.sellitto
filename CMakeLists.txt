@@ -107,5 +107,9 @@ add_custom_command(TARGET r-type POST_BUILD
         "${CMAKE_SOURCE_DIR}"
 )
 else()
-install(TARGETS r-type DESTINATION bin)
+add_custom_command(TARGET r-type POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE_DIR:r-type>/r-type"
+        "${CMAKE_SOURCE_DIR}"
+)
 endif()
