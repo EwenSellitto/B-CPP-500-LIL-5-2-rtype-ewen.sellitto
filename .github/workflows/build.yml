@@ -74,11 +74,11 @@ jobs:
         run: |
           mkdir build && cd build
           cmake ..
-          make -j$(nproc)
+          cmake --build . --config Release -- -j
 
       - name: Create project archive
         run: |
-          zip -r Linux.zip r-type assets
+          zip -r Linux.zip r-type assets *.so
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
@@ -106,7 +106,7 @@ jobs:
         run: |
           mkdir build && cd build
           cmake -G "Visual Studio 17" -A x64 ..
-          cmake --build . --config Release
+          cmake --build . --config Release -- -j
 
       - name: Create project archive
         run: |
