@@ -81,9 +81,8 @@ add_executable(r-type
         src/R-Type/Systems/Enemy.system.cpp
         src/R-Type/Systems/Bullets.system.cpp
 
-        include/Server/Server.hpp
         include/Server/Network.hpp
-        src/Server.cpp
+        src/R-Type/Server/Network.cpp
 
         src/main.cpp
 )

@@ -14,10 +14,13 @@
 #include <memory>
 #include <unordered_map>
 
+#include "Server/Network.hpp"
+
 namespace ECS
 {
     class World;
-}
+    class Network;
+} // namespace ECS
 
 #ifndef DEFAULT_WINDOW_SIZE_X
 #define DEFAULT_WINDOW_SIZE_X 800
@@ -95,7 +98,8 @@ namespace Engine
 
             std::vector<std::string> getWorldsNames();
 
-            ECS::World &world();
+            ECS::World   &world();
+            ECS::Network &network();
 
             /*=================//
             //  General Logic  //
@@ -130,6 +134,7 @@ namespace Engine
             std::string          _startWorld;
             std::size_t          _windowSizeX;
             std::size_t          _windowSizeY;
+            ECS::Network         _network;
 
             /*===================//
             //  Private Methods  //

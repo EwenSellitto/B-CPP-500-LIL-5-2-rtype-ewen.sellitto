@@ -144,6 +144,11 @@ ECS::World &EngineClass::world()
     return *_currentWorld.second;
 }
 
+ECS::Network &EngineClass::network()
+{
+    return _network;
+}
+
 /*===================//
 //  Events handling  //
 //===================*/

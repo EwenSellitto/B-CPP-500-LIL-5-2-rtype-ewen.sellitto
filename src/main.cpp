@@ -15,10 +15,6 @@
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-    Network              network;
-
-    // Création du thread pour le serveur
-    std::thread serverThread([&]() { network.startServer(5555); });
 
     try {
         engine.setStartWorld("menu");
@@ -30,8 +26,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         return 84;
     }
 
-    // Attendre la fin du thread du serveur avant de fermer l'application
-    serverThread.join();
+    engine.network().stop();
 
     return 0;
 }

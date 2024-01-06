@@ -43,6 +43,22 @@ namespace Entities
             new ButtonComponent("Start Game", []() { std::cout << "Start Game" << std::endl; }),
             new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0, {1, 1}, true));
+
+        world->createEntity(new ButtonComponent("Start Waiting Room",
+                                                []() {
+                                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+                                                    engine.network().startServer(5555);
+                                                }),
+                            new PositionComponent(200, 200),
+                            new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));
+
+        world->createEntity(new ButtonComponent("Join Waiting Room",
+                                                []() {
+                                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+                                                    engine.network().connectToServer("localhost", 5555);
+                                                }),
+                            new PositionComponent(400, 200),
+                            new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
     inline void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,

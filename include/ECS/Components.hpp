@@ -27,6 +27,19 @@ namespace ECS
             virtual ~BaseComponent() = default;
 
             virtual std::vector<char> serialize() = 0;
+
+            void setHasChanged(bool hasChanged)
+            {
+                _hasChanged = hasChanged;
+            }
+
+            bool hasChanged() const
+            {
+                return _hasChanged;
+            }
+
+        private:
+            bool _hasChanged = false;
     };
 
     /**

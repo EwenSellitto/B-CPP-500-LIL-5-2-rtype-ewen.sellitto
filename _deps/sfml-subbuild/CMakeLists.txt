@@ -1,7 +1,13 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
 
-cmake_minimum_required(VERSION 3.25.0)
+cmake_minimum_required(VERSION 3.27.7)
+
+# Reject any attempt to use a toolchain file. We must not use one because
+# we could be downloading it here. If the CMAKE_TOOLCHAIN_FILE environment
+# variable is set, the cache variable will have been initialized from it.
+unset(CMAKE_TOOLCHAIN_FILE CACHE)
+unset(ENV{CMAKE_TOOLCHAIN_FILE})
 
 # We name the project and the target for the ExternalProject_Add() call
 # to something that will highlight to the user what we are working on if
@@ -21,9 +27,9 @@ set_property(GLOBAL PROPERTY _CMAKE_FindGit_GIT_EXECUTABLE_VERSION
 
 include(ExternalProject)
 ExternalProject_Add(sfml-populate
-                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/SFML/SFML.git" "GIT_TAG" "2.6.x"
-                    SOURCE_DIR          "/home/fminguet/Desktop/epitech/Semester5/B-CPP-500-LIL-5-2-rtype-ewen.sellitto/_deps/sfml-src"
-                    BINARY_DIR          "/home/fminguet/Desktop/epitech/Semester5/B-CPP-500-LIL-5-2-rtype-ewen.sellitto/_deps/sfml-build"
+                     "UPDATE_DISCONNECTED" "False" "GIT_REPOSITORY" "https://github.com/SFML/SFML.git" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "GIT_TAG" "2.6.x"
+                    SOURCE_DIR          "/home/william/Epitech/TEK3/R-TYPE/B-CPP-500-LIL-5-2-rtype-ewen.sellitto/_deps/sfml-src"
+                    BINARY_DIR          "/home/william/Epitech/TEK3/R-TYPE/B-CPP-500-LIL-5-2-rtype-ewen.sellitto/_deps/sfml-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""

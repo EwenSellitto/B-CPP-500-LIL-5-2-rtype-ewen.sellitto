@@ -108,6 +108,17 @@ namespace ECS
             }
 
             /**
+             * @brief Get a list of components.
+             * @return std::unordered_map<id_t, std::shared_ptr<BaseComponent>>
+             * @throw std::out_of_range if a component does not exist.
+             * @note You should not destroy the components.
+             */
+            std::unordered_map<id_t, std::shared_ptr<BaseComponent>> &getComponents()
+            {
+                return _components;
+            }
+
+            /**
              * @brief Check if the Entity has a component of a specific type.
              * @tparam T Type of the component.
              * @return bool True if the component exists, false otherwise.
