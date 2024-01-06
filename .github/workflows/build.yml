@@ -78,7 +78,7 @@ jobs:
 
       - name: Create project archive
         run: |
-          zip Linux.zip r-type assets
+          zip -r Linux.zip r-type assets
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
