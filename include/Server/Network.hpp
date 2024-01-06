@@ -5,7 +5,6 @@
 #include <thread>
 #include <unordered_map>
 
-#include "Engine/Engine.hpp"
 #include "Server/ClientInfo.hpp"
 #include "Server/WaitingRoom.hpp"
 
