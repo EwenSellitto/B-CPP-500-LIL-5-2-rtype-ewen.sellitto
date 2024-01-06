@@ -12,6 +12,7 @@
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "SFML/System/Clock.hpp"
+// #include "Components/Collision.component.hpp"
 
 namespace EnemyData
 {
@@ -32,6 +33,10 @@ namespace EnemyData
         {EnemyType::Weak, EnemyAttributes("./assets/klaed/Klaed-Scout-Base.png", 50)},
         {EnemyType::Normal, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
         {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
+
+    // {EnemyType::Weak, EnemyAttributes(spriteInfoMap.at("Klaed-Scout-Base").filePath , 50)},
+    // {EnemyType::Normal, EnemyAttributes(spriteInfoMap.at("Klaed-Battlecruiser-Base").filePath, 100)},
+    // {EnemyType::Strong, EnemyAttributes(spriteInfoMap.at("Klaed-Dreadnought-Base").filePath, 150)}};
 
 } // namespace EnemyData
 #ifndef ENEMY_SPAWN_RATE
