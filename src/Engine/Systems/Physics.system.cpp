@@ -64,13 +64,12 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
     ECS::ComponentHandle<CollisionComponent>        entity_col = entity->getComponent<CollisionComponent>();
     ECS::ComponentHandle<ExcludeCollisionComponent> entity_exclude_col;
     bool                                            hasExcludeCol = entity->has<ExcludeCollisionComponent>();
-    bool                                            hasRotation   = entity->has<RenderableComponent>();
 
     if (hasExcludeCol) entity_exclude_col = entity->getComponent<ExcludeCollisionComponent>();
 
     sf::FloatRect hitbox;
 
-    if (hasRotation) {
+    if (entity->has<RenderableComponent>()) {
         ECS::ComponentHandle<RenderableComponent> renderable = entity->getComponent<RenderableComponent>();
         hitbox = get_hitbox_with_rotation(entity_col, renderable->rotation, x, y);
     } else {
@@ -86,13 +85,12 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
             entity_exclude_col->id == ent->getComponent<ExcludeCollisionComponent>()->id)
             continue;
 
-        ECS::ComponentHandle<PositionComponent>  pos         = ent->getComponent<PositionComponent>();
-        ECS::ComponentHandle<CollisionComponent> col         = ent->getComponent<CollisionComponent>();
-        bool                                     hasRotation = ent->has<RenderableComponent>();
+        ECS::ComponentHandle<PositionComponent>  pos = ent->getComponent<PositionComponent>();
+        ECS::ComponentHandle<CollisionComponent> col = ent->getComponent<CollisionComponent>();
 
         sf::FloatRect hit;
 
-        if (hasRotation) {
+        if (ent->has<RenderableComponent>()) {
             ECS::ComponentHandle<RenderableComponent> renderable = ent->getComponent<RenderableComponent>();
             hit = get_hitbox_with_rotation(col, renderable->rotation, pos->x, pos->y);
         } else {
