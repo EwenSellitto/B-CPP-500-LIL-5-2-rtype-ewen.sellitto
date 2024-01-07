@@ -10,7 +10,6 @@
 
 #include "Engine/Engine.hpp"
 #include "R-Type/GameWorld/GameWorld.hpp"
-#include "Server/Network.hpp"
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused]] char **env)
 {
