@@ -11,7 +11,6 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <cstddef>
 #include <functional>
-#include <memory>
 #include <unordered_map>
 
 #include "Server/Network.hpp"
@@ -19,7 +18,6 @@
 namespace ECS
 {
     class World;
-    class Network;
 } // namespace ECS
 
 #ifndef DEFAULT_WINDOW_SIZE_X
