@@ -1,20 +1,24 @@
 cmake_minimum_required(VERSION 3.20.5)
 
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+if (UNIX)
+    set(CMAKE_C_COMPILER clang)
+    set(CMAKE_CXX_COMPILER clang++)
+endif()
 
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
-if(MSVC)
-    add_compile_options(/W4) # High warning level
+if(WIN32)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -std=c++20 -O2")
+    set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -std=c++20 -g -0g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++20 -O2")
 endif()
 
 include_directories(include)
 
-find_package(SFML 2.6 COMPONENTS graphics QUIET)
+find_package(SFML 2.6 COMPONENTS graphics audio network system window QUIET)
 
 if (NOT SFML_FOUND)
     include(FetchContent)
@@ -84,35 +88,17 @@ add_executable(r-type
 
 target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio)
 
-
-if(MSVC)
-add_custom_command(TARGET r-type POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-graphics-2.dll"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-window-2.dll"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-system-2.dll"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-network-2.dll"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/../_deps/sfml-build/lib/Release/sfml-audio-2.dll"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/r-type.exe"
-        "${CMAKE_SOURCE_DIR}"
-)
-else()
-add_custom_command(TARGET r-type POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/r-type"
-        "${CMAKE_SOURCE_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:r-type>/_deps/sfml-build/lib/*.so"
-        "${CMAKE_SOURCE_DIR}"
-)
+if (UNIX)
+    set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib64")
 endif()
+
+install(TARGETS r-type DESTINATION .)
+
+install(DIRECTORY assets DESTINATION .)
+
+include(InstallRequiredSystemLibraries)
+set(CPACK_BUNDLE_NAME "R-Type")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+include(CPack)
