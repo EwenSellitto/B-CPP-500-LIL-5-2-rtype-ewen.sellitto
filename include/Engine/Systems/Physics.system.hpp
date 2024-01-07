@@ -13,6 +13,7 @@
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
+#include "SFML/Graphics/Rect.hpp"
 
 namespace Engine::System
 {
@@ -34,5 +35,9 @@ namespace Engine::System
 
             // collision function
             void collide(ECS::Entity *entity, int x, int y);
+
+        private:
+            sf::FloatRect get_hitbox_with_rotation(ECS::ComponentHandle<Engine::Components::CollisionComponent> &hitbox,
+                                                   int rotation, int x, int y);
     };
 } // namespace Engine::System
