@@ -12,6 +12,7 @@
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Text.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Engine.hpp"
 
@@ -39,6 +40,7 @@ void Renderer::tick()
         ECS::ComponentHandle<ViewComponent> viewComponent = it->second;
         window->setView(viewComponent->view);
     }
+
     world.each<RenderableComponent>([&](ECS::Entity *entity, ECS::ComponentHandle<RenderableComponent> renderableComp) {
         if (entity->has<PositionComponent>()) {
             auto positionComponent = entity->getComponent<PositionComponent>();
@@ -59,5 +61,10 @@ void Renderer::tick()
             window->draw(renderableComp->sprite);
         }
     }
+    world.each<TextComponent>([&](ECS::Entity *entity, ECS::ComponentHandle<TextComponent> handle) {
+        if (entity->has<TextComponent>() && handle->isDisplay) {
+            window->draw(handle->text);
+        }
+    });
     window->display();
 }
