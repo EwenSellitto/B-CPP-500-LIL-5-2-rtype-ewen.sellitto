@@ -57,6 +57,7 @@ add_executable(r-type
         include/Engine/Components/Collision.component.hpp
         include/Engine/Components/Animation.component.hpp
         include/Engine/Components/Renderable.component.hpp
+        include/Engine/Components/Drawable.component.hpp
         include/Engine/Events/Resize.event.hpp
         include/Engine/Events/Collision.event.hpp
         include/Engine/Events/KeyPressed.event.hpp

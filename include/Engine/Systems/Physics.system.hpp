@@ -7,13 +7,15 @@
 
 #pragma once
 
-#include <ctime>
-
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "SFML/Graphics/Rect.hpp"
+
+#ifndef SHOW_HITBOX
+#define NOT_SHOW_HITBOX
+#endif
 
 namespace Engine::System
 {
