@@ -120,7 +120,7 @@ namespace Entities
              std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
              std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
              std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), basicEnemyMaker))}));
+             std::make_pair(false, std::make_pair(std::make_tuple(400, 300, true), basicEnemyMaker))}));
     }
 
     inline void createWorldMoveProgress(ECS::World *world)

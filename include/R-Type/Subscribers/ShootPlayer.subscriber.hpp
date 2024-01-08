@@ -11,6 +11,8 @@
 
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Components/Position.component.hpp"
+#include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Engine.hpp"
 #include "Engine/Events/KeyPressed.event.hpp"
 #include "Engine/Events/KeyReleased.event.hpp"
 #include "R-Type/Components/Player.component.hpp"
@@ -29,18 +31,20 @@ namespace Rtype::Subscriber
                 using namespace Engine::Components;
 
                 if (data.keyEvent.code != sf::Keyboard::Space) return;
-                Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
-                Engine::System::Bullets *bulletsSystem = dynamic_cast<Engine::System::Bullets *>(
-                    Engine::EngineClass::getEngine().world().getSystems()["BulletsSystem"].get());
-                ECS::Entity *player =
-                    Engine::EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+                Engine::System::MovePlayer *movePlayerSystem =
+                    dynamic_cast<Engine::System::MovePlayer *>(WORLD.getSystems()["MovePlayer"].get());
+                Engine::System::Bullets *bulletsSystem =
+                    dynamic_cast<Engine::System::Bullets *>(WORLD.getSystems()["BulletsSystem"].get());
+                ECS::Entity *player = WORLD.getEntityWithComponents<PlayerComponent>();
                 if (!player || !movePlayerSystem) return;
 
                 ECS::ComponentHandle<Engine::Components::PositionComponent> pos =
                     player->getComponent<Engine::Components::PositionComponent>();
-                bulletsSystem->spawnBullet(false, static_cast<float>(pos->x), static_cast<float>(pos->y), {1000, 0},
-                                           200);
+                ECS::ComponentHandle<Engine::Components::RenderableComponent> rend =
+                    player->getComponent<Engine::Components::RenderableComponent>();
+                bulletsSystem->spawnBullet(false, static_cast<float>(pos->x + static_cast<int>(rend->size.x / 2) - 20),
+                                           static_cast<float>(pos->y + static_cast<int>(rend->size.y / 2) - 2),
+                                           {1000, 0}, 200);
             }
     };
 
@@ -56,10 +60,6 @@ namespace Rtype::Subscriber
                 if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
                       data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
                     return;
-                // Engine::System::MovePlayer *movePlayerSystem = dynamic_cast<Engine::System::MovePlayer *>(
-                //     Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
-                // if (!movePlayerSystem) return;
-                // movePlayerSystem->stopMovePlayer(data.keyEvent);
             }
     };
 } // namespace Rtype::Subscriber

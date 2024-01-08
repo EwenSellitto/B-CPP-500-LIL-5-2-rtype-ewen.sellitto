@@ -7,15 +7,25 @@
 
 #pragma once
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Clock.hpp>
+
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/Rect.hpp"
-#include "SFML/System/Clock.hpp"
 
 namespace Engine::Components
 {
     struct AnimationComponent : ECS::BaseComponent {
         public:
             AnimationComponent() = default;
+            /*
+             * @brief AnimationComponent constructor
+             * @param x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,
+             * its x, y after looking are : 13, 10
+             * @param width, height; ex: the 5, 18 in question.
+             * @param tileSize (tx, ty);      ex: the 32, 32 in question.
+             * @param animationSpeed in ms.
+             * @param frameCount = number of frame in the animation.
+             */
             AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount)
                 : textureRect(x, y, width, height), tileSize(tx, ty), animationSpeed(animationSpeed),
                   frameCount(frameCount){};

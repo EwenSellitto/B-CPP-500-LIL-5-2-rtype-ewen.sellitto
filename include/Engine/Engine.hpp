@@ -44,6 +44,7 @@ namespace ECS
 #endif
 
 #define WINDOW Engine::EngineClass::getEngine().window
+#define WORLD Engine::EngineClass::getEngine().world()
 
 namespace Engine
 {

@@ -8,10 +8,15 @@
 #pragma once
 
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/Moving.component.hpp"
-#include "Engine/Components/Type.component.hpp"
+#include "Engine/Components/Animation.component.hpp"
+#include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
+#include "R-Type/Components/DeathAnimation.component.hpp"
+#include "R-Type/Components/Enemy.component.hpp"
+#include "R-Type/Components/EnemyMovements.component.hpp"
+#include "R-Type/Components/Player.component.hpp"
 
 namespace Rtype::Subscriber
 {
@@ -27,20 +32,33 @@ namespace Rtype::Subscriber
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     std::cout << "YOU LOSE" << std::endl;
                     data.movingEntity->removeAllComponents();
-                    return;
-                }
-                if (data.movingEntity->has<BaseBulletComponent>()) {
+                } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                         data.collidingEntity->has<PlayerComponent>()) {
                         std::cout << "YOU LOSE" << std::endl;
                         data.movingEntity->removeAllComponents();
                         data.collidingEntity->removeAllComponents();
-                        return;
-                    }
-                    if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
-                        data.collidingEntity->has<EnemyComponent>()) {
+                    } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
+                               data.collidingEntity->has<EnemyComponent>()) {
+                        auto collidingEntity = data.collidingEntity;
+                        auto enemyComponent  = collidingEntity->getComponent<EnemyComponent>();
+                        auto position        = collidingEntity->getComponent<PositionComponent>();
                         data.movingEntity->removeAllComponents();
-                        data.collidingEntity->removeAllComponents();
+
+                        collidingEntity->removeComponent<AnimationComponent>();
+                        collidingEntity->removeComponent<CollisionComponent>();
+                        // collidingEntity->removeComponent<EnemyMovementsComponent>();
+
+                        switch (enemyComponent->enemyType) {
+                            case EnemyData::EnemyType::Weak:
+                                collidingEntity->addComponent(new DeathAnimationComponent(
+                                    "./assets/klaed/Klaed-Fighter-Destruction.png", 0, 0, 64, 64, 64, 64, 100, 9));
+                                break;
+                            case EnemyData::EnemyType::Normal:
+                            case EnemyData::EnemyType::Strong:
+                                collidingEntity->removeAllComponents();
+                        }
+
                         return;
                     }
                 }

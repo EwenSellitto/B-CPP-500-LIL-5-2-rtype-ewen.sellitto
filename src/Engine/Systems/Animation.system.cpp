@@ -14,15 +14,9 @@
 
 using namespace Engine::System;
 
-void AnimationSystem::configure([[maybe_unused]] ECS::World &world)
-{
-    nullptr;
-}
+void AnimationSystem::configure([[maybe_unused]] ECS::World &world) {}
 
-void AnimationSystem::unconfigure()
-{
-    nullptr;
-}
+void AnimationSystem::unconfigure() {}
 
 void AnimationSystem::tick()
 {
