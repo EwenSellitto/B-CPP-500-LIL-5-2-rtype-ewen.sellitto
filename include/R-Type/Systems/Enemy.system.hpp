@@ -13,6 +13,7 @@
 #include "ECS/World.hpp"
 #include "R-Type/gameData/EnemyData.hpp"
 #include "SFML/System/Clock.hpp"
+// #include "Components/Collision.component.hpp"
 
 #ifndef ENEMY_SPAWN_RATE
 #define ENEMY_SPAWN_RATE 500

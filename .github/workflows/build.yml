@@ -72,22 +72,24 @@ jobs:
 
       - name: Build with CMake and Clang
         run: |
-          mkdir build && cd build
-          cmake ..
-          make -j$(nproc)
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -- -j
+
+      - name: Create Cpack
+        run: |
+          cd build
+          cpack
 
       - name: Create project archive
         run: |
-          mkdir Linux
-          cp build/r-type Linux
-          cp -r assets Linux
-          zip Linux.zip Linux
+          cd build
+          tar -zcvf Linux.tar.gz R-TYPE-1.0.0-Linux.*
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: r-type
-          path: ${{ github.workspace }}/Linux.zip
+          path: ${{ github.workspace }}/build/Linux.tar.gz
 
       - name: Upload Artifact
         uses: actions/upload-release-asset@v1
@@ -95,38 +97,39 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/Linux.zip
+          asset_path: ${{ github.workspace }}/build/Linux.tar.gz
           asset_name: Linux.zip
           asset_content_type: application/zip
 
-  build-windows:
-    needs: create-release
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build with CMake and MSVC
-        run: |
-          mkdir build && cd build
-          cmake -G "Visual Studio 17" -A x64 ..
-          cmake --build . --config Release
-
-      - name: Create project archive
-        run: |
-          Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath Windows.zip
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: r-type
-          path: ${{ github.workspace }}/Windows.zip
-
-      - name: Upload Artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/Windows.zip
-          asset_name: Windows.zip
-          asset_content_type: application/zip
+  # TODO : update Windows CI
+  # build-windows:
+  #   needs: create-release
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #
+  #     - name: Build with CMake and MSVC
+  #       run: |
+  #         mkdir build && cd build
+  #         cmake -G "Visual Studio 17" -A x64 ..
+  #         cmake --build . --config Release
+  #
+  #     - name: Create project archive
+  #       run: |
+  #         Compress-Archive -Path r-type.exe, assets, *.dll -DestinationPath Windows.zip
+  #
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: r-type
+  #         path: ${{ github.workspace }}/Windows.zip
+  #
+  #     - name: Upload Artifact
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.create-release.outputs.upload_url }}
+  #         asset_path: ${{ github.workspace }}/Windows.zip
+  #         asset_name: Windows.zip
+  #         asset_content_type: application/zip
