@@ -27,6 +27,7 @@ namespace GameWorld
         Systems::addBulletSystem(world);
         Systems::addWorldMoveSystem(world);
         Systems::addAnimationSystem(world);
+        Systems::addDeathAnimationSystem(world);
 
         // Subscribe to events
         Subscribers::subscribeToEvents(world);

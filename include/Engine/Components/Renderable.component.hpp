@@ -44,6 +44,19 @@ namespace Engine::Components
                 setTexture(texture_path);
             }
 
+            void reset(const std::string &texture_path, sf::Vector2<float> pos, int priority, float rotation = 0,
+                       sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
+            {
+                this->position  = pos;
+                this->priority  = priority;
+                this->rotation  = rotation;
+                this->scale     = scale;
+                this->path      = texture_path;
+                this->setOrigin = setOrigin;
+
+                setTexture(texture_path);
+            }
+
             ~RenderableComponent() override = default;
 
             sf::Texture              texture;

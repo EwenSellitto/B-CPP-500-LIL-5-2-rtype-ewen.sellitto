@@ -17,6 +17,7 @@
 #include "Engine/Engine.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "SFML/Graphics/Rect.hpp"
+#include "SFML/Graphics/RenderTexture.hpp"
 
 using namespace Engine::System;
 

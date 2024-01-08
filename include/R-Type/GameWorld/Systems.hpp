@@ -8,6 +8,7 @@
 #include "Engine/Systems/UI.system.hpp"
 #include "Engine/Systems/WorldMove.system.hpp"
 #include "R-Type/Systems/Bullets.system.hpp"
+#include "R-Type/Systems/DeathAnimation.system.hpp"
 #include "R-Type/Systems/Enemy.system.hpp"
 #include "R-Type/Systems/MovePlayer.system.hpp"
 
@@ -56,5 +57,10 @@ namespace Systems
     inline void addAnimationSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::AnimationSystem>("AnimationSystem");
+    }
+
+    inline void addDeathAnimationSystem(ECS::World *world)
+    {
+        world->addSystem<Engine::System::DeathAnimationSystem>("DeathAnimationSystem");
     }
 } // namespace Systems
