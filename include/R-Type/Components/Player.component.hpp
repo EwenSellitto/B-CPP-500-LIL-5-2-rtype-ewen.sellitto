@@ -31,6 +31,16 @@ namespace Engine::Components
                 return {};
             }
 
+            ECS::BaseComponent *deserialize(const std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                return nullptr;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::PlayerComponent;
+            }
+
         private:
     };
 } // namespace Engine::Components

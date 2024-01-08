@@ -8,9 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -22,6 +22,10 @@ namespace Engine::Components
 {
     struct EnemyAttackComponent : public ECS::BaseComponent {
         public:
+            EnemyAttackComponent()
+                : lastAttack(0), attackRate(0), bulletType(0), bulletDestination({0, 0}), bulletDuration(0)
+            {
+            }
             EnemyAttackComponent(size_t attackRate, size_t bulletType, sf::Vector2f bulletDestination,
                                  size_t bulletDuration)
                 : lastAttack(0), attackRate(attackRate), bulletType(bulletType), bulletDestination(bulletDestination),
@@ -45,7 +49,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 EnemyAttackComponent *enemyAttack;
                 if (component == nullptr) {
@@ -66,6 +70,11 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&enemyAttack->bulletDuration), sizeof(enemyAttack->bulletDuration));
 
                 return enemyAttack;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::EnemyAttackComponent;
             }
 
             // last millisecond from epoch.

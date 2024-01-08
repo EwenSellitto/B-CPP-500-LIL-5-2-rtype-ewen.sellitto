@@ -17,11 +17,14 @@
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
     struct MovingComponent : public ECS::BaseComponent {
         public:
+            MovingComponent()
+                : moveStartTime(0), initialPos({0, 0}), moveAmount({0, 0}), moveDuration(0) {};
             MovingComponent(sf::Vector2f initialPos, size_t moveDuration, sf::Vector2f moveAmount)
                 : initialPos(initialPos), moveAmount(moveAmount), moveDuration(moveDuration)
             {
@@ -47,7 +50,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 MovingComponent *movingComponent;
                 if (component == nullptr) {
@@ -74,7 +77,12 @@ namespace Engine::Components
                 return movingComponent;
             }
 
-            size_t       moveStartTime;
+            ComponentType getType() override
+            {
+                return ComponentType::MovingComponent;
+            }
+
+            size_t       moveStartTime{};
             sf::Vector2f initialPos;
             sf::Vector2f moveAmount;
             size_t       moveDuration;

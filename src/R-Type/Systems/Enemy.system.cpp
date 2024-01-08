@@ -14,7 +14,6 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Utils/Math.hpp"
@@ -142,7 +141,7 @@ size_t EnemySystem::spawnEnemy(float posx, float posy)
     size_t entityId = getWorld().createEntity(
         new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
         new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(attributes.health, type),
-        new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
+        new CollisionComponent(0, 0, 100, 100));
     getWorld().getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
         sf::Vector2f{static_cast<float>(getWorld().getMutEntity(entityId).getComponent<PositionComponent>()->x),
                      static_cast<float>(getWorld().getMutEntity(entityId).getComponent<PositionComponent>()->y)},

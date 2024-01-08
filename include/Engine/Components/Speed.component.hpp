@@ -10,18 +10,20 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
     struct SpeedComponent : public ECS::BaseComponent {
         public:
+            SpeedComponent() : speed(0) {}
             SpeedComponent(float speed) : speed(speed) {}
 
             ~SpeedComponent() override = default;
@@ -32,10 +34,10 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&speed), sizeof(speed));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 SpeedComponent *speedComponent;
                 if (component == nullptr) {
@@ -49,6 +51,11 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&speedComponent->speed), sizeof(speedComponent->speed));
 
                 return speedComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::SpeedComponent;
             }
 
             float speed;

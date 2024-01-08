@@ -1,4 +1,10 @@
-// Entities.hpp
+/*
+** EPITECH PROJECT, 2023
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** RenderEngine.hpp
+*/
+
 #pragma once
 #include "ECS/World.hpp"
 #include "Engine/Components/Button.component.hpp"
@@ -8,7 +14,6 @@
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"

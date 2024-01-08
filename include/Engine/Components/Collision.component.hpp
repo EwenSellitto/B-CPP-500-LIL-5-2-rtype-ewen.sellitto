@@ -16,6 +16,7 @@
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Rect.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
@@ -40,7 +41,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 CollisionComponent *collisionComponent;
                 if (component == nullptr) {
@@ -60,6 +61,11 @@ namespace Engine::Components
                          sizeof(collisionComponent->rect.height));
 
                 return collisionComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::CollisionComponent;
             }
 
             sf::FloatRect rect;

@@ -88,6 +88,11 @@ add_executable(r-type
         src/Engine/Server/Packets/SendPackets.cpp
         src/Engine/Server/ServerHandler.cpp
 
+        include/public/AvailableComponents.hpp
+        include/public/ComponentsType.hpp
+
+        include/R-Type/gameData/EnemyData.hpp
+
         src/main.cpp
 )
 

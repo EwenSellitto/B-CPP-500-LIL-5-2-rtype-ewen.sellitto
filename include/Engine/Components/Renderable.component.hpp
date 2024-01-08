@@ -17,6 +17,7 @@
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
@@ -63,7 +64,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 RenderableComponent *renderableComponent;
                 if (component == nullptr) {
@@ -89,6 +90,11 @@ namespace Engine::Components
                 // Ici, il faut configurer la texture et le sprite en utilisant 'path'
 
                 return renderableComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::RenderableComponent;
             }
 
             sf::Texture              texture;

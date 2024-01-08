@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2023
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** RenderEngine.hpp
+*/
+
 #pragma once
 
 #include <SFML/Network.hpp>
@@ -8,6 +15,7 @@
 #include "ECS/Components.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Server/WaitingRoom.hpp"
+#include "public/AvailableComponents.hpp"
 
 enum class PacketType {
     HandshakeRequest,
@@ -98,8 +106,9 @@ namespace ECS
                     for (const auto &client : waitingRoom.getPlayers()) {
                         sf::Packet packet;
                         packet << static_cast<int>(PacketType::InitializeGame);
-                        packet << static_cast<int>(waitingRoom.getPlayers().size());
                         auto positionComp = new Engine::Components::PositionComponent(123, 340);
+                        packet << static_cast<int>(ComponentType::PositionComponent);
+                        packet << static_cast<int>(waitingRoom.getPlayers().size());
                         addSerializedComponentToPacket(packet, positionComp);
                         sendPacketToClient(packet, client.address, client.port);
                     }
@@ -121,9 +130,10 @@ namespace ECS
 
             // ================== ATTRIBUTS ==================
 
-            WaitingRoom   waitingRoom;
-            sf::UdpSocket socket;
-            std::thread   thread;
-            bool          running = true;
+            WaitingRoom         waitingRoom;
+            sf::UdpSocket       socket;
+            std::thread         thread;
+            bool                running = true;
+            ComponentsConvertor componentsConvertor;
     };
 } // namespace ECS

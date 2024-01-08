@@ -7,22 +7,23 @@
 
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
-#include "R-Type/Systems/Enemy.system.hpp"
+#include "R-Type/gameData/EnemyData.hpp"
 
 namespace Engine::Components
 {
     struct EnemyComponent : ECS::BaseComponent {
         public:
+            EnemyComponent() : health(0), enemyType(EnemyData::EnemyType::Normal) {}
             EnemyComponent(int health, EnemyData::EnemyType enemyType) : health(health), enemyType(enemyType) {}
 
             ~EnemyComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&health), sizeof(health));
@@ -30,10 +31,10 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&enemyTypeInt), sizeof(enemyTypeInt));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 EnemyComponent *enemyComponent;
                 if (component == nullptr) {
@@ -50,6 +51,11 @@ namespace Engine::Components
                 enemyComponent->enemyType = static_cast<EnemyData::EnemyType>(enemyTypeInt);
 
                 return enemyComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::EnemyComponent;
             }
 
             int                  health;

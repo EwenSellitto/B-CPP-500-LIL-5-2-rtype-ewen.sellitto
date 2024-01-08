@@ -8,9 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -22,6 +22,7 @@ namespace Engine::Components
 {
     struct EnemyMovementsComponent : public ECS::BaseComponent {
         public:
+            EnemyMovementsComponent() : movementsQueueLoop({}), currentMove(0) {}
             EnemyMovementsComponent(std::vector<std::pair<size_t, sf::Vector2f>> movementsQueueLoop)
                 : movementsQueueLoop(movementsQueueLoop), currentMove(0)
             {
@@ -29,7 +30,7 @@ namespace Engine::Components
 
             ~EnemyMovementsComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&currentMove), sizeof(size_t));
@@ -47,10 +48,10 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 if (component == nullptr) {
-                    component = new EnemyMovementsComponent({});
+                    component = new EnemyMovementsComponent();
                 }
 
                 auto *enemyMovement = dynamic_cast<EnemyMovementsComponent *>(component);
@@ -75,6 +76,11 @@ namespace Engine::Components
                 }
 
                 return enemyMovement;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::EnemyMovementsComponent;
             }
 
             // these are the arguments to be passed to MovingComponent, they will be called each one after the other

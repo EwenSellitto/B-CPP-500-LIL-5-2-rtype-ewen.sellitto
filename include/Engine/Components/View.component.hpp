@@ -17,6 +17,7 @@
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
@@ -46,7 +47,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 ViewComponent *viewComponent;
                 if (component == nullptr) {
@@ -65,6 +66,11 @@ namespace Engine::Components
                 // La taille de la vue doit être définie ici si nécessaire
 
                 return viewComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::ViewComponent;
             }
 
             sf::Vector2<float> position;

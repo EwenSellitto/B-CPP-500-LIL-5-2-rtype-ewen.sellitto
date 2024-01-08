@@ -8,7 +8,6 @@
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
@@ -32,7 +31,7 @@ namespace Entities
         [[maybe_unused]] ECS::id_t ship_id = world->createEntity(
             new PlayerComponent(), new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
-            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
+            new CollisionComponent(9, 11, 30, 26), new SpeedComponent(150));
     }
 
     inline void createButtonEntities(ECS::World *world)
@@ -116,9 +115,6 @@ namespace Entities
                                      std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), 0)),
                                      std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), 0)),
                                      std::make_pair(false, std::make_pair(std::make_tuple(400, 110, true), 0))}));
-
-        std::vector<char> bonjour = world->getMutEntity(test).getComponent<EnemyQueueComponent>()->serialize();
-        Engine::Components::EnemyQueueComponent::deserialize(bonjour);
     }
 
     inline void createWorldMoveProgress(ECS::World *world)

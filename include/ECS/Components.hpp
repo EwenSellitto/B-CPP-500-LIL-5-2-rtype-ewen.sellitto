@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <vector>
+#include "public/ComponentsType.hpp"
 
 namespace ECS
 {
@@ -27,6 +28,9 @@ namespace ECS
             virtual ~BaseComponent() = default;
 
             virtual std::vector<char> serialize() = 0;
+            virtual ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *comp = nullptr) = 0;
+
+            virtual ComponentType getType() = 0;
 
             void setHasChanged(bool hasChanged)
             {

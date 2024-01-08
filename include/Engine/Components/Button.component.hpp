@@ -9,10 +9,12 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 #include <sstream>
 
 #include "ECS/Components.hpp"
+#include "public/ComponentsType.hpp"
 
 enum class ButtonType {
     Simple
@@ -26,13 +28,23 @@ namespace Engine::Components
             bool                  isHovered = false;
             bool                  isClicked = false;
 
-            ButtonComponent(const std::string &text, std::function<void()> onClick) : text(text), onClick(onClick) {}
+            ButtonComponent(std::string text, std::function<void()> onClick) : text(std::move(text)), onClick(onClick) {}
 
             ~ButtonComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
-                return std::vector<char>();
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize(const std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                return nullptr;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
             }
     };
 } // namespace Engine::Components

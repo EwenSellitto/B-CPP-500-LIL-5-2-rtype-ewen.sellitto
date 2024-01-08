@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "ECS/Components.hpp"
+#include "public/ComponentsType.hpp"
 
 enum class ParallaxLayer {
     FarBackground,
@@ -24,13 +25,13 @@ namespace Engine::Components
             ParallaxLayer layer;
             float         speed;
             sf::Vector2f  offset;
-            bool          first;
+            bool          first{};
 
             ParallaxComponent(ParallaxLayer layer, float speed) : layer(layer), speed(speed), offset(0, 0) {}
 
             ~ParallaxComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 auto               layerInt = static_cast<std::underlying_type<ParallaxLayer>::type>(layer);
@@ -43,7 +44,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 ParallaxComponent *parallaxComponent;
                 if (component == nullptr) {
@@ -62,6 +63,11 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&parallaxComponent->offset.y), sizeof(parallaxComponent->offset.y));
 
                 return parallaxComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
             }
     };
 } // namespace Engine::Components

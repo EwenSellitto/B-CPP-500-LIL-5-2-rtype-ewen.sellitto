@@ -5,6 +5,8 @@
 ** HandlePackets
 */
 
+#include <typeindex>
+
 #include "Engine/Server/Network.hpp"
 
 void ECS::Network::handleHandshakeRequest(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
@@ -22,50 +24,41 @@ void ECS::Network::handleLeaveLobby(sf::Packet &packet, const sf::IpAddress &sen
     waitingRoom.removePlayer(sender);
 }
 
-template <typename T>
-ECS::BaseComponent *ECS::Network::deserializeComponent(const std::vector<char> &serialized, T componentType)
-{
-    using namespace Engine::Components;
-
-    if (componentType == ComponentHandle<PositionComponent>()) {
-        PositionComponent *component = new PositionComponent(0, 0);
-        return component->deserialize(serialized);
-    }
-
-    return nullptr;
-}
-
 void ECS::Network::handleInitializeGame(sf::Packet &packet)
 {
     using namespace Engine::Components;
     int               nbPlayers;
     int               serialisedSize;
+    int     componentType;
     std::vector<char> serialised;
 
-    // Extraire le nombre de joueurs
+    packet >> componentType;
+
     packet >> nbPlayers;
 
-    // Extraire la taille des données sérialisées
     packet >> serialisedSize;
 
-    // Vérifier que la taille sérialisée est valide
+    std::cout << componentType << std::endl;
+    std::cout << nbPlayers << std::endl;
+    std::cout << serialisedSize << std::endl;
+
     if (serialisedSize > 0 && static_cast<std::size_t>(serialisedSize) <= packet.getDataSize()) {
         serialised.resize(serialisedSize);
 
-        // Extraire les données sérialisées
         for (int i = 0; i < serialisedSize; ++i) {
             sf::Uint8 dataByte;
             packet >> dataByte;
             serialised[i] = static_cast<char>(dataByte);
         }
 
-        auto positionComp =
-            dynamic_cast<PositionComponent *>(deserializeComponent(serialised, ComponentHandle<PositionComponent>()));
+        ECS::BaseComponent *comp = this->componentsConvertor.createComponent(static_cast<ComponentType>(componentType))
+                                       ->deserialize(serialised, nullptr);
 
         std::cout << "Received InitializeGame" << std::endl;
         std::cout << "Nb players: " << nbPlayers << std::endl;
         std::cout << "Serialised size: " << serialisedSize << std::endl;
-        std::cout << "Deserialized: " << positionComp->x << ", " << positionComp->y << std::endl;
+        auto *compPos = dynamic_cast<PositionComponent *>(comp);
+        std::cout << "Deserialized: " << compPos->x << ", " << compPos->y << std::endl;
 
         // switchToGame();  // Décommenter si nécessaire
     } else {

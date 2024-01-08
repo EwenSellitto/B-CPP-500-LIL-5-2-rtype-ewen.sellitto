@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "ECS/Components.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
@@ -31,7 +32,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
             {
                 PositionComponent *positionComponent;
                 if (component == nullptr) {
@@ -46,6 +47,11 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&positionComponent->y), sizeof(positionComponent->y));
 
                 return positionComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::PositionComponent;
             }
 
             int x;

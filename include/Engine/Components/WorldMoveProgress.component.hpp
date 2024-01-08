@@ -17,6 +17,7 @@
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
@@ -41,7 +42,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 WorldMoveProgressComponent *worldMoveProgressComponent;
                 if (component == nullptr) {
@@ -60,6 +61,11 @@ namespace Engine::Components
                          sizeof(worldMoveProgressComponent->speed));
 
                 return worldMoveProgressComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::WorldMoveProgressComponent;
             }
 
             // in epoch milliseconds

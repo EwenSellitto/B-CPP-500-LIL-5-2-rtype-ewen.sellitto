@@ -22,6 +22,7 @@ namespace Engine::Components
 {
     struct BaseBulletComponent : public ECS::BaseComponent {
         public:
+            BaseBulletComponent() : fromEnemy(false) {}
             explicit BaseBulletComponent(bool fromEnemy) : fromEnemy(fromEnemy) {}
             ~BaseBulletComponent() override = default;
 
@@ -34,7 +35,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 BaseBulletComponent *bulletComponent;
                 if (component == nullptr) {
@@ -48,6 +49,11 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&bulletComponent->fromEnemy), sizeof(bulletComponent->fromEnemy));
 
                 return bulletComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::BaseBulletComponent;
             }
 
             bool fromEnemy;

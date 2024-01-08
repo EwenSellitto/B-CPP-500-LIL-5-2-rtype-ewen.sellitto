@@ -14,6 +14,8 @@
 #include "SFML/Graphics/Rect.hpp"
 #include "SFML/System/Clock.hpp"
 
+#include "public/ComponentsType.hpp"
+
 namespace Engine::Components
 {
     struct AnimationComponent : ECS::BaseComponent {
@@ -22,9 +24,9 @@ namespace Engine::Components
             AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount)
                 : textureRect(x, y, width, height), tileSize(tx, ty), animationSpeed(animationSpeed),
                   frameCount(frameCount){};
-            ~AnimationComponent() = default;
+            ~AnimationComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&textureRect.left), sizeof(textureRect.left));
@@ -38,10 +40,10 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&frameCount), sizeof(frameCount));
 
                 const std::string &str = oss.str();
-                return std::vector<char>(str.begin(), str.end());
+                return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 AnimationComponent *animationComponent;
                 if (component == nullptr) {
@@ -71,6 +73,11 @@ namespace Engine::Components
                          sizeof(animationComponent->frameCount));
 
                 return animationComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::AnimationComponent;
             }
 
             // x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,

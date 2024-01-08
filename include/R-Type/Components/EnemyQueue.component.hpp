@@ -15,7 +15,6 @@
 
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
-#include "R-Type/GameWorld/EnemyMakers.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
@@ -56,8 +55,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            static ECS::BaseComponent *deserialize(const std::vector<char> &vec,
-                                                   ECS::BaseComponent      *component = nullptr)
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
 
@@ -95,6 +93,11 @@ namespace Engine::Components
                     }
                 }
                 return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::EnemyQueueComponent;
             }
 
             // the pair consists of a bool, and data about the enemy to spawn

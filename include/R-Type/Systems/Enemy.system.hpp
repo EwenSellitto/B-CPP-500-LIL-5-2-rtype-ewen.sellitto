@@ -11,29 +11,9 @@
 
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
+#include "R-Type/gameData/EnemyData.hpp"
 #include "SFML/System/Clock.hpp"
 
-namespace EnemyData
-{
-    enum class EnemyType {
-        Weak,
-        Normal,
-        Strong
-    };
-
-    struct EnemyAttributes {
-            std::string spritePath;
-            int         health;
-
-            EnemyAttributes(std::string sprite, int hp) : spritePath(std::move(sprite)), health(hp) {}
-    };
-
-    const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
-        {EnemyType::Weak, EnemyAttributes("./assets/klaed/Klaed-Scout-Base.png", 50)},
-        {EnemyType::Normal, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
-        {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
-
-} // namespace EnemyData
 #ifndef ENEMY_SPAWN_RATE
 #define ENEMY_SPAWN_RATE 500
 #endif

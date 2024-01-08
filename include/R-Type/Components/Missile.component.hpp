@@ -8,9 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -22,13 +22,23 @@ namespace Engine::Components
 {
     struct MissileComponent : public ECS::BaseComponent {
         public:
-            MissileComponent() {}
+            MissileComponent() = default;
 
             ~MissileComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
-                return std::vector<char>();
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                return nullptr;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::MissileComponent;
             }
 
         private:

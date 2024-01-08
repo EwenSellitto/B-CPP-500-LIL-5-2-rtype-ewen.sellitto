@@ -11,12 +11,14 @@
 #include <sstream>
 
 #include "ECS/Components.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
     class ExcludeCollisionComponent : public ECS::BaseComponent
     {
         public:
+            ExcludeCollisionComponent() : id(0) {}
             ExcludeCollisionComponent(std::size_t id) : id(id) {}
             ~ExcludeCollisionComponent() override = default;
 
@@ -29,7 +31,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-            static ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component = nullptr)
+             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 ExcludeCollisionComponent *excludeCollisionComponent;
                 if (component == nullptr) {
@@ -44,6 +46,11 @@ namespace Engine::Components
                          sizeof(excludeCollisionComponent->id));
 
                 return excludeCollisionComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::ExcludeCollisionComponent;
             }
 
             std::size_t id;

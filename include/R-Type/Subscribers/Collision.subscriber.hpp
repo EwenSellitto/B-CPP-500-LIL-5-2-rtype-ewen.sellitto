@@ -9,7 +9,6 @@
 
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Components/Moving.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
 

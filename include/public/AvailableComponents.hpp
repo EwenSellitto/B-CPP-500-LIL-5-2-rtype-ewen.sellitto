@@ -1,0 +1,67 @@
+/*
+** EPITECH PROJECT, 2023
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** RenderEngine.hpp
+*/
+
+#pragma once
+
+#include "Engine/Components/Animation.component.hpp"
+#include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/ExcludeCollision.component.hpp"
+#include "Engine/Components/Moving.component.hpp"
+#include "Engine/Components/Position.component.hpp"
+#include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Speed.component.hpp"
+#include "Engine/Components/View.component.hpp"
+#include "Engine/Components/WorldMoveProgress.component.hpp"
+#include "R-Type/Components/BaseBullet.component.hpp"
+#include "R-Type/Components/Enemy.component.hpp"
+#include "R-Type/Components/EnemyAttack.component.hpp"
+#include "R-Type/Components/EnemyMovements.component.hpp"
+#include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/Components/Missile.component.hpp"
+#include "R-Type/Components/Player.component.hpp"
+#include "public/ComponentsType.hpp"
+
+class ComponentsConvertor
+{
+    public:
+        ComponentsConvertor()
+        {
+            // add here your components.
+            registerComponent<Engine::Components::AnimationComponent>(ComponentType::AnimationComponent);
+            registerComponent<Engine::Components::CollisionComponent>(ComponentType::CollisionComponent);
+            registerComponent<Engine::Components::ExcludeCollisionComponent>(ComponentType::ExcludeCollisionComponent);
+            registerComponent<Engine::Components::MovingComponent>(ComponentType::MovingComponent);
+            registerComponent<Engine::Components::PositionComponent>(ComponentType::PositionComponent);
+            registerComponent<Engine::Components::RenderableComponent>(ComponentType::RenderableComponent);
+            registerComponent<Engine::Components::SpeedComponent>(ComponentType::SpeedComponent);
+            registerComponent<Engine::Components::ViewComponent>(ComponentType::ViewComponent);
+            registerComponent<Engine::Components::WorldMoveProgressComponent>(ComponentType::WorldMoveProgressComponent);
+            registerComponent<Engine::Components::BaseBulletComponent>(ComponentType::BaseBulletComponent);
+            registerComponent<Engine::Components::EnemyComponent>(ComponentType::EnemyComponent);
+            registerComponent<Engine::Components::EnemyAttackComponent>(ComponentType::EnemyAttackComponent);
+            registerComponent<Engine::Components::EnemyMovementsComponent>(ComponentType::EnemyMovementsComponent);
+            registerComponent<Engine::Components::EnemyQueueComponent>(ComponentType::EnemyQueueComponent);
+            registerComponent<Engine::Components::MissileComponent>(ComponentType::MissileComponent);
+            registerComponent<Engine::Components::PlayerComponent>(ComponentType::PlayerComponent);
+        }
+
+        template <typename T> void registerComponent(ComponentType type)
+        {
+            components[type] = []() -> ECS::BaseComponent * { return new T(); };
+        }
+
+        ECS::BaseComponent *createComponent(ComponentType type)
+        {
+            auto it = components.find(type);
+            if (it != components.end())
+                return it->second();
+            return nullptr;
+        }
+
+    private:
+        std::map<ComponentType, std::function<ECS::BaseComponent *()>> components;
+};
