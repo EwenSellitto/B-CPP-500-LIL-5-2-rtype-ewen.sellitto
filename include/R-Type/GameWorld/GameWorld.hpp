@@ -25,13 +25,21 @@ namespace GameWorld
         Systems::addEnemySystem(world);
         Systems::addParallaxSystem(world);
         Systems::addBulletSystem(world);
-        Systems::addWorldMoveSystem(world);
+        // Systems::addWorldMoveSystem(world);
         Systems::addAnimationSystem(world);
 
         // Subscribe to events
         Subscribers::subscribeToEvents(world);
 
         return world;
+    }
+
+    inline void addToGameWorldServerSide(ECS::World *world)
+    {
+        // Setup view and create entities
+        Entities::createPlayerEntities(world);
+        // Entities::createEnemyQueue(world);
+        // Entities::createWorldMoveProgress(world);
     }
 
     // inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)

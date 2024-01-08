@@ -48,7 +48,10 @@ void ECS::Network::handleReceivedPacket(sf::Packet &packet, const sf::IpAddress 
             handleInitializeGame(packet, sender, senderPort);
             break;
         case PacketType::InitializeGameOkForMe:
-            std::cout << "Client initialisé !!!!!" << std::endl;
+            handleReceiveInitializedGame(sender, senderPort);
+            break;
+        case PacketType::LaunchGame:
+            std::cout << "Received LaunchGame" << std::endl;
             break;
         default:
             std::cerr << "Paquet reçu inconnu" << std::endl;

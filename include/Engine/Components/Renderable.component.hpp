@@ -35,7 +35,7 @@ namespace Engine::Components
                   scale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
-                setTexture(texture_path);
+                setTexture();
             };
 
             RenderableComponent(const std::string &texture_path, sf::Vector2<float> pos, int priority,
@@ -44,7 +44,18 @@ namespace Engine::Components
                   isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
-                setTexture(texture_path);
+                setTexture();
+            }
+
+            void setTexture()
+            {
+                if (!texture.loadFromFile(path)) throw std::runtime_error("Cannot load texture " + path);
+                sprite = sf::Sprite(texture);
+                sprite.setScale(scale.x, scale.y);
+                sprite.setPosition(position.x, position.y);
+                sprite.setRotation(rotation);
+                size = {texture.getSize().x, texture.getSize().y};
+                if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
             }
 
             ~RenderableComponent() override = default;
@@ -58,8 +69,13 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&rotation), sizeof(rotation));
                 oss.write(reinterpret_cast<const char *>(&scale.x), sizeof(scale.x));
                 oss.write(reinterpret_cast<const char *>(&scale.y), sizeof(scale.y));
+                oss.write(reinterpret_cast<const char *>(&size.x), sizeof(size.x));
+                oss.write(reinterpret_cast<const char *>(&size.y), sizeof(size.y));
                 oss.write(reinterpret_cast<const char *>(&isDisplayed), sizeof(isDisplayed));
-                oss.write(reinterpret_cast<const char *>(&path), sizeof(path));
+
+                size_t pathLength = path.length();
+                oss.write(reinterpret_cast<const char *>(&pathLength), sizeof(pathLength));
+                oss.write(path.c_str(), pathLength);
 
                 const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
@@ -86,10 +102,17 @@ namespace Engine::Components
                          sizeof(renderableComponent->rotation));
                 iss.read(reinterpret_cast<char *>(&renderableComponent->scale.x), sizeof(renderableComponent->scale.x));
                 iss.read(reinterpret_cast<char *>(&renderableComponent->scale.y), sizeof(renderableComponent->scale.y));
+                iss.read(reinterpret_cast<char *>(&renderableComponent->size.x), sizeof(renderableComponent->size.x));
+                iss.read(reinterpret_cast<char *>(&renderableComponent->size.y), sizeof(renderableComponent->size.y));
                 iss.read(reinterpret_cast<char *>(&renderableComponent->isDisplayed),
                          sizeof(renderableComponent->isDisplayed));
-                iss.read(reinterpret_cast<char *>(&renderableComponent->path), sizeof(renderableComponent->path));
-                // Ici, il faut configurer la texture et le sprite en utilisant 'path'
+
+                // Désérialisation de la chaîne 'path'
+                size_t pathLength;
+                iss.read(reinterpret_cast<char *>(&pathLength), sizeof(pathLength));
+                std::string path(pathLength, '\0');
+                iss.read(&path[0], pathLength);
+                renderableComponent->path = path;
 
                 return renderableComponent;
             }
@@ -109,18 +132,5 @@ namespace Engine::Components
             bool                     isDisplayed;
             std::string              path;
             bool                     setOrigin = false;
-
-        private:
-            void setTexture(const std::string &texture_path)
-            {
-                if (!texture.loadFromFile(texture_path))
-                    throw std::runtime_error("Cannot load texture " + texture_path);
-                sprite = sf::Sprite(texture);
-                sprite.setScale(scale.x, scale.y);
-                sprite.setPosition(position.x, position.y);
-                sprite.setRotation(rotation);
-                size = {texture.getSize().x, texture.getSize().y};
-                if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
-            }
     };
 } // namespace Engine::Components

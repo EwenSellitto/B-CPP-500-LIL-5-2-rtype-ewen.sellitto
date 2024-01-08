@@ -8,9 +8,9 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/RenderTexture.hpp"
@@ -22,18 +22,31 @@ namespace Engine::Components
 {
     struct PlayerComponent : public ECS::BaseComponent {
         public:
-            PlayerComponent()= default;
+            PlayerComponent() = default;
 
             ~PlayerComponent() override = default;
 
             std::vector<char> serialize() override
             {
-                return {};
+                std::ostringstream oss(std::ios::binary);
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
             }
 
             ECS::BaseComponent *deserialize(const std::vector<char> vec, ECS::BaseComponent *component) final
             {
-                return nullptr;
+                PlayerComponent *playerComponent;
+                if (component == nullptr) {
+                    playerComponent = new PlayerComponent();
+                } else {
+                    playerComponent = dynamic_cast<PlayerComponent *>(component);
+                    if (playerComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                return playerComponent;
             }
 
             ComponentType getType() override

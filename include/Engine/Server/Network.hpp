@@ -26,6 +26,7 @@ enum class PacketType {
     LeaveLobbyResponse,
     InitializeGame,
     InitializeGameOkForMe,
+    LaunchGame,
     ClientUpdate,
     ClientUpdateACK,
     GlobalState,
@@ -117,6 +118,7 @@ namespace ECS
             void handleLeaveLobby(sf::Packet &packet, const sf::IpAddress &sender);
 
             void handleInitializeGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short clientPort);
+            void handleReceiveInitializedGame(const sf::IpAddress &sender, unsigned short clientPort);
             void handleSwitchWorld(const sf::IpAddress &sender, unsigned short clientPort);
             void handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsigned short clientPort);
 

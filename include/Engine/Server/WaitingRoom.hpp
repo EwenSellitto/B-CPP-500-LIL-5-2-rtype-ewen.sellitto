@@ -31,6 +31,16 @@ struct WaitingRoom {
             return true;
         }
 
+        bool allPlayersInitializedGame() const
+        {
+            for (const auto &player : players) {
+                if (!player->isInitialized) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         void removePlayer(const sf::IpAddress &player)
         {
             for (auto it = players.begin(); it != players.end(); it++) {

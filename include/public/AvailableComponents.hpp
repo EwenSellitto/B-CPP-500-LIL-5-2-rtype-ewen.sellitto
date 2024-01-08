@@ -64,7 +64,8 @@ class ComponentsConvertor
 
             adders[type] = [](ECS::Entity &entity, ECS::BaseComponent *comp) -> bool {
                 if (entity.has<T>()) return false;
-                entity.addComponent<T>(comp);
+                if (dynamic_cast<T *>(comp) == nullptr) return false;
+                entity.addComponent<T>(dynamic_cast<T *>(comp));
                 return true;
             };
         }

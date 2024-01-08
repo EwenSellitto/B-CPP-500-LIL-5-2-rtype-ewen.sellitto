@@ -28,7 +28,7 @@ namespace Engine::Components
 
             ~SpeedComponent() override = default;
 
-            std::vector<char> serialize(void) override
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&speed), sizeof(speed));

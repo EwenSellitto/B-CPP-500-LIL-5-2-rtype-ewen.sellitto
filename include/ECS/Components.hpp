@@ -41,7 +41,6 @@ namespace ECS
 
             bool hasChanged() const
             {
-                std::cout << "Has changed: " << _hasChanged << std::endl;
                 return _hasChanged;
             }
 

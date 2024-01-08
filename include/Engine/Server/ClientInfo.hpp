@@ -12,6 +12,7 @@ struct ClientInfo {
         unsigned short port;
         ClientState    state;
         bool           hasSwitchedWorld = false;
+        bool           isInitialized    = false;
 
         ClientInfo() : port(0), state(ClientState::Disconnected) {} // Constructeur par défaut
 
