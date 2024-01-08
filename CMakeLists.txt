@@ -29,61 +29,92 @@ if (NOT SFML_FOUND)
 endif ()
 
 add_executable(r-type
-        include/ECS/Components.hpp
-        include/ECS/EventSubscriber.hpp
-        include/ECS/Clock.hpp
-        include/ECS/System.hpp
-        include/ECS/World.hpp
-        include/ECS/Entity.hpp
-        include/ECS/Utilities.hpp
-        include/R-Type/GameWorld/GameWorld.hpp
-        include/R-Type/GameWorld/Entities.hpp
-        include/R-Type/GameWorld/Subscribers.hpp
-        include/R-Type/GameWorld/Systems.hpp
+        ##===============##
+        ##  ECS Headers  ##
+        ##===============##
 
-        include/Engine/Systems/UI.system.hpp
-        include/Engine/Systems/Renderer.system.hpp
-        include/Engine/Systems/Physics.system.hpp
-        include/Engine/Systems/Parallax.system.hpp
-        include/Engine/Systems/WorldMove.system.hpp
-        include/Engine/Systems/Animation.system.hpp
+        include/ECS/Clock.hpp
+        include/ECS/EventSubscriber.hpp
+        include/ECS/System.hpp
+        include/ECS/Utilities.hpp
+        include/ECS/World.hpp
+        include/ECS/Components.hpp
+        include/ECS/Entity.hpp
+
+        ##==================##
+        ##  Engine Headers  ##
+        ##==================##
+
         include/Engine/Components/Button.component.hpp
-        include/Engine/Components/Renderable.component.hpp
-        include/R-Type/Components/Enemy.component.hpp
-        include/Engine/Components/View.component.hpp
+        include/Engine/Components/ExcludeCollision.component.hpp
         include/Engine/Components/Moving.component.hpp
-        include/Engine/Components/Collision.component.hpp
-        include/R-Type/Components/Player.component.hpp
         include/Engine/Components/Parallax.component.hpp
-        include/R-Type/Components/EnemyQueue.component.hpp
+        include/Engine/Components/Position.component.hpp
         include/Engine/Components/Speed.component.hpp
-        include/R-Type/Components/EnemyAttack.component.hpp
+        include/Engine/Components/Type.component.hpp
+        include/Engine/Components/View.component.hpp
         include/Engine/Components/WorldMoveProgress.component.hpp
-        include/R-Type/Components/EnemyMovements.component.hpp
+        include/Engine/Components/Collision.component.hpp
         include/Engine/Components/Animation.component.hpp
-        include/Engine/Engine.hpp
+        include/Engine/Components/Renderable.component.hpp
+        include/Engine/Events/Resize.event.hpp
+        include/Engine/Events/Collision.event.hpp
         include/Engine/Events/KeyPressed.event.hpp
         include/Engine/Events/KeyReleased.event.hpp
+        include/Engine/Systems/Animation.system.hpp
+        include/Engine/Systems/Renderer.system.hpp
+        include/Engine/Systems/Parallax.system.hpp
+        include/Engine/Systems/UI.system.hpp
+        include/Engine/Systems/WorldMove.system.hpp
+        include/Engine/Systems/Physics.system.hpp
         include/Engine/Utils/Math.hpp
-        src/Engine/Engine.cpp
-        src/Engine/Systems/UI.system.cpp
-        src/Engine/Systems/Renderer.system.cpp
-        src/Engine/Systems/Physics.system.cpp
+        include/Engine/Engine.hpp
+
+        ##==================##
+        ##  Engine Sources  ##
+        ##==================##
+
         src/Engine/Systems/Parallax.system.cpp
+        src/Engine/Systems/Renderer.system.cpp
+        src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
+        src/Engine/Systems/Physics.system.cpp
+        src/Engine/Engine.cpp
 
-        include/R-Type/Systems/MovePlayer.system.hpp
-        include/R-Type/Systems/Bullets.system.hpp
-        include/R-Type/Systems/Enemy.system.hpp
-        include/R-Type/Subscribers/Collision.subscriber.hpp
+        ##==================##
+        ##  R-Type Headers  ##
+        ##==================##
+
+        include/R-Type/sprites.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
+        include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Components/BaseBullet.component.hpp
+        include/R-Type/Components/Enemy.component.hpp
+        include/R-Type/Components/EnemyAttack.component.hpp
+        include/R-Type/Components/EnemyMovements.component.hpp
+        include/R-Type/Components/Missile.component.hpp
+        include/R-Type/Components/Player.component.hpp
+        include/R-Type/Components/DeathAnimation.component.hpp
+        include/R-Type/Components/EnemyQueue.component.hpp
+        include/R-Type/GameWorld/Subscribers.hpp
+        include/R-Type/GameWorld/Entities.hpp
+        include/R-Type/GameWorld/GameWorld.hpp
+        include/R-Type/GameWorld/Systems.hpp
+        include/R-Type/Systems/Bullets.system.hpp
+        include/R-Type/Systems/MovePlayer.system.hpp
         include/R-Type/Systems/DeathAnimation.system.hpp
-        src/R-Type/Systems/MovePlayer.system.cpp
-        src/R-Type/Systems/Enemy.system.cpp
+        include/R-Type/Systems/Enemy.system.hpp
+
+        ##==================##
+        ##  R-Type Sources  ##
+        ##==================##
+
         src/R-Type/Systems/Bullets.system.cpp
+        src/R-Type/Systems/MovePlayer.system.cpp
         src/R-Type/Systems/DeathAnimation.system.cpp
+        src/R-Type/Systems/Enemy.system.cpp
 
         src/main.cpp
 )

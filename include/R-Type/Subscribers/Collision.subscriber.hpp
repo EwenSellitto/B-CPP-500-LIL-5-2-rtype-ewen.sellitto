@@ -15,7 +15,7 @@
 #include "R-Type/Components/BaseBullet.component.hpp"
 #include "R-Type/Components/DeathAnimation.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
-#include "R-Type/Components/EnemyMovements.component.hpp"
+#include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 
 namespace Rtype::Subscriber
@@ -47,7 +47,7 @@ namespace Rtype::Subscriber
 
                         collidingEntity->removeComponent<AnimationComponent>();
                         collidingEntity->removeComponent<CollisionComponent>();
-                        // collidingEntity->removeComponent<EnemyMovementsComponent>();
+                        collidingEntity->removeComponent<EnemyAttackComponent>();
 
                         switch (enemyComponent->enemyType) {
                             case EnemyData::EnemyType::Weak:
