@@ -32,38 +32,38 @@ namespace Engine::Components
 
 struct SpriteInfo {
         std::string filePath;
+        int         offsetX;
+        int         offsetY;
         int         width;
         int         height;
         int         oneframeX;
         int         oneframeY;
         int         nbFrames;
-        int         offsetX;
-        int         offsetY;
 };
 
 static const std::map<std::string, SpriteInfo> spriteInfoMap = {
-    {"Asteroid-Flame", {"./assets/Environnement/Asteroid-Flame.png", 288, 96, 96, 96, 3, 36, 30}},
-    {"Asteroid01-Base", {"./assets/Environnement/Asteroid01-Base.png", 96, 96, 96, 96, 1, 28, 31}},
-    {"Klaed-Battlecruiser-Base", {"./assets/klaed/Klaed-Battlecruiser-Base.png", 128, 128, 128, 128, 1, 27, 12}},
+    {"Asteroid-Flame", {"./assets/Environnement/Asteroid-Flame.png", 36, 32, 28508, 32, 96, 96, 3}},
+    {"Asteroid01-Base", {"./assets/Environnement/Asteroid01-Base.png", 29, 32, 38, 33, 96, 96, 1}},
+    {"Klaed-Battlecruiser-Base", {"./assets/klaed/Klaed-Battlecruiser-Base.png", 28, 12, 72, 89, 128, 128, 1}},
     {"Klaed-Battlecruiser-Destruction",
-     {"./assets/klaed/Klaed-Battlecruiser-Destruction.png", 1792, 128, 128, 128, 14, 27, 12}},
-    {"Klaed-Bullet", {"./assets/klaed/Klaed-Bullet.png", 16, 16, 4, 16, 4, 1, 4}},
-    {"Klaed-Bomber-Base", {"./assets/klaed/Klaed-Bomber-Base.png", 64, 64, 64, 64, 1, 17, 20}},
-    {"Klaed-Bomber-Destruction", {"./assets/klaed/Klaed-Bomber-Destruction.png", 512, 64, 64, 64, 8, 0, 0}},
-    {"Klaed-Dreadnought-Base", {"./assets/klaed/Klaed-Dreadnought-Base.png", 128, 128, 128, 128, 1, 28, 13}},
+     {"./assets/klaed/Klaed-Battlecruiser-Destruction.png", 0, 0, 1792, 128, 128, 128, 14}},
+    {"Klaed-Bullet", {"./assets/klaed/Klaed-Bullet.png", 1, 4, 2, 12, 4, 16, 4}},
+    {"Klaed-Bomber-Base", {"./assets/klaed/Klaed-Bomber-Base.png", 17, 20, 30, 27, 64, 64, 1}},
+    {"Klaed-Bomber-Destruction", {"./assets/klaed/Klaed-Bomber-Destruction.png", 0, 0, 512, 64, 64, 64, 8}},
+    {"Klaed-Dreadnought-Base", {"./assets/klaed/Klaed-Dreadnought-Base.png", 28, 13, 72, 100, 128, 128, 1}},
     {"Klaed-Dreadnought-Destruction",
-     {"./assets/klaed/Klaed-Dreadnought-Destruction.png", 1536, 128, 128, 128, 12, 0, 0}},
-    {"Klaed-Fighter-Base", {"./assets/klaed/Klaed-Fighter-Base.png", 64, 64, 64, 64, 1, 20, 21}},
-    {"Klaed-Fighter-Destruction", {"./assets/klaed/Klaed-Fighter-Destruction.png", 576, 64, 64, 64, 9, 0, 0}},
-    {"Klaed-Frigate-Base", {"./assets/klaed/Klaed-Frigate-Base.png", 64, 64, 64, 64, 1, 14, 11}},
-    {"Klaed-Frigate-Destruction", {"./assets/klaed/Klaed-Frigate-Destruction.png", 576, 64, 64, 64, 9, 0, 0}},
-    {"Klaed-Scout-Base", {"./assets/klaed/Klaed-Scout-Base.png", 64, 64, 64, 64, 1, 21, 23}},
-    {"Klaed-Scout-Destruction", {"./assets/klaed/Klaed-Scout-Destruction.png", 640, 64, 64, 64, 10, 0, 0}},
-    {"Klaed-Supportship-Base", {"./assets/klaed/Klaed-Supportship-Base.png", 64, 64, 64, 64, 1, 18, 15}},
-    {"Klaed-Supportship-Destruction", {"./assets/klaed/Klaed-Supportship-Destruction.png", 640, 64, 64, 64, 10, 0, 7}},
-    {"Klaed-TorpedoShip-Base", {"./assets/klaed/Klaed-TorpedoShip-Base.png", 64, 64, 64, 64, 1, 4, 21}},
-    {"Klaed-TorpedoShip-Destruction", {"./assets/klaed/Klaed-TorpedoShip-Destruction.png", 640, 64, 64, 64, 10, 0, 0}},
-    {"MainShip-Base-Fullhealth", {"./assets/MainShip/MainShip-Base-Fullhealth.png", 48, 48, 48, 48, 1, 9, 11}},
-    {"MainShip-Base-Destruction", {"./assets/MainShip/MainShip-Base-Destruction.png", 672, 48, 48, 48, 14, 9, 11}},
+     {"./assets/klaed/Klaed-Dreadnought-Destruction.png", 0, 0, 1536, 128, 128, 128, 12}},
+    {"Klaed-Fighter-Base", {"./assets/klaed/Klaed-Fighter-Base.png", 20, 21, 24, 22, 64, 64, 1}},
+    {"Klaed-Fighter-Destruction", {"./assets/klaed/Klaed-Fighter-Destruction.png", 0, 0, 576, 64, 64, 64, 9}},
+    {"Klaed-Frigate-Base", {"./assets/klaed/Klaed-Frigate-Base.png", 14, 11, 36, 39, 64, 64, 1}},
+    {"Klaed-Frigate-Destruction", {"./assets/klaed/Klaed-Frigate-Destruction.png", 0, 0, 576, 64, 64, 64, 9}},
+    {"Klaed-Scout-Base", {"./assets/klaed/Klaed-Scout-Base.png", 21, 23, 22, 22, 64, 64, 1}},
+    {"Klaed-Scout-Destruction", {"./assets/klaed/Klaed-Scout-Destruction.png", 0, 0, 640, 64, 64, 64, 10}},
+    {"Klaed-Supportship-Base", {"./assets/klaed/Klaed-Supportship-Base.png", 18, 15, 28, 28, 64, 64, 1}},
+    {"Klaed-Supportship-Destruction", {"./assets/klaed/Klaed-Supportship-Destruction.png", 0, 0, 640, 64, 64, 64, 10}},
+    {"Klaed-TorpedoShip-Base", {"./assets/klaed/Klaed-TorpedoShip-Base.png", 4, 21, 56, 22, 64, 64, 1}},
+    {"Klaed-TorpedoShip-Destruction", {"./assets/klaed/Klaed-TorpedoShip-Destruction.png", 0, 0, 640, 64, 64, 64, 10}},
+    {"MainShip-Base-Fullhealth", {"./assets/MainShip/MainShip-Base-Fullhealth.png", 9, 11, 30, 26, 48, 48, 1}},
+    {"MainShip-Base-Destruction", {"./assets/MainShip/MainShip-Base-Destruction.png", 0, 0, 672, 48, 48, 48, 14}},
     {"MainshipWeapon-Projectile-Autocannonbullet",
-     {"./assets/MainShipWeapons/MainshipWeapon-Projectile-Autocannonbullet.png", 128, 32, 32, 32, 4, 15, 12}}};
+     {"./assets/MainShipWeapons/MainshipWeapon-Projectile-Autocannonbullet.png", 11, 8, 10, 17, 32, 32, 4}}};
