@@ -65,7 +65,7 @@ namespace Engine::System
             void tick() override;
 
             void tryChangeEnemiesMovement();
-            void trySpawnEnemies();
+            void tryMoveEnemies();
             void tryMakeEnemyAttack();
 
             // this spawnEnemy is deprecated, a factory inside EnemyQueue is used instead;

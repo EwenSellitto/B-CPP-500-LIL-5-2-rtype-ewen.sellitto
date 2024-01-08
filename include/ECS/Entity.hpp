@@ -100,7 +100,7 @@ namespace ECS
              * @throw std::out_of_range if the component does not exist.
              * @note You should not destroy the component.
              */
-            template <typename T> ComponentHandle<T> getComponent()
+            template <typename T> ComponentHandle<T> getComponent() const
             {
                 auto               baseComponentPtr     = _components.at(ECS_TYPEID(T));
                 std::shared_ptr<T> specificComponentPtr = std::dynamic_pointer_cast<T>(baseComponentPtr);
