@@ -15,9 +15,9 @@ namespace GameWorld
         // Setup view and create entities
         Entities::createViewEntity(world);
         Entities::createParallax(world);
-        Entities::createPlayerEntities(world);
-        Entities::createEnemyQueue(world);
-        Entities::createWorldMoveProgress(world);
+        // Entities::createPlayerEntities(world);
+        // Entities::createEnemyQueue(world);
+        // Entities::createWorldMoveProgress(world);
 
         // Add systems
         Systems::addPhysics(world);

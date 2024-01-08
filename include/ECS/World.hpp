@@ -65,6 +65,22 @@ namespace ECS
             //  Entity Handling  //
             //===================*/
 
+            /*
+             * @brief check if an entity exists.
+             *
+             * @param id the id of the entity
+             * @return bool if it exists true
+             */
+            bool entityExists(id_t entityId)
+            {
+                for (const auto &paire : _entities) {
+                    if (paire.first == entityId) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             /**
              * @brief Add an entity to the world.
              *
@@ -76,6 +92,26 @@ namespace ECS
             id_t addEntity(std::unique_ptr<Entity> entity)
             {
                 type_t                  id = Utils::getNewId<Entity>();
+                Events::OnEntityCreated event{entity.get()};
+
+                _entities.emplace(id, std::move(entity));
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityCreated>(event);
+                return id;
+            }
+
+            /**
+             * @brief Create an empty entity with an id.
+             *
+             * @param id The unique identifier for the created entity.
+             * @return id_t The unique identifier for the created entity.
+             * @note if the id is already an entity id, it will return the id
+             */
+            id_t addEntity(id_t id)
+            {
+                if (entityExists(id)) return id;
+                Utils::getNewId<Entity>(id);
+                std::unique_ptr<Entity> entity = std::make_unique<Entity>();
                 Events::OnEntityCreated event{entity.get()};
 
                 _entities.emplace(id, std::move(entity));

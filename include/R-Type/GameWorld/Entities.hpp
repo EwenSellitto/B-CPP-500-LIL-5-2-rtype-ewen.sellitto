@@ -21,17 +21,21 @@ namespace Entities
 {
     inline void createViewEntity(ECS::World *world)
     {
-        world->createEntity(new Engine::Components::ViewComponent());
+        ECS::id_t ship_id = world->createEntity(new Engine::Components::ViewComponent());
+
+        auto &entity = world->getMutEntity(ship_id);
+        for (auto &it : entity.getComponents())
+            it.second->setHasChanged(false);
     }
 
     inline void createPlayerEntities(ECS::World *world)
     {
         using namespace Engine::Components;
 
-        [[maybe_unused]] ECS::id_t ship_id = world->createEntity(
-            new PlayerComponent(), new PositionComponent(100, 100),
-            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
-            new CollisionComponent(9, 11, 30, 26), new SpeedComponent(150));
+        [[maybe_unused]] ECS::id_t ship_id =
+            world->createEntity(new PlayerComponent(), new PositionComponent(100, 100),
+                                new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
+                                new CollisionComponent(9, 11, 30, 26), new SpeedComponent(150));
     }
 
     inline void createButtonEntities(ECS::World *world)
@@ -80,10 +84,18 @@ namespace Entities
                                        static_cast<float>(renderable->size.y * scaleRatio)};
         if (first) {
             renderable->position = {0, 0};
-            world->createEntity(new PositionComponent(0, 0), renderable, new ParallaxComponent(layer, speed));
+            ECS::id_t ship_id =
+                world->createEntity(new PositionComponent(0, 0), renderable, new ParallaxComponent(layer, speed));
+            auto &entity = world->getMutEntity(ship_id);
+            for (auto &it : entity.getComponents())
+                it.second->setHasChanged(false);
         } else {
             renderable->position = {trueSize.x, 0};
-            world->createEntity(new PositionComponent(trueSize.x, 0), renderable, new ParallaxComponent(layer, speed));
+            ECS::id_t ship_id    = world->createEntity(new PositionComponent(trueSize.x, 0), renderable,
+                                                       new ParallaxComponent(layer, speed));
+            auto     &entity     = world->getMutEntity(ship_id);
+            for (auto &it : entity.getComponents())
+                it.second->setHasChanged(false);
         }
     }
 
@@ -119,8 +131,6 @@ namespace Entities
 
     inline void createWorldMoveProgress(ECS::World *world)
     {
-        using namespace Engine::Components;
-
         using namespace Engine::Components;
 
         auto   now         = std::chrono::high_resolution_clock::now();

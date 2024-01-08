@@ -7,8 +7,10 @@
 
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <vector>
+
 #include "public/ComponentsType.hpp"
 
 namespace ECS
@@ -27,7 +29,7 @@ namespace ECS
              */
             virtual ~BaseComponent() = default;
 
-            virtual std::vector<char> serialize() = 0;
+            virtual std::vector<char>   serialize()                                                            = 0;
             virtual ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *comp = nullptr) = 0;
 
             virtual ComponentType getType() = 0;
@@ -39,11 +41,12 @@ namespace ECS
 
             bool hasChanged() const
             {
+                std::cout << "Has changed: " << _hasChanged << std::endl;
                 return _hasChanged;
             }
 
         private:
-            bool _hasChanged = false;
+            bool _hasChanged = true;
     };
 
     /**

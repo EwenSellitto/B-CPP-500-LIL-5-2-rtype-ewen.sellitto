@@ -10,9 +10,9 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
@@ -59,12 +59,13 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&scale.x), sizeof(scale.x));
                 oss.write(reinterpret_cast<const char *>(&scale.y), sizeof(scale.y));
                 oss.write(reinterpret_cast<const char *>(&isDisplayed), sizeof(isDisplayed));
+                oss.write(reinterpret_cast<const char *>(&path), sizeof(path));
 
                 const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 RenderableComponent *renderableComponent;
                 if (component == nullptr) {
@@ -87,6 +88,7 @@ namespace Engine::Components
                 iss.read(reinterpret_cast<char *>(&renderableComponent->scale.y), sizeof(renderableComponent->scale.y));
                 iss.read(reinterpret_cast<char *>(&renderableComponent->isDisplayed),
                          sizeof(renderableComponent->isDisplayed));
+                iss.read(reinterpret_cast<char *>(&renderableComponent->path), sizeof(renderableComponent->path));
                 // Ici, il faut configurer la texture et le sprite en utilisant 'path'
 
                 return renderableComponent;

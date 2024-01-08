@@ -11,6 +11,7 @@ struct ClientInfo {
         sf::IpAddress  address;
         unsigned short port;
         ClientState    state;
+        bool           hasSwitchedWorld = false;
 
         ClientInfo() : port(0), state(ClientState::Disconnected) {} // Constructeur par défaut
 

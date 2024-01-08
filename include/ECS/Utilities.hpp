@@ -30,10 +30,11 @@ namespace ECS
              * @return id_t A new unique identifier for this type.
              * @note Typedefs will have the same identifier as their underlying type.
              */
-            template <typename T> static id_t getNewId()
+            template <typename T> static id_t getNewId(id_t idNew = 184467440737095516ul)
             {
                 static id_t id = 0;
                 // static std::unordered_map<T, id_t> ids();
+                if (idNew < 184467440737095516ul) id = idNew + 1;
                 return id++;
             }
     };

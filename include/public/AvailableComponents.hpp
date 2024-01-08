@@ -39,7 +39,8 @@ class ComponentsConvertor
             registerComponent<Engine::Components::RenderableComponent>(ComponentType::RenderableComponent);
             registerComponent<Engine::Components::SpeedComponent>(ComponentType::SpeedComponent);
             registerComponent<Engine::Components::ViewComponent>(ComponentType::ViewComponent);
-            registerComponent<Engine::Components::WorldMoveProgressComponent>(ComponentType::WorldMoveProgressComponent);
+            registerComponent<Engine::Components::WorldMoveProgressComponent>(
+                ComponentType::WorldMoveProgressComponent);
             registerComponent<Engine::Components::BaseBulletComponent>(ComponentType::BaseBulletComponent);
             registerComponent<Engine::Components::EnemyComponent>(ComponentType::EnemyComponent);
             registerComponent<Engine::Components::EnemyAttackComponent>(ComponentType::EnemyAttackComponent);
@@ -52,16 +53,30 @@ class ComponentsConvertor
         template <typename T> void registerComponent(ComponentType type)
         {
             components[type] = []() -> ECS::BaseComponent * { return new T(); };
+
+            destroyers[type] = [](ECS::Entity &entity) -> bool {
+                if (entity.has<T>()) {
+                    entity.removeComponent<T>();
+                    return true;
+                }
+                return false;
+            };
+
+            adders[type] = [](ECS::Entity &entity, ECS::BaseComponent *comp) -> bool {
+                if (entity.has<T>()) return false;
+                entity.addComponent<T>(comp);
+                return true;
+            };
         }
 
         ECS::BaseComponent *createComponent(ComponentType type)
         {
             auto it = components.find(type);
-            if (it != components.end())
-                return it->second();
+            if (it != components.end()) return it->second();
             return nullptr;
         }
 
-    private:
-        std::map<ComponentType, std::function<ECS::BaseComponent *()>> components;
+        std::map<ComponentType, std::function<ECS::BaseComponent *()>>                              components;
+        std::map<ComponentType, std::function<bool(ECS::Entity &)>>                                 destroyers;
+        std::map<ComponentType, std::function<bool(ECS::Entity &entity, ECS::BaseComponent *comp)>> adders;
 };

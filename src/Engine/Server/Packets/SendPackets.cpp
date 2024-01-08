@@ -59,7 +59,7 @@ void ECS::Network::sendPacketToServer(sf::Packet &packet, const sf::IpAddress &r
 void ECS::Network::sendPacketToAllClients(sf::Packet &packet)
 {
     for (const auto &player : waitingRoom.getPlayers()) {
-        if (socket.send(packet, player.address, player.port) != sf::Socket::Done) {
+        if (socket.send(packet, player->address, player->port) != sf::Socket::Done) {
             std::cerr << "Erreur lors de l'envoi du paquet" << std::endl;
         }
     }
@@ -80,12 +80,39 @@ void ECS::Network::addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseC
     }
 
     std::vector<char> serializedData = component->serialize();
+    ComponentType     componentType  = component->getType();
     int               serializedSize = static_cast<int>(serializedData.size());
 
+    packet << static_cast<int>(componentType);
     packet << serializedSize;
     if (serializedSize > 0) {
         for (char byte : serializedData) {
             packet << static_cast<sf::Uint8>(byte);
+        }
+    }
+}
+
+void ECS::Network::addSerializedEntityToPacket(sf::Packet                                                     &packet,
+                                               const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair)
+{
+    int nbChangedComponents = 0;
+
+    if (pair.second == nullptr) return;
+
+    for (const auto &component : pair.second->getComponents()) {
+        if (component.second->getType() != ComponentType::NoneComponent && component.second->hasChanged()) {
+            nbChangedComponents++;
+        }
+    }
+    if (nbChangedComponents == 0) return;
+
+    packet << static_cast<sf::Uint64>(pair.first);
+    packet << nbChangedComponents;
+    for (const auto &component : pair.second->getComponents()) {
+        if (component.second->hasChanged()) {
+            if (component.second->getType() == ComponentType::NoneComponent) continue;
+            addSerializedComponentToPacket(packet, component.second.get());
+            component.second->setHasChanged(false);
         }
     }
 }

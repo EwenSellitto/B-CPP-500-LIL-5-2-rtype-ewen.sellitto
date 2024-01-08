@@ -38,8 +38,17 @@ void ECS::Network::handleReceivedPacket(sf::Packet &packet, const sf::IpAddress 
         case PacketType::LeaveLobby:
             handleLeaveLobby(packet, sender);
             break;
+        case PacketType::SwitchWorld:
+            handleSwitchWorld(sender, senderPort);
+            break;
+        case PacketType::SwitchWorldOkForMe:
+            handleReceiveSwitchedWorld(sender, senderPort);
+            break;
         case PacketType::InitializeGame:
-            handleInitializeGame(packet);
+            handleInitializeGame(packet, sender, senderPort);
+            break;
+        case PacketType::InitializeGameOkForMe:
+            std::cout << "Client initialisé !!!!!" << std::endl;
             break;
         default:
             std::cerr << "Paquet reçu inconnu" << std::endl;

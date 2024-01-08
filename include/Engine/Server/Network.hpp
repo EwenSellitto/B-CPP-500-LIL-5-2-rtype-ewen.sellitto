@@ -20,9 +20,12 @@
 enum class PacketType {
     HandshakeRequest,
     HandshakeResponse,
+    SwitchWorld,
+    SwitchWorldOkForMe,
     LeaveLobby,
     LeaveLobbyResponse,
     InitializeGame,
+    InitializeGameOkForMe,
     ClientUpdate,
     ClientUpdateACK,
     GlobalState,
@@ -68,6 +71,8 @@ namespace ECS
 
             void sendComponentsUpdate();
             void addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseComponent *component);
+            void addSerializedEntityToPacket(sf::Packet                                                     &packet,
+                                             const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair);
             void sendPacketTypeToServer(PacketType packetType, const sf::IpAddress &recipient, unsigned short port);
             void sendPacketToServer(sf::Packet &packet, const sf::IpAddress &recipient, unsigned short port);
 
@@ -82,6 +87,7 @@ namespace ECS
             void handleReceivedPacket(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
             template <typename T>
             ECS::BaseComponent *deserializeComponent(const std::vector<char> &serialized, T componentType);
+            void                deserializeEntityAndApply(sf::Packet &packet);
 
         private:
             // =========================================================
@@ -97,23 +103,7 @@ namespace ECS
                 addPlayerToLobby(sender, senderPort);
             }
 
-            void addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort)
-            {
-                waitingRoom.addPlayer(clientAddress, clientPort);
-                // Si tous les joueurs sont connectés, envoyer les informations du lobby
-                std::cout << "Nb players: " << waitingRoom.getPlayers().size() << std::endl;
-                if (waitingRoom.isReadyToStart()) {
-                    for (const auto &client : waitingRoom.getPlayers()) {
-                        sf::Packet packet;
-                        packet << static_cast<int>(PacketType::InitializeGame);
-                        auto positionComp = new Engine::Components::PositionComponent(123, 340);
-                        packet << static_cast<int>(ComponentType::PositionComponent);
-                        packet << static_cast<int>(waitingRoom.getPlayers().size());
-                        addSerializedComponentToPacket(packet, positionComp);
-                        sendPacketToClient(packet, client.address, client.port);
-                    }
-                }
-            }
+            void addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort);
 
             void switchToGame();
 
@@ -126,7 +116,9 @@ namespace ECS
 
             void handleLeaveLobby(sf::Packet &packet, const sf::IpAddress &sender);
 
-            void handleInitializeGame(sf::Packet &packet);
+            void handleInitializeGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short clientPort);
+            void handleSwitchWorld(const sf::IpAddress &sender, unsigned short clientPort);
+            void handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsigned short clientPort);
 
             // ================== ATTRIBUTS ==================
 
