@@ -10,6 +10,7 @@
 #include <map>
 
 #include "ECS/Entity.hpp"
+#include "Engine/Components/Drawable.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/View.component.hpp"
@@ -59,5 +60,10 @@ void Renderer::tick()
             window->draw(renderableComp->sprite);
         }
     }
+#ifndef NOT_SHOW_HITBOX
+    for (auto drawable : WORLD.getEntitiesWithComponents<DrawableComponent>()) {
+        window->draw(*drawable->getComponent<DrawableComponent>()->drawable);
+    }
+#endif
     window->display();
 }

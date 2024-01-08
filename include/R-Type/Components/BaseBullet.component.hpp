@@ -7,23 +7,23 @@
 
 #pragma once
 
-#include <iostream>
-#include <tuple>
-
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/RenderTexture.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/System/Vector2.hpp"
+#include "Engine/Engine.hpp"
 
 namespace Engine::Components
 {
     struct BaseBulletComponent : public ECS::BaseComponent {
         public:
-            explicit BaseBulletComponent(bool fromEnemy) : fromEnemy(fromEnemy) {}
+            explicit BaseBulletComponent(bool fromEnemy, std::size_t x_destroy = DEFAULT_WINDOW_SIZE_X + 200,
+                                         std::size_t y_destroy = DEFAULT_WINDOW_SIZE_Y + 200)
+                : fromEnemy(fromEnemy), x_destroy(x_destroy)
+            {
+            }
             ~BaseBulletComponent() override = default;
 
-            bool fromEnemy;
+            bool        fromEnemy;
+            std::size_t x_destroy;
+            std::size_t y_destroy;
 
         private:
     };

@@ -82,38 +82,38 @@ The **`Components.hpp`** file is a fundamental part of the ECS (Entity-Component
 ### **`BaseComponent`** Class:
 
 - **`BaseComponent` Class**
-    - **Description**: Abstract base class for ECS components.
-    - **Member Functions**:
-        - **`virtual ~BaseComponent()`**: Virtual destructor for **`BaseComponent`**.
-            - **Description**: Destroys the base component object when derived components are destructed.
-            - **Parameters**: None.
-            - **Return**: Void.
+  - **Description**: Abstract base class for ECS components.
+  - **Member Functions**:
+    - **`virtual ~BaseComponent()`**: Virtual destructor for **`BaseComponent`**.
+      - **Description**: Destroys the base component object when derived components are destructed.
+      - **Parameters**: None.
+      - **Return**: Void.
 
 ### **`ComponentHandle`** Template Class:
 
 - **`ComponentHandle` Template Class**
-    - **Description**: Template class managing component access and manipulation.
-    - **Member Functions**:
-        - **`ComponentHandle()`**: Default constructor initializing the component handle to nullptr.
-            - **Description**: Initializes the handle.
-            - **Parameters**: None.
-            - **Return**: Void.
-        - **`explicit ComponentHandle(std::shared_ptr<T> component)`**: Constructor initializing the component handle with a given component.
-            - **Description**: Initializes the handle with the provided component pointer.
-            - **Parameters**: **`component`** - Pointer to the component.
-            - **Return**: Void.
-        - **`~ComponentHandle()`**: Default destructor.
-            - **Description**: Destroys the component handle.
-            - **Parameters**: None.
-            - **Return**: Void.
-        - **`std::shared_ptr<T> operator*()`**: Overloaded dereference operator to access the underlying component.
-            - **Description**: Accesses the underlying component.
-            - **Parameters**: None.
-            - **Return**: Shared pointer to the component.
-        - **`bool isValid()`**: Checks if the handle is valid (i.e., it points to a component).
-            - **Description**: Checks the validity of the handle.
-            - **Parameters**: None.
-            - **Return**: **`true`** if the handle is valid, **`false`** otherwise.
+  - **Description**: Template class managing component access and manipulation.
+  - **Member Functions**:
+    - **`ComponentHandle()`**: Default constructor initializing the component handle to nullptr.
+      - **Description**: Initializes the handle.
+      - **Parameters**: None.
+      - **Return**: Void.
+    - **`explicit ComponentHandle(std::shared_ptr<T> component)`**: Constructor initializing the component handle with a given component.
+      - **Description**: Initializes the handle with the provided component pointer.
+      - **Parameters**: **`component`** - Pointer to the component.
+      - **Return**: Void.
+    - **`~ComponentHandle()`**: Default destructor.
+      - **Description**: Destroys the component handle.
+      - **Parameters**: None.
+      - **Return**: Void.
+    - **`std::shared_ptr<T> operator*()`**: Overloaded dereference operator to access the underlying component.
+      - **Description**: Accesses the underlying component.
+      - **Parameters**: None.
+      - **Return**: Shared pointer to the component.
+    - **`bool isValid()`**: Checks if the handle is valid (i.e., it points to a component).
+      - **Description**: Checks the validity of the handle.
+      - **Parameters**: None.
+      - **Return**: **`true`** if the handle is valid, **`false`** otherwise.
 
 # Entity.hpp
 
@@ -212,26 +212,25 @@ The **`Entity.hpp`** file within the ECS (Entity-Component-System) framework for
 ### **`Entity`** Class:
 
 - **`Entity` Class**
-    - **Description**: Represents an entity in the ECS architecture.
-    - **Member Functions**:
-        - **`explicit Entity()`**: Constructs a new Entity object.
-        - **`~Entity()`**: Destroys the Entity object.
-        - **`template <typename T> void addComponent(T *component)`**: Adds a component to the Entity.
-        - **`template <typename T> void removeComponent()`**: Removes and destroys a component.
-        - **`void removeAllComponents()`**: Removes all components.
-        - **`template <typename T> ComponentHandle<T> getComponent()`**: Gets a handle to a component.
-        - **`template <typename T> bool has() const`**: Checks if the Entity has a specific component type.
-        - **`template <typename T, typename V, typename... Types> bool has() const`**: Checks if the Entity has a list of specified components.
-        - **`std::clock_t getElapsedTime()`**: Retrieves the time elapsed since the last call.
+  - **Description**: Represents an entity in the ECS architecture.
+  - **Member Functions**:
+    - **`explicit Entity()`**: Constructs a new Entity object.
+    - **`~Entity()`**: Destroys the Entity object.
+    - **`template <typename T> void addComponent(T *component)`**: Adds a component to the Entity.
+    - **`template <typename T> void removeComponent()`**: Removes and destroys a component.
+    - **`void removeAllComponents()`**: Removes all components.
+    - **`template <typename T> ComponentHandle<T> getComponent()`**: Gets a handle to a component.
+    - **`template <typename T> bool has() const`**: Checks if the Entity has a specific component type.
+    - **`template <typename T, typename V, typename... Types> bool has() const`**: Checks if the Entity has a list of specified components.
+    - **`std::clock_t getElapsedTime()`**: Retrieves the time elapsed since the last call.
 
 ### **`GlobalEntity`** Class:
 
 - **`GlobalEntity` Class (inherits from `Entity`)**
-    - **Description**: Represents an entity with global access across multiple Worlds.
-    - **Member Functions**:
-        - **`GlobalEntity(World *world)`**: Constructs a GlobalEntity associated with a specific World.
-        - **`~GlobalEntity()`**: Destroys the GlobalEntity object.
-        
+  - **Description**: Represents an entity with global access across multiple Worlds.
+  - **Member Functions**:
+    - **`GlobalEntity(World *world)`**: Constructs a GlobalEntity associated with a specific World.
+    - **`~GlobalEntity()`**: Destroys the GlobalEntity object.
 
 # EventSubscriber.hpp
 
@@ -287,36 +286,35 @@ The **`EventSubscriber.hpp`** file within the ECS (Entity-Component-System) fram
 ### **`BaseEventSubscriber`** Class:
 
 - **`BaseEventSubscriber` Class**
-    - **Description**: Abstract base class for event subscribers within the ECS.
-    - **Member Functions**:
-        - **`virtual ~BaseEventSubscriber()`**: Virtual destructor for **`BaseEventSubscriber`**.
-            - **Description**: Destroys the **`BaseEventSubscriber`** object when derived event subscribers are destructed.
-            - **Parameters**: None.
-            - **Return**: Void.
+  - **Description**: Abstract base class for event subscribers within the ECS.
+  - **Member Functions**:
+    - **`virtual ~BaseEventSubscriber()`**: Virtual destructor for **`BaseEventSubscriber`**.
+      - **Description**: Destroys the **`BaseEventSubscriber`** object when derived event subscribers are destructed.
+      - **Parameters**: None.
+      - **Return**: Void.
 
 ### **`EventSubscriber`** Template Class:
 
 - **`EventSubscriber` Template Class**
-    - **Description**: Template class for event subscribers specialized to certain event types.
-    - **Member Functions**:
-        - **`virtual void receiveEvent(const std::string &name, const T &data) = 0;`**
-            - **Description**: Receives and processes an event.
-            - **Parameters**:
-                - **`name`** - The name of the event.
-                - **`data`** - Reference to the event data of type **`T`**.
-            - **Return**: Void.
-            - **Note**: This method can cause infinite recursion under certain circumstances. Care must be taken when broadcasting events.
+  - **Description**: Template class for event subscribers specialized to certain event types.
+  - **Member Functions**:
+    - **`virtual void receiveEvent(const std::string &name, const T &data) = 0;`**
+      - **Description**: Receives and processes an event.
+      - **Parameters**:
+        - **`name`** - The name of the event.
+        - **`data`** - Reference to the event data of type **`T`**.
+      - **Return**: Void.
+      - **Note**: This method can cause infinite recursion under certain circumstances. Care must be taken when broadcasting events.
 
 ### **`Events`** Namespace:
 
 - **`Events` Namespace**
-    - **Description**: Contains various event structures used within the ECS architecture.
-    - **Structures**:
-        - **`OnEntityCreated`**: Event structure for entity creation.
-        - **`OnEntityDestroyed`**: Event structure for entity destruction.
-        - **`template <typename T> struct OnComponentAdded`**: Event structure for component addition to an entity.
-        - **`template <typename T> struct OnComponentRemoved`**: Event structure for component removal from an entity.
-        
+  - **Description**: Contains various event structures used within the ECS architecture.
+  - **Structures**:
+    - **`OnEntityCreated`**: Event structure for entity creation.
+    - **`OnEntityDestroyed`**: Event structure for entity destruction.
+    - **`template <typename T> struct OnComponentAdded`**: Event structure for component addition to an entity.
+    - **`template <typename T> struct OnComponentRemoved`**: Event structure for component removal from an entity.
 
 # System.hpp
 
@@ -372,21 +370,21 @@ The **`System.hpp`** file in the ECS (Entity-Component-System) framework for the
 ### **`BaseSystem`** Class:
 
 - **`BaseSystem` Class**
-    - **Description**: Abstract base class for systems in the ECS framework.
-    - **Member Functions**:
-        - **`explicit BaseSystem(World &world)`**: Constructs a new BaseSystem object associated with a World.
-        - **`BaseSystem(World &world, id_t ids...)`**: Constructs a new BaseSystem object with a list of entity IDs to be processed.
-        - **`virtual ~BaseSystem()`**: Virtual destructor for BaseSystem.
-        - **`virtual void configure(World &world) = 0;`**: Configures the system with the World.
-        - **`[[maybe_unused]] virtual void unconfigure() = 0;`**: Unconfigures the system, releasing resources.
-        - **`virtual void tick() = 0;`**: Updates the system to process its entities.
-        - **`[[nodiscard]] World &getWorld() const`**: Retrieves the World associated with this system.
+  - **Description**: Abstract base class for systems in the ECS framework.
+  - **Member Functions**:
+    - **`explicit BaseSystem(World &world)`**: Constructs a new BaseSystem object associated with a World.
+    - **`BaseSystem(World &world, id_t ids...)`**: Constructs a new BaseSystem object with a list of entity IDs to be processed.
+    - **`virtual ~BaseSystem()`**: Virtual destructor for BaseSystem.
+    - **`virtual void configure(World &world) = 0;`**: Configures the system with the World.
+    - **`[[maybe_unused]] virtual void unconfigure() = 0;`**: Unconfigures the system, releasing resources.
+    - **`virtual void tick() = 0;`**: Updates the system to process its entities.
+    - **`[[nodiscard]] World &getWorld() const`**: Retrieves the World associated with this system.
 
 ### **`HigherOrderBaseSystem`** Class:
 
 - **`HigherOrderBaseSystem` Class (inherits from `BaseSystem`)**
-    - **Description**: Placeholder class for future system extension or specialization.
-    - **Note**: No additional functionalities defined in this class.
+  - **Description**: Placeholder class for future system extension or specialization.
+  - **Note**: No additional functionalities defined in this class.
 
 # World.hpp
 
@@ -416,7 +414,7 @@ namespace ECS
     class World
     {
         public:
-   
+
             World()
                 : _entities(), _global_entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine())
             {
@@ -432,7 +430,6 @@ namespace ECS
                         delete pair.second;
                     }
                 }
-                std::cout << "World destroyed" << std::endl;
             }
 
             /*===================//
@@ -764,10 +761,10 @@ The **`World`** class manages the game world, providing functionalities for enti
 - **`const Entity &getEntity(id_t id) const`**: Retrieves a const reference to an entity.
 - **`Entity &getMutEntity(id_t id)`**: Retrieves a mutable reference to an entity.
 - Template functions:
-    - **`std::unordered_map<Entity *, ComponentHandle<T>> get()`**: Retrieves entities with a specific component.
-    - **`void each(...)`**: Executes a function for each entity with specified components.
-    - **`std::vector<Entity *> getEntitiesWithComponents()`**: Retrieves entities with a set of specified components.
-    - **`Entity *getEntityWithComponents()`**: Retrieves the first entity with specified components.
+  - **`std::unordered_map<Entity *, ComponentHandle<T>> get()`**: Retrieves entities with a specific component.
+  - **`void each(...)`**: Executes a function for each entity with specified components.
+  - **`std::vector<Entity *> getEntitiesWithComponents()`**: Retrieves entities with a set of specified components.
+  - **`Entity *getEntityWithComponents()`**: Retrieves the first entity with specified components.
 
 **GlobalEntity Handling:**
 
@@ -776,20 +773,20 @@ The **`World`** class manages the game world, providing functionalities for enti
 - **`const GlobalEntity &getGlobalEntity(id_t id)`**: Retrieves a const reference to a global entity.
 - **`GlobalEntity &getMutGlobalEntity(id_t id)`**: Retrieves a mutable reference to a global entity.
 - Template function:
-    - **`std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> getGlobal()`**: Retrieves global entities with a specific component.
+  - **`std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> getGlobal()`**: Retrieves global entities with a specific component.
 
 **Event Handling:**
 
 - Template functions:
-    - **`id_t subscribe(const EventSubscriber<T> *subscriber)`**: Subscribes to a specific event.
-    - **`void unsubscribe(id_t uuid)`**: Unsubscribes from a specific event.
-    - **`void broadcastEvent(T data, const std::string name = "")`**: Broadcasts an event to subscribers.
+  - **`id_t subscribe(const EventSubscriber<T> *subscriber)`**: Subscribes to a specific event.
+  - **`void unsubscribe(id_t uuid)`**: Unsubscribes from a specific event.
+  - **`void broadcastEvent(T data, const std::string name = "")`**: Broadcasts an event to subscribers.
 
 **Systems Handling:**
 
 - Template functions:
-    - **`void addSystem(std::string name, types &&...args)`**: Adds a system to the world.
-    - **`void addSystem(std::string name)`**: Adds a system to the world.
+  - **`void addSystem(std::string name, types &&...args)`**: Adds a system to the world.
+  - **`void addSystem(std::string name)`**: Adds a system to the world.
 
 **Logic Handling:**
 
@@ -843,13 +840,12 @@ The **`Utilities.hpp`** file within the ECS (Entity-Component-System) framework 
 ### **`Utils`** Class:
 
 - **`Utils` Class**
-    - **Description**: Utility class for the ECS framework.
-    - **Member Functions**:
-        - **`template <typename T> static id_t getNewId()`**: Retrieves a new unique identifier for a specified type.
-            - **Parameters**: None.
-            - **Return**: **`id_t`** - A new unique identifier for the specified type.
-            - **Note**: Typedefs will share identifiers with their underlying types.
-        
+  - **Description**: Utility class for the ECS framework.
+  - **Member Functions**:
+    - **`template <typename T> static id_t getNewId()`**: Retrieves a new unique identifier for a specified type.
+      - **Parameters**: None.
+      - **Return**: **`id_t`** - A new unique identifier for the specified type.
+      - **Note**: Typedefs will share identifiers with their underlying types.
 
 # Clock.hpp
 
