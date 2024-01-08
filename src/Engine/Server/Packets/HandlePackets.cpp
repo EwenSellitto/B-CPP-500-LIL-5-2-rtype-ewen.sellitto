@@ -166,6 +166,7 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
         packet << nbEntities;
         for (const auto &pair : world.getEntities())
             addSerializedEntityToPacket(packet, pair);
+        std::cout << "Size restant: " << packet.getDataSize() << std::endl;
         sendPacketToAllClients(packet);
     }
 }

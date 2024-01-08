@@ -54,6 +54,7 @@ void ECS::Network::handleReceivedPacket(sf::Packet &packet, const sf::IpAddress 
             std::cout << "Received LaunchGame" << std::endl;
             break;
         default:
+            std::cout << static_cast<int>(packetType) << std::endl;
             std::cerr << "Paquet reçu inconnu" << std::endl;
             break;
     }

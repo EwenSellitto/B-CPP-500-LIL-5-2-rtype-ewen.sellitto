@@ -13,31 +13,7 @@
 using namespace Engine;
 using namespace ECS;
 
-void ECS::Network::sendComponentsUpdate()
-{
-    ECS::World &world    = Engine::EngineClass::getEngine().world();
-    auto       &entities = world.getEntities();
-
-    // std::cout << "Sending components update" << std::endl;
-
-    for (auto &pair : entities) { // Supposons que `entities` contienne toutes les entités en jeu
-        Entity &entity = *pair.second;
-        for (const auto &component : entity.getComponents()) {
-            if (component.second->hasChanged()) {
-                std::vector<char> componentSerialized = component.second->serialize();
-
-                sf::Packet   packet;
-                unsigned int size = static_cast<unsigned int>(componentSerialized.size());
-                packet << size;
-                if (size > 0) {
-                    packet.append(&componentSerialized[0], size);
-                }
-                component.second->setHasChanged(false);
-                sendPacketToAllClients(packet);
-            }
-        }
-    }
-}
+void ECS::Network::sendComponentsUpdate() {}
 
 void ECS::Network::sendPacketTypeToServer(PacketType packetType, const sf::IpAddress &recipient, unsigned short port)
 {
