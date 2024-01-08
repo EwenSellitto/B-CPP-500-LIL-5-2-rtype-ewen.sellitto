@@ -16,6 +16,9 @@ namespace GameWorld
         Entities::createViewEntity(world);
         Entities::createParallax(world);
         Entities::createPlayerEntities(world);
+        Entities::createOptionsEntities(world);
+        Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {150, 150},
+                                          {2, 2}, 4);
         Entities::createEnemyQueue(world);
         Entities::createWorldMoveProgress(world);
 
@@ -42,8 +45,11 @@ namespace GameWorld
 
         Entities::createViewEntity(world);
         Entities::createButtonEntities(world);
-
+        Entities::createOptionsEntities(world);
+        Entities::createParallax(world);
         Systems::addUISystem(world);
+
+        Systems::addParallaxSystem(world);
 
         // Disclaimer: this hasn't been done by me, but trying to make it pretty it crashes, as I think when we switch
         // world while being in one doing a function, it crashes, so we should keep a shared_ptr of the world

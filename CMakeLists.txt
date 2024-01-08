@@ -77,6 +77,8 @@ add_executable(r-type
         src/Engine/Systems/Parallax.system.cpp
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/UI.system.cpp
+        src/Engine/Systems/Sound.system.cpp
+        src/Engine/Systems/Options.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
         src/Engine/Systems/Physics.system.cpp

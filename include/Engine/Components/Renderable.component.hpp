@@ -27,9 +27,10 @@ namespace Engine::Components
             }
 
             RenderableComponent(const std::string &texture_path, float pos_x, float pos_y, int priority,
-                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
+                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false,
+                                bool isDisplayed = true)
                 : texture(), sprite(), size(), position({pos_x, pos_y}), priority(priority), rotation(rotation),
-                  scale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
+                  scale(scale), savedScale(scale), isDisplayed(isDisplayed), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture(texture_path);
@@ -38,7 +39,7 @@ namespace Engine::Components
             RenderableComponent(const std::string &texture_path, sf::Vector2<float> pos, int priority,
                                 float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
                 : texture(), sprite(), size(), position(pos), priority(priority), rotation(rotation), scale(scale),
-                  isDisplayed(true), path(texture_path), setOrigin(setOrigin)
+                  savedScale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture(texture_path);
@@ -66,6 +67,7 @@ namespace Engine::Components
             int                      priority;
             float                    rotation;
             sf::Vector2<float>       scale;
+            sf::Vector2<float>       savedScale;
             bool                     isDisplayed;
             std::string              path;
             bool                     setOrigin = false;
@@ -76,7 +78,6 @@ namespace Engine::Components
                 if (!texture.loadFromFile(texture_path))
                     throw std::runtime_error("Cannot load texture " + texture_path);
                 sprite = sf::Sprite(texture);
-                sprite.setScale(scale.x, scale.y);
                 sprite.setPosition(position.x, position.y);
                 sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
