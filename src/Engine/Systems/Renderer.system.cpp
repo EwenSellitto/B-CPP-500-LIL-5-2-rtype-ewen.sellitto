@@ -105,7 +105,7 @@ void Renderer::tick()
         if (layeredComponents.find(iter) != layeredComponents.end()) {
             for (auto &renderableComp : layeredComponents[iter]) {
                 for (auto &renderable : renderableComp->renderable) {
-                    window->draw(renderable->sprite);
+                    if (renderableComp->isDisplayed) window->draw(renderable->sprite);
                 }
             }
         }

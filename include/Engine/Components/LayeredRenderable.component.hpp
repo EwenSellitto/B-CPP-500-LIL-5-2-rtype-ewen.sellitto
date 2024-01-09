@@ -13,6 +13,11 @@
 namespace Engine::Components
 {
     struct LayeredRenderableComponent : ECS::BaseComponent {
+            LayeredRenderableComponent(int priority, RenderableComponent *first)
+                : renderable{std::shared_ptr<RenderableComponent>(first)}, layers(0), priority(priority)
+            {
+                layers = renderable.size();
+            }
             template <typename... Renderables>
             LayeredRenderableComponent(int priority, RenderableComponent *first, Renderables... rest)
                 : renderable{std::shared_ptr<RenderableComponent>(first),

@@ -8,10 +8,13 @@
 #pragma once
 
 #include "ECS/World.hpp"
+#include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Button.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Cursor.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
+#include "Engine/Components/LayeredAnimation.component.hpp"
+#include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Menu.component.hpp"
 #include "Engine/Components/Music.component.hpp"
 #include "Engine/Components/Options.component.hpp"
@@ -43,10 +46,17 @@ namespace Entities
     inline void createPlayerEntities(ECS::World *world)
     {
         using namespace Engine::Components;
-        world->createEntity(new PlayerComponent(), new PositionComponent(100, 100),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
-                            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player),
-                            new SpeedComponent(150));
+
+        world->createEntity(
+            new PlayerComponent(), new PositionComponent(100, 100),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 2, 90),
+            new LayeredRenderableComponent(
+                1,
+                new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine-Powering.png", 0, 0, 1, 90,
+                                        {1, 1}, false),
+                new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine.png", 0, 0, 1, 90)),
+            new LayeredAnimationComponent(new AnimationComponent(0, 0, 48, 48, 48, 48, 100, 4)),
+            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
     inline void createOptionsEntities(ECS::World *world)
     {

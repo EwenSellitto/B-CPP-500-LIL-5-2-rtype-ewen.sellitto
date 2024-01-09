@@ -7,14 +7,12 @@
 
 #include "Engine/Systems/Physics.system.hpp"
 
-#include <SFML/Graphics.h>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Drawable.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"

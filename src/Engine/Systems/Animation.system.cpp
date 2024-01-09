@@ -46,15 +46,17 @@ void AnimationSystem::tick()
 
     for (auto &entity : entities) {
         auto renderable = entity->getComponent<Engine::Components::RenderableComponent>();
-        auto animation  = entity->getComponent<Engine::Components::AnimationComponent>();
+        if (!renderable->isDisplayed) continue;
+        auto animation = entity->getComponent<Engine::Components::AnimationComponent>();
         animateSprite(renderable, animation);
     }
     for (auto &entity : layeredEntities) {
         auto renderables = entity->getComponent<Engine::Components::LayeredRenderableComponent>();
-        auto animations  = entity->getComponent<Engine::Components::LayeredAnimationComponent>();
+        if (!renderables->isDisplayed) continue;
+        auto animations = entity->getComponent<Engine::Components::LayeredAnimationComponent>();
 
         for (int i = 0; i < animations->layers; i++) {
-            if (i >= renderables->layers) break;
+            if (!renderables->renderable[i]) continue;
             auto animation  = animations->at(i);
             auto renderable = renderables->at(i);
             animateSprite(renderable, animation);

@@ -57,6 +57,16 @@ namespace ECS
             //======================*/
 
             /**
+             * @brief Return the underlying component pointer.
+             *
+             * @return T* Pointer to the component.
+             */
+            T *operator()() const
+            {
+                return _component.get();
+            }
+
+            /**
              * @brief Overloading dereference operator to get the underlying component.
              *
              * @return T* Pointer to the component.
