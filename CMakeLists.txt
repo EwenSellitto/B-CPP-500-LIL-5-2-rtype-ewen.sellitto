@@ -101,6 +101,7 @@ add_executable(r-type
         include/R-Type/Components/Player.component.hpp
         include/R-Type/Components/DeathAnimation.component.hpp
         include/R-Type/Components/EnemyQueue.component.hpp
+        include/R-Type/Components/Health.component.hpp
         include/R-Type/GameWorld/Subscribers.hpp
         include/R-Type/GameWorld/Entities.hpp
         include/R-Type/GameWorld/GameWorld.hpp
@@ -109,6 +110,7 @@ add_executable(r-type
         include/R-Type/Systems/MovePlayer.system.hpp
         include/R-Type/Systems/DeathAnimation.system.hpp
         include/R-Type/Systems/Enemy.system.hpp
+        include/R-Type/Systems/Health.system.hpp
 
         ##==================##
         ##  R-Type Sources  ##
@@ -118,6 +120,7 @@ add_executable(r-type
         src/R-Type/Systems/MovePlayer.system.cpp
         src/R-Type/Systems/DeathAnimation.system.cpp
         src/R-Type/Systems/Enemy.system.cpp
+        src/R-Type/Systems/Health.system.cpp
 
         src/main.cpp
 )

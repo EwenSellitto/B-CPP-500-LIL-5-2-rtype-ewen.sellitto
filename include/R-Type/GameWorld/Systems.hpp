@@ -10,6 +10,7 @@
 #include "R-Type/Systems/Bullets.system.hpp"
 #include "R-Type/Systems/DeathAnimation.system.hpp"
 #include "R-Type/Systems/Enemy.system.hpp"
+#include "R-Type/Systems/Health.system.hpp"
 #include "R-Type/Systems/MovePlayer.system.hpp"
 
 namespace Systems
@@ -62,5 +63,10 @@ namespace Systems
     inline void addDeathAnimationSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::DeathAnimationSystem>("DeathAnimationSystem");
+    }
+
+    inline void addHealthSystem(ECS::World *world)
+    {
+        world->addSystem<Rtype::Systems::HealthSystem>("HealthSystem");
     }
 } // namespace Systems
