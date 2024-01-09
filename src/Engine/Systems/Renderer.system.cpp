@@ -8,6 +8,7 @@
 #include "Engine/Systems/Renderer.system.hpp"
 
 #include <map>
+#include <thread>
 
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
@@ -42,7 +43,8 @@ void Renderer::tick()
     ECS::World                                                                  &world = getWorld();
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>>        components{};
     std::map<int, std::vector<ECS::ComponentHandle<LayeredRenderableComponent>>> layeredComponents{};
-    std::map<int, bool>                                                          keys{};
+    std::map<int, bool>                                                          keys1{};
+    std::map<int, bool>                                                          keys2{};
     sf::RenderWindow                                                            *window = &WINDOW;
     std::unordered_map<ECS::Entity *, ECS::ComponentHandle<ViewComponent>>       ViewEntities;
 
@@ -56,19 +58,25 @@ void Renderer::tick()
         window->setView(viewComponent->view);
     }
 
-    world.each<RenderableComponent>([&](ECS::Entity *entity, ECS::ComponentHandle<RenderableComponent> renderableComp) {
-        if (!renderableComp->isDisplayed) return;
-        if (entity->has<PositionComponent>()) {
-            auto positionComponent = entity->getComponent<PositionComponent>();
-            updateSprite(renderableComp, positionComponent);
+    auto        r_entities = world.getEntitiesWithComponents<RenderableComponent>();
+    std::thread t1([&]() {
+        for (auto &entity : r_entities) {
+            auto renderableComp = entity->getComponent<RenderableComponent>();
+            if (!renderableComp->isDisplayed) continue;
+            if (entity->has<PositionComponent>()) {
+                auto positionComponent = entity->getComponent<PositionComponent>();
+                updateSprite(renderableComp, positionComponent);
+            }
+            components[renderableComp->priority].push_back(renderableComp);
+            keys1[renderableComp->priority] = true;
         }
-        components[renderableComp->priority].push_back(renderableComp);
-        keys[renderableComp->priority] = true;
     });
 
-    world.each<LayeredRenderableComponent>(
-        [&](ECS::Entity *entity, ECS::ComponentHandle<LayeredRenderableComponent> layeredRenderableComp) {
-            if (layeredRenderableComp->isDisplayed) return;
+    auto        l_entities = world.getEntitiesWithComponents<LayeredRenderableComponent>();
+    std::thread t2([&]() {
+        for (auto &entity : l_entities) {
+            auto layeredRenderableComp = entity->getComponent<LayeredRenderableComponent>();
+            if (!layeredRenderableComp->isDisplayed) continue;
             if (entity->has<PositionComponent>()) {
                 auto positionComponent = entity->getComponent<PositionComponent>();
                 for (auto &renderable : layeredRenderableComp->renderable) {
@@ -76,8 +84,14 @@ void Renderer::tick()
                 }
             }
             layeredComponents[layeredRenderableComp->priority].push_back(layeredRenderableComp);
-            keys[layeredRenderableComp->priority] = true;
-        });
+            keys2[layeredRenderableComp->priority] = true;
+        }
+    });
+
+    t1.join();
+    t2.join();
+    keys1.merge(keys2);
+    auto keys = keys1;
 
     window->clear(sf::Color::Black);
 
