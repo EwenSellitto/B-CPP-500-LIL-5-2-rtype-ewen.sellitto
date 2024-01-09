@@ -12,7 +12,7 @@
 
 using namespace Engine::System;
 
-void DeathAnimationSystem::configure(ECS::World &world) {}
+void DeathAnimationSystem::configure([[maybe_unused]] ECS::World &world) {}
 
 void DeathAnimationSystem::unconfigure() {}
 

@@ -12,7 +12,7 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
-    set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -std=c++20 -g -0g")
+    set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -std=c++20 -g -Og")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++20 -O2")
 endif()
 
@@ -58,6 +58,8 @@ add_executable(r-type
         include/Engine/Components/Animation.component.hpp
         include/Engine/Components/Renderable.component.hpp
         include/Engine/Components/Drawable.component.hpp
+        include/Engine/Components/LayeredAnimation.component.hpp
+        include/Engine/Components/LayeredRenderable.component.hpp
         include/Engine/Events/Resize.event.hpp
         include/Engine/Events/Collision.event.hpp
         include/Engine/Events/KeyPressed.event.hpp

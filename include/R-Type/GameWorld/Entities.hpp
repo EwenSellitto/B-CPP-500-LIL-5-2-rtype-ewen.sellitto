@@ -174,8 +174,10 @@ namespace Entities
         }
     }
 
-    inline void createChangeSceneButton(ECS::World *world, const std::string &texturePath, const std::string &sceneName,
-                                        const sf::Vector2f &position, const sf::Vector2f &scale, int priority)
+    inline void createChangeSceneButton(ECS::World *world, [[maybe_unused]] const std::string &texturePath,
+                                        [[maybe_unused]] const std::string  &sceneName,
+                                        [[maybe_unused]] const sf::Vector2f &position,
+                                        [[maybe_unused]] const sf::Vector2f &scale, [[maybe_unused]] int priority)
     {
         using namespace Engine::Components;
         sf::Font font;
@@ -183,7 +185,7 @@ namespace Entities
             return;
         }
         world->createEntity(
-            new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [world]() {}),
+            new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [&]() {}),
             new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
                             new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 2, 0, {2, 2}, true));
