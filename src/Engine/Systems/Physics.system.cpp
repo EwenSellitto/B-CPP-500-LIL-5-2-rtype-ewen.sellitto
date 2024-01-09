@@ -113,15 +113,14 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
         rect->setOutlineThickness(2);
         rect->setFillColor(sf::Color::Transparent);
         rect->setOutlineColor(sf::Color::Red);
-    }
 #endif
 
-    if (hitbox.intersects(hit)) collisionEntities.push_back(ent);
-}
+        if (hitbox.intersects(hit)) collisionEntities.push_back(ent);
+    }
 
-if (collisionEntities.empty()) return;
-for (auto &collisionEntity : collisionEntities)
-    world.broadcastEvent<CollisionEvent>({entity, collisionEntity});
+    if (collisionEntities.empty()) return;
+    for (auto &collisionEntity : collisionEntities)
+        world.broadcastEvent<CollisionEvent>({entity, collisionEntity});
 }
 
 void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::MovingComponent> handle)

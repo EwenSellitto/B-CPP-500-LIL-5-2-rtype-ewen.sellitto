@@ -16,6 +16,7 @@
 #include "R-Type/Components/DeathAnimation.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/EnemyAttack.component.hpp"
+#include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 
 namespace Rtype::Subscriber
@@ -25,6 +26,7 @@ namespace Rtype::Subscriber
         public:
             CollisionEventSubscriber()           = default;
             ~CollisionEventSubscriber() override = default;
+
             void receiveEvent([[maybe_unused]] const std::string &name, const CollisionEvent &data) override
             {
                 using namespace Engine::Components;
@@ -40,28 +42,23 @@ namespace Rtype::Subscriber
                         data.collidingEntity->removeAllComponents();
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
-                        auto collidingEntity = data.collidingEntity;
-                        auto enemyComponent  = collidingEntity->getComponent<EnemyComponent>();
-                        auto position        = collidingEntity->getComponent<PositionComponent>();
-                        data.movingEntity->removeAllComponents();
-
-                        collidingEntity->removeComponent<AnimationComponent>();
-                        collidingEntity->removeComponent<CollisionComponent>();
-                        collidingEntity->removeComponent<EnemyAttackComponent>();
-
-                        switch (enemyComponent->enemyType) {
-                            case EnemyData::EnemyType::Weak:
-                                collidingEntity->addComponent(new DeathAnimationComponent(
-                                    "./assets/klaed/Klaed-Fighter-Destruction.png", 0, 0, 64, 64, 64, 64, 100, 9));
-                                break;
-                            case EnemyData::EnemyType::Medium:
-                            case EnemyData::EnemyType::Strong:
-                                collidingEntity->removeAllComponents();
-                        }
-
-                        return;
+                        enemyCollision(data);
                     }
                 }
+            }
+
+        private:
+            void enemyCollision(const CollisionEvent &data)
+            {
+                using namespace Engine::Components;
+                using namespace Rtype::Components;
+
+                auto collidingEntity = data.collidingEntity;
+                auto health          = collidingEntity->getComponent<HealthComponent>();
+                auto damage          = data.movingEntity->getComponent<BaseBulletComponent>()->damage;
+
+                data.movingEntity->removeAllComponents();
+                health->health -= damage;
             }
     };
 } // namespace Rtype::Subscriber

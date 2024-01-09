@@ -29,7 +29,8 @@ void Bullets::tick()
     for (auto ent : WORLD.getEntitiesWithComponents<BaseBulletComponent, PositionComponent>()) {
         auto bullet = ent->getComponent<BaseBulletComponent>();
         auto pos    = ent->getComponent<PositionComponent>();
-        if (bullet->x_destroy <= pos->x) {
+        if (WINDOW.getSize().x + 100 <= pos->x || pos->x <= -100 || WINDOW.getSize().y + 100 <= pos->y ||
+            pos->y <= -100) {
             WORLD.removeEntity(ent->getId());
         }
     }
