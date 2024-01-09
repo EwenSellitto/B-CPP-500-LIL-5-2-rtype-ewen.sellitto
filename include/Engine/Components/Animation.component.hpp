@@ -26,9 +26,10 @@ namespace Engine::Components
              * @param animationSpeed in ms.
              * @param frameCount = number of frame in the animation.
              */
-            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount)
+            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount,
+                               bool doAnimation = true)
                 : textureRect(x, y, width, height), tileSize(tx, ty), animationSpeed(animationSpeed),
-                  frameCount(frameCount){};
+                  frameCount(frameCount), doAnimation(doAnimation){};
             ~AnimationComponent() = default;
 
             // x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,
@@ -42,5 +43,6 @@ namespace Engine::Components
             int           animationSpeed{0};
             int           frameCount{0};
             sf::Clock     clock{};
+            bool          doAnimation = true;
     };
 } // namespace Engine::Components

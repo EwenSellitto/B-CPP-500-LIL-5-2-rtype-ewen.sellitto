@@ -54,6 +54,7 @@ namespace Entities
                 1,
                 new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine-Powering.png", 0, 0, 1, 90,
                                         {1, 1}, false),
+                new RenderableComponent("./assets/MainShip/MainShip-Weapons-Rockets-Croped.png", 0, 0, 1, 90),
                 new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine.png", 0, 0, 1, 90)),
             new LayeredAnimationComponent(new AnimationComponent(0, 0, 48, 48, 48, 48, 100, 4)),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
@@ -196,9 +197,10 @@ namespace Entities
         }
         world->createEntity(
             new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [&]() {}),
-            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
-        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
-                            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 2, 0, {2, 2}, true));
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 39, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(30, 100), new MenuComponent(),
+            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 40, 0, {2, 2}, true));
         // world->createEntity(
         //     new PositionComponent(position.x, position.y),
         //     new TextComponent(sceneName, font, 40, {position.x, position.y}, true, false),
