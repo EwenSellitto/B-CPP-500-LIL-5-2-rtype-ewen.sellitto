@@ -154,7 +154,7 @@ EnemyData::EnemyType EnemySystem::getRandomEnemyType()
     if (chance < 70)
         return EnemyData::EnemyType::Weak;
     else if (chance < 95)
-        return EnemyData::EnemyType::Normal;
+        return EnemyData::EnemyType::Medium;
     else
         return EnemyData::EnemyType::Strong;
 }

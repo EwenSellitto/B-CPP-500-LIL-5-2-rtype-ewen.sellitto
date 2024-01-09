@@ -54,7 +54,7 @@ namespace Rtype::Subscriber
                                 collidingEntity->addComponent(new DeathAnimationComponent(
                                     "./assets/klaed/Klaed-Fighter-Destruction.png", 0, 0, 64, 64, 64, 64, 100, 9));
                                 break;
-                            case EnemyData::EnemyType::Normal:
+                            case EnemyData::EnemyType::Medium:
                             case EnemyData::EnemyType::Strong:
                                 collidingEntity->removeAllComponents();
                         }
