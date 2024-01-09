@@ -7,15 +7,11 @@
 
 #pragma once
 
+#include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/Animation.component.hpp"
-#include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Position.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
-#include "R-Type/Components/DeathAnimation.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
-#include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 
@@ -53,12 +49,18 @@ namespace Rtype::Subscriber
                 using namespace Engine::Components;
                 using namespace Rtype::Components;
 
-                auto collidingEntity = data.collidingEntity;
-                auto health          = collidingEntity->getComponent<HealthComponent>();
-                auto damage          = data.movingEntity->getComponent<BaseBulletComponent>()->damage;
+                auto                                  collidingEntity = data.collidingEntity;
+                ECS::ComponentHandle<HealthComponent> health;
 
+                if (collidingEntity->has<HealthComponent>()) {
+                    health      = collidingEntity->getComponent<HealthComponent>();
+                    auto damage = data.movingEntity->getComponent<BaseBulletComponent>()->damage;
+
+                    health->health -= damage;
+                } else {
+                    data.collidingEntity->removeAllComponents();
+                }
                 data.movingEntity->removeAllComponents();
-                health->health -= damage;
             }
     };
 } // namespace Rtype::Subscriber
