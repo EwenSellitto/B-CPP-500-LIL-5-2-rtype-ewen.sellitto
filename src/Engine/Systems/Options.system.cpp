@@ -2,6 +2,7 @@
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Button.component.hpp"
+#include "Engine/Components/CheckBox.component.hpp"
 #include "Engine/Components/Menu.component.hpp"
 #include "Engine/Components/Options.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
@@ -22,9 +23,8 @@ void OptionsSystem::openOptions()
     world.each<RenderableComponent, MenuComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
                                                        ECS::ComponentHandle<RenderableComponent>            renderable,
                                                        [[maybe_unused]] ECS::ComponentHandle<MenuComponent> menuComp) {
-        if (entity->has<ButtonComponent>()) {
-            entity->getComponent<ButtonComponent>()->isActivated = false;
-        }
+        if (entity->has<ButtonComponent>()) entity->getComponent<ButtonComponent>()->isActivated = false;
+        if (entity->has<CheckBoxComponent>()) entity->getComponent<CheckBoxComponent>()->isActivated = false;
         renderable->isDisplayed = false;
     });
     world.each<TextComponent, MenuComponent>(
@@ -33,9 +33,8 @@ void OptionsSystem::openOptions()
     world.each<OptionsComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                           ECS::ComponentHandle<OptionsComponent>    options,
                                                           ECS::ComponentHandle<RenderableComponent> renderable) {
-        if (entity->has<ButtonComponent>()) {
-            entity->getComponent<ButtonComponent>()->isActivated = true;
-        }
+        if (entity->has<ButtonComponent>()) entity->getComponent<ButtonComponent>()->isActivated = true;
+        if (entity->has<CheckBoxComponent>()) entity->getComponent<CheckBoxComponent>()->isActivated = true;
         renderable->isDisplayed = true;
     });
     world.each<TextComponent, OptionsComponent>(
@@ -49,9 +48,8 @@ void OptionsSystem::closeOptions()
     world.each<OptionsComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                           ECS::ComponentHandle<OptionsComponent>    options,
                                                           ECS::ComponentHandle<RenderableComponent> renderable) {
-        if (entity->has<ButtonComponent>()) {
-            entity->getComponent<ButtonComponent>()->isActivated = false;
-        }
+        if (entity->has<ButtonComponent>()) entity->getComponent<ButtonComponent>()->isActivated = false;
+        if (entity->has<CheckBoxComponent>()) entity->getComponent<CheckBoxComponent>()->isActivated = false;
         renderable->isDisplayed = false;
     });
     world.each<TextComponent, OptionsComponent>(
@@ -60,9 +58,8 @@ void OptionsSystem::closeOptions()
     world.each<RenderableComponent, MenuComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
                                                        ECS::ComponentHandle<RenderableComponent>            renderable,
                                                        [[maybe_unused]] ECS::ComponentHandle<MenuComponent> menuComp) {
-        if (entity->has<ButtonComponent>()) {
-            entity->getComponent<ButtonComponent>()->isActivated = true;
-        }
+        if (entity->has<ButtonComponent>()) entity->getComponent<ButtonComponent>()->isActivated = true;
+        if (entity->has<CheckBoxComponent>()) entity->getComponent<CheckBoxComponent>()->isActivated = true;
         renderable->isDisplayed = true;
     });
     world.each<TextComponent, MenuComponent>(

@@ -24,20 +24,23 @@ namespace Engine::Components
                 text.setCharacterSize(characterSize);
                 text.setPosition(pos);
                 text.setFillColor(sf::Color::White);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
             }
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
                           const sf::Color &fillColor, bool centered = false, bool isDisplay = true)
                 : isDisplay(isDisplay)
             {
                 font = newFont;
-                if (centered) {
-                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
-                }
                 text.setString(str);
                 text.setFont(font);
                 text.setCharacterSize(characterSize);
                 text.setPosition(pos);
                 text.setFillColor(fillColor);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
             }
     };
 } // namespace Engine::Components

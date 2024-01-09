@@ -51,9 +51,7 @@ void Sound::SetVolumeMusic()
     sf::RenderWindow *window         = &WINDOW;
     sf::Vector2i      mousePosition  = sf::Mouse::getPosition(*window);
     float             cursorPosition = mousePosition.x - 250;
-    std::cout << "cursor =" << cursorPosition << std::endl;
-    float volume = (cursorPosition / 240) * 100;
-    std::cout << "volume =" << volume << std::endl;
+    float             volume         = (cursorPosition / 240) * 100;
     world.each<Engine::Components::MusicComponent>(
         [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<Engine::Components::MusicComponent> music) {
             music->music.setVolume(volume);

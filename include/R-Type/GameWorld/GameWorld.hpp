@@ -17,7 +17,7 @@ namespace GameWorld
         Entities::createParallax(world);
         Entities::createPlayerEntities(world);
         Entities::createOptionsEntities(world);
-        Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {150, 150},
+        Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {500, 200},
                                           {2, 2}, 4);
         Entities::createEnemyQueue(world);
         Entities::createWorldMoveProgress(world);
@@ -26,6 +26,7 @@ namespace GameWorld
         Systems::addPhysics(world);
         Systems::addPlayerMovement(world);
         Systems::addEnemySystem(world);
+        Systems::addUISystem(world);
         Systems::addParallaxSystem(world);
         Systems::addBulletSystem(world);
         Systems::addWorldMoveSystem(world);
@@ -55,6 +56,17 @@ namespace GameWorld
         // world while being in one doing a function, it crashes, so we should keep a shared_ptr of the world
         // while we're in it, and remove it safely when we've truly exited the world
         // engine.addWorldFactory("menu", [world]() { return world; });
+
+        return world;
+    }
+
+    inline ECS::World *createChooseIP()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createInputsEntities(world);
+        Systems::addUISystem(world);
 
         return world;
     }

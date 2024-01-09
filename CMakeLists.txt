@@ -46,6 +46,7 @@ add_executable(r-type
         ##==================##
 
         include/Engine/Components/Button.component.hpp
+        include/Engine/Components/CheckBox.component.hpp
         include/Engine/Components/ExcludeCollision.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Parallax.component.hpp
