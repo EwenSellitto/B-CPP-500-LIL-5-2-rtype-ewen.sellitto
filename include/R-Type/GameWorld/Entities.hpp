@@ -30,6 +30,7 @@
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 
 namespace Entities
@@ -216,15 +217,16 @@ namespace Entities
     inline size_t basicEnemyMaker(float y, bool isAttacking)
     {
         using namespace Engine::Components;
+        using namespace Rtype::Components;
 
         ECS::World &world       = Engine::EngineClass::getEngine().world();
         auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
-        ECS::id_t   enemyId =
-            world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-                               new RenderableComponent("Klaed-Scout-Base"),
-                               new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
-                               new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
+        ECS::id_t   enemyId     = world.createEntity(
+            new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
+            new RenderableComponent("Klaed-Scout-Base"),
+            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
+            new ExcludeCollisionComponent(0), new HealthComponent(40));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
