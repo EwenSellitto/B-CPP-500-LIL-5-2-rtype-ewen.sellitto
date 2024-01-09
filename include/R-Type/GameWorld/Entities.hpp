@@ -222,7 +222,7 @@ namespace Entities
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
         ECS::id_t   enemyId =
             world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-                               new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
+                               new RenderableComponent("Klaed-Scout-Base"),
                                new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
                                new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
 
