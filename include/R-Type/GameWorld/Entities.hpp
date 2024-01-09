@@ -1,5 +1,12 @@
-// Entities.hpp
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Entities.hpp
+*/
+
 #pragma once
+
 #include "ECS/World.hpp"
 #include "Engine/Components/Button.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
@@ -36,11 +43,11 @@ namespace Entities
     {
         using namespace Engine::Components;
         world->createEntity(new PlayerComponent(), new PositionComponent(100, 100),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
+                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
                             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player),
                             new SpeedComponent(150));
     }
-    void createOptionsEntities(ECS::World *world)
+    inline void createOptionsEntities(ECS::World *world)
     {
         using namespace Engine::Components;
         sf::Font font;
@@ -166,8 +173,8 @@ namespace Entities
         }
     }
 
-    void createChangeSceneButton(ECS::World *world, const std::string &texturePath, const std::string &sceneName,
-                                 const sf::Vector2f &position, const sf::Vector2f &scale, int priority)
+    inline void createChangeSceneButton(ECS::World *world, const std::string &texturePath, const std::string &sceneName,
+                                        const sf::Vector2f &position, const sf::Vector2f &scale, int priority)
     {
         using namespace Engine::Components;
         sf::Font font;
