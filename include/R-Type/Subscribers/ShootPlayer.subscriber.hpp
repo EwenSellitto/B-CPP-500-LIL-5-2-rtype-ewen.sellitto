@@ -33,8 +33,19 @@ namespace Rtype::Subscriber
                     Engine::EngineClass::getEngine().world().getSystems()["MovePlayer"].get());
                 Engine::System::Bullets *bulletsSystem = dynamic_cast<Engine::System::Bullets *>(
                     Engine::EngineClass::getEngine().world().getSystems()["BulletsSystem"].get());
-                ECS::Entity *player =
-                    Engine::EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+
+                std::vector<ECS::Entity *> players =
+                    Engine::EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+                ECS::Entity *player = nullptr;
+
+                for (auto &p : players) {
+                    if (!p->has<PlayerComponent>()) continue;
+                    if (p->getComponent<PlayerComponent>()->playerNb ==
+                        Engine::EngineClass::getEngine().getCurrentPlayer()) {
+                        player = p;
+                        break;
+                    }
+                }
                 if (!player || !movePlayerSystem) return;
 
                 ECS::ComponentHandle<Engine::Components::PositionComponent> pos =

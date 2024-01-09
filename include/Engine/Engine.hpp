@@ -84,6 +84,14 @@ namespace Engine
             std::size_t getWindowSizeX();
             std::size_t getWindowSizeY();
 
+            void setCurrentPlayer(int);
+            void setPlayersAmount(int);
+            void setOwnPlayer(int);
+
+            int getCurrentPlayer();
+            int getPlayersAmount();
+            int getOwnPlayer();
+
             /*===================//
             //  Worlds Handling  //
             //===================*/
@@ -111,7 +119,9 @@ namespace Engine
             //  Event Handling  //
             //==================*/
 
+            void processSwitchEvent(sf::Event event);
             void handleEvents();
+            void processClientsEvents();
 
             /*=====================//
             //  Public Attributes  //
@@ -133,6 +143,9 @@ namespace Engine
             std::size_t          _windowSizeX;
             std::size_t          _windowSizeY;
             ECS::Network         _network;
+            int                  _playersAmount;
+            int                  _currentPlayer;
+            int                  _ownPlayer;
 
             /*===================//
             //  Private Methods  //

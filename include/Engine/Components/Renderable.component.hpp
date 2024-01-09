@@ -110,9 +110,9 @@ namespace Engine::Components
                 // Désérialisation de la chaîne 'path'
                 size_t pathLength;
                 iss.read(reinterpret_cast<char *>(&pathLength), sizeof(pathLength));
-                std::string path(pathLength, '\0');
-                iss.read(&path[0], pathLength);
-                renderableComponent->path = path;
+                std::string spritePath(pathLength, '\0');
+                iss.read(&spritePath[0], pathLength);
+                renderableComponent->path = spritePath;
 
                 return renderableComponent;
             }

@@ -539,13 +539,17 @@ namespace ECS
             {
                 BaseSystem *renderer;
 
-                for (auto &system : _systems) {
-                    if (system.first == "Renderer") {
-                        renderer = system.second.get();
-                        continue;
+                for (int i = 0; i < Engine::EngineClass::getEngine().getPlayersAmount(); i++) {
+                    Engine::EngineClass::getEngine().setCurrentPlayer(i);
+                    for (auto &system : _systems) {
+                        if (system.first == "Renderer") {
+                            renderer = system.second.get();
+                            continue;
+                        }
+                        system.second->tick();
                     }
-                    system.second->tick();
                 }
+                Engine::EngineClass::getEngine().setCurrentPlayer(Engine::EngineClass::getEngine().getOwnPlayer());
                 renderer->tick();
             }
 

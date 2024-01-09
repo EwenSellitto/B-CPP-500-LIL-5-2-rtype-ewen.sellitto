@@ -36,63 +36,61 @@ namespace Engine::Components
             std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
+                size_t             size = enemyQueueFactories.size();
+                oss.write(reinterpret_cast<const char *>(&size), sizeof(size));
                 for (const auto &item : enemyQueueFactories) {
-                    // Sérialiser le premier booléen
-                    const bool &hasSpawned = item.first;
-                    oss.write(reinterpret_cast<const char *>(&hasSpawned), sizeof(bool));
+                    // Serialize bool
+                    bool hasSpawned = item.first;
+                    oss.write(reinterpret_cast<const char *>(&hasSpawned), sizeof(hasSpawned));
 
-                    // Sérialiser les données du tuple
-                    const auto &[x, y, isAttacking] = item.second.first;
-                    oss.write(reinterpret_cast<const char *>(&x), sizeof(size_t));
-                    oss.write(reinterpret_cast<const char *>(&y), sizeof(float));
-                    oss.write(reinterpret_cast<const char *>(&isAttacking), sizeof(bool));
+                    // Serialize tuple data
+                    auto &[x, y, isAttacking] = item.second.first;
+                    oss.write(reinterpret_cast<const char *>(&x), sizeof(x));
+                    oss.write(reinterpret_cast<const char *>(&y), sizeof(y));
+                    oss.write(reinterpret_cast<const char *>(&isAttacking), sizeof(isAttacking));
 
-                    // Sérialiser l'ID de la fonction
-                    const size_t functionId = item.second.second;
-                    oss.write(reinterpret_cast<const char *>(&functionId), sizeof(size_t));
+                    // Serialize size_t
+                    size_t factoryId = item.second.second;
+                    oss.write(reinterpret_cast<const char *>(&factoryId), sizeof(factoryId));
                 }
                 const std::string &str = oss.str();
-                return {str.begin(), str.end()};
+                return std::vector<char>(str.begin(), str.end());
             }
 
-            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
             {
-                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
-
-                if (component != nullptr) {
-                    auto *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
+                EnemyQueueComponent *enemyQueueComponent;
+                if (component == nullptr) {
+                    enemyQueueComponent = new EnemyQueueComponent();
+                } else {
+                    enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
                     if (enemyQueueComponent == nullptr) return nullptr;
                 }
-                while (iss.tellg() < static_cast<long long>(vec.size())) {
-                    // Désérialiser le premier booléen
-                    bool hasSpawned;
-                    iss.read(reinterpret_cast<char *>(&hasSpawned), sizeof(bool));
 
-                    // Désérialiser les données du tuple
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                size_t size;
+                iss.read(reinterpret_cast<char *>(&size), sizeof(size));
+
+                for (size_t i = 0; i < size; ++i) {
+                    bool hasSpawned;
+                    iss.read(reinterpret_cast<char *>(&hasSpawned), sizeof(hasSpawned));
+
                     size_t x;
                     float  y;
                     bool   isAttacking;
-                    iss.read(reinterpret_cast<char *>(&x), sizeof(size_t));
-                    iss.read(reinterpret_cast<char *>(&y), sizeof(float));
-                    iss.read(reinterpret_cast<char *>(&isAttacking), sizeof(bool));
+                    iss.read(reinterpret_cast<char *>(&x), sizeof(x));
+                    iss.read(reinterpret_cast<char *>(&y), sizeof(y));
+                    iss.read(reinterpret_cast<char *>(&isAttacking), sizeof(isAttacking));
 
-                    // Désérialiser l'ID de la fonction
-                    size_t functionId;
-                    iss.read(reinterpret_cast<char *>(&functionId), sizeof(size_t));
+                    size_t factoryId;
+                    iss.read(reinterpret_cast<char *>(&factoryId), sizeof(factoryId));
 
-                    if (component == nullptr) {
-                        component = new EnemyQueueComponent(
-                            std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, size_t>>>(
-                                {std::make_pair(hasSpawned,
-                                                std::make_pair(std::make_tuple(x, y, isAttacking), functionId))}));
-                    } else {
-                        auto *enemyQueueComponent = dynamic_cast<EnemyQueueComponent *>(component);
-                        if (enemyQueueComponent == nullptr) return nullptr;
-                        enemyQueueComponent->enemyQueueFactories.emplace_back(
-                            hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking), functionId));
-                    }
+                    enemyQueueComponent->enemyQueueFactories.emplace_back(
+                        hasSpawned, std::make_pair(std::make_tuple(x, y, isAttacking), factoryId));
                 }
-                return component;
+
+                return enemyQueueComponent;
             }
 
             ComponentType getType() override

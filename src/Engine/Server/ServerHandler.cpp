@@ -9,10 +9,9 @@
 
 void ECS::Network::startServer(unsigned short port)
 {
-    running = true;
-    thread  = std::thread(&Network::startClient, this, port);
-    std::thread updateThread(&Network::startServerUpdateLoop, this);
-    updateThread.detach(); // Vous pouvez également conserver le thread pour le rejoindre plus tard
+    running  = true;
+    isServer = true;
+    thread   = std::thread(&Network::startClient, this, port);
 }
 
 void ECS::Network::startClient(unsigned short port)
@@ -23,32 +22,27 @@ void ECS::Network::startClient(unsigned short port)
         return;
     }
     std::cout << "Client démarré sur le port " << socket.getLocalPort() << std::endl;
-    addPlayerToLobby("localhost", port);
+    addPlayerToLobby("localhost", port, isServer);
     while (running) {
         receivePackets();
     }
     socket.unbind();
 }
 
-void ECS::Network::startServerUpdateLoop()
-{
-    while (running) {
-        sendComponentsUpdate();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-}
-
 void ECS::Network::connectToServer(const sf::IpAddress &serverAddress, unsigned short port)
 {
-    thread = std::thread(&Network::sendConnectionToServer, this, serverAddress, port);
+    thread   = std::thread(&Network::sendConnectionToServer, this, serverAddress, port);
+    isServer = false;
 }
 
 void ECS::Network::sendConnectionToServer(const sf::IpAddress &serverAddress, unsigned short port)
 {
     sf::Packet packet;
-    packet << static_cast<int>(
-        PacketType::HandshakeRequest); // Envoi de la requête de handshake avec la version du client
+    packet << static_cast<int>(PacketType::HandshakeRequest);
+    packet << false;
+    serverHost = std::make_pair(serverAddress, port);
     std::cout << "Demande de connexion au serveur " << serverAddress << ":" << port << std::endl;
+    socket.setBlocking(false);
     if (socket.send(packet, serverAddress, port) != sf::Socket::Done) {
         std::cerr << "Erreur lors de l'envoi de la demande de connexion" << std::endl;
     }

@@ -13,7 +13,36 @@
 using namespace Engine;
 using namespace ECS;
 
-void ECS::Network::sendComponentsUpdate() {}
+void ECS::Network::sendUpdatedEntitiesToClients()
+{
+    sf::Packet packet;
+    int        nbEntities = 0;
+    packet << static_cast<int>(PacketType::ClientUpdate);
+
+    nbEntities = getNbEntitiesModified();
+    packet << nbEntities;
+    for (const auto &pair : EngineClass::getEngine().world().getEntities()) {
+        addSerializedEntityToPacket(packet, pair);
+    }
+    sendPacketToAllClients(packet, false);
+}
+
+void ECS::Network::sendEventsToServer()
+{
+    sf::Packet packet;
+    int        nbEvents = clientEvents.size();
+
+    if (nbEvents == 0) return;
+
+    packet << static_cast<int>(PacketType::KeyInputs);
+    packet << nbEvents;
+
+    for (const auto &event : clientEvents) {
+        addSerializedEventToPacket(packet, event);
+    }
+    clientEvents.clear();
+    sendPacketToServer(packet);
+}
 
 void ECS::Network::sendPacketTypeToServer(PacketType packetType, const sf::IpAddress &recipient, unsigned short port)
 {
@@ -25,16 +54,17 @@ void ECS::Network::sendPacketTypeToServer(PacketType packetType, const sf::IpAdd
     }
 }
 
-void ECS::Network::sendPacketToServer(sf::Packet &packet, const sf::IpAddress &recipient, unsigned short port)
+void ECS::Network::sendPacketToServer(sf::Packet &packet)
 {
-    if (socket.send(packet, recipient, port) != sf::Socket::Done) {
+    if (socket.send(packet, serverHost.first, serverHost.second) != sf::Socket::Done) {
         std::cerr << "Erreur lors de l'envoi du paquet" << std::endl;
     }
 }
 
-void ECS::Network::sendPacketToAllClients(sf::Packet &packet)
+void ECS::Network::sendPacketToAllClients(sf::Packet &packet, bool includeServer)
 {
     for (const auto &player : waitingRoom.getPlayers()) {
+        if (!includeServer && player->isServer) continue;
         if (socket.send(packet, player->address, player->port) != sf::Socket::Done) {
             std::cerr << "Erreur lors de l'envoi du paquet" << std::endl;
         }
@@ -45,50 +75,5 @@ void ECS::Network::sendPacketToClient(sf::Packet &packet, const sf::IpAddress &a
 {
     if (socket.send(packet, address, port) != sf::Socket::Done) {
         std::cerr << "Erreur lors de l'envoi du paquet" << std::endl;
-    }
-}
-
-void ECS::Network::addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseComponent *component)
-{
-    if (component == nullptr) {
-        std::cerr << "Component is null" << std::endl;
-        return;
-    }
-
-    std::vector<char> serializedData = component->serialize();
-    ComponentType     componentType  = component->getType();
-    int               serializedSize = static_cast<int>(serializedData.size());
-
-    packet << static_cast<int>(componentType);
-    packet << serializedSize;
-    if (serializedSize > 0) {
-        for (char byte : serializedData) {
-            packet << static_cast<sf::Uint8>(byte);
-        }
-    }
-}
-
-void ECS::Network::addSerializedEntityToPacket(sf::Packet                                                     &packet,
-                                               const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair)
-{
-    int nbChangedComponents = 0;
-
-    if (pair.second == nullptr) return;
-
-    for (const auto &component : pair.second->getComponents()) {
-        if (component.second->getType() != ComponentType::NoneComponent && component.second->hasChanged()) {
-            nbChangedComponents++;
-        }
-    }
-    if (nbChangedComponents == 0) return;
-
-    packet << static_cast<sf::Uint64>(pair.first);
-    packet << nbChangedComponents;
-    for (const auto &component : pair.second->getComponents()) {
-        if (component.second->hasChanged()) {
-            if (component.second->getType() == ComponentType::NoneComponent) continue;
-            addSerializedComponentToPacket(packet, component.second.get());
-            component.second->setHasChanged(false);
-        }
     }
 }

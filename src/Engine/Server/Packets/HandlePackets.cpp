@@ -14,97 +14,25 @@
 
 void ECS::Network::handleHandshakeRequest(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
 {
-    handleClientConnection(packet, sender, senderPort);
+    bool isHost = false;
+    packet >> isHost;
+
+    handleClientConnection(sender, senderPort, isHost);
 }
 
-void ECS::Network::handleHandshakeResponse(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
-{
-    std::cout << "Received HandshakeResponse" << std::endl;
-}
-
-void ECS::Network::handleLeaveLobby(sf::Packet &packet, const sf::IpAddress &sender)
+void ECS::Network::handleLeaveLobby([[maybe_unused]] sf::Packet &packet, const sf::IpAddress &sender)
 {
     waitingRoom.removePlayer(sender);
-}
-
-void ECS::Network::deserializeEntityAndApply(sf::Packet &packet)
-{
-    using namespace Engine::Components;
-    int                                                    nbComponents = 0;
-    std::vector<char>                                      serialised;
-    int                                                    serialisedSize = 0;
-    int                                                    componentType;
-    sf::Uint64                                             entityId;
-    std::vector<std::pair<BaseComponent *, ComponentType>> components;
-
-    packet >> entityId;
-    packet >> nbComponents;
-    for (int i = 0; i < nbComponents; i++) {
-        packet >> componentType;
-        packet >> serialisedSize;
-        std::cout << "Serialised size: " << serialisedSize << std::endl;
-        if (serialisedSize >= 0 && static_cast<std::size_t>(serialisedSize) <= packet.getDataSize()) {
-            serialised.resize(serialisedSize);
-            for (int j = 0; j < serialisedSize; ++j) {
-                sf::Uint8 dataByte;
-                packet >> dataByte;
-                serialised[j] = static_cast<char>(dataByte);
-            }
-            ECS::BaseComponent *comp =
-                componentsConvertor.createComponent(static_cast<ComponentType>(componentType))->deserialize(serialised);
-            std::cout << "Deserialized components: " << static_cast<int>(comp->getType()) << std::endl;
-            components.emplace_back(comp, static_cast<ComponentType>(componentType));
-        } else {
-            std::cerr << serialisedSize << " " << static_cast<std::size_t>(serialisedSize) << " "
-                      << packet.getDataSize() << std::endl;
-            std::cerr << "Invalid serialized data size" << std::endl;
-        }
-    }
-    std::cout << "Len components: " << components.size() << std::endl;
-    if (Engine::EngineClass::getEngine().world().entityExists(entityId)) {
-        std::vector<ComponentType> componentsToRemove;
-        std::vector<ComponentType> currentEntityComponents;
-
-        for (auto &comp : Engine::EngineClass::getEngine().world().getMutEntity(entityId).getComponents())
-            currentEntityComponents.push_back(comp.second->getType());
-        for (auto &comp : components) {
-            for (auto &currentEntityComp : currentEntityComponents) {
-                if (comp.second == currentEntityComp) {
-                    componentsToRemove.push_back(currentEntityComp);
-                    break;
-                }
-            }
-        }
-        for (auto &comp : componentsToRemove)
-            componentsConvertor.destroyers[comp](Engine::EngineClass::getEngine().world().getMutEntity(entityId));
-        for (auto &component : components)
-            componentsConvertor.adders[component.second](
-                Engine::EngineClass::getEngine().world().getMutEntity(entityId), component.first);
-
-        if (Engine::EngineClass::getEngine().world().getMutEntity(entityId).has<RenderableComponent>())
-            Engine::EngineClass::getEngine()
-                .world()
-                .getMutEntity(entityId)
-                .getComponent<RenderableComponent>()
-                ->setTexture();
-        return;
-    }
-    Engine::EngineClass::getEngine().world().addEntity(entityId);
-    for (auto &comp : components)
-        componentsConvertor.adders[comp.second](Engine::EngineClass::getEngine().world().getMutEntity(entityId),
-                                                comp.first);
-    if (Engine::EngineClass::getEngine().world().getMutEntity(entityId).has<RenderableComponent>())
-        Engine::EngineClass::getEngine()
-            .world()
-            .getMutEntity(entityId)
-            .getComponent<RenderableComponent>()
-            ->setTexture();
 }
 
 void ECS::Network::handleInitializeGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short clientPort)
 {
     using namespace Engine::Components;
     int nbEntities = 0;
+    int nbPlayers  = 0;
+
+    packet >> nbPlayers;
+    Engine::EngineClass::getEngine().setPlayersAmount(nbPlayers);
 
     packet >> nbEntities;
     for (int i = 0; i < nbEntities; i++) {
@@ -131,6 +59,15 @@ void ECS::Network::handleReceiveInitializedGame(const sf::IpAddress &sender, uns
     }
 }
 
+void ECS::Network::handleClientIndependentInitialization(sf::Packet &packet)
+{
+    int ownPlayerNb = 0;
+    packet >> ownPlayerNb;
+
+    Engine::EngineClass::getEngine().setOwnPlayer(ownPlayerNb);
+    Engine::EngineClass::getEngine().setCurrentPlayer(ownPlayerNb);
+}
+
 void ECS::Network::handleSwitchWorld(const sf::IpAddress &sender, unsigned short senderPort)
 {
     std::cout << "Received SwitchWorld" << std::endl;
@@ -138,6 +75,21 @@ void ECS::Network::handleSwitchWorld(const sf::IpAddress &sender, unsigned short
     sf::Packet responsePacket;
     responsePacket << static_cast<int>(PacketType::SwitchWorldOkForMe);
     sendPacketToClient(responsePacket, sender, senderPort);
+}
+
+int ECS::Network::getNbEntitiesModified()
+{
+    int nbEntities = 0;
+    for (const auto &pair : Engine::EngineClass::getEngine().world().getEntities()) {
+        for (const auto &component : pair.second->getComponents()) {
+            if (component.second->getType() != ComponentType::NoneComponent && component.second->hasChanged()) {
+                nbEntities++;
+                break;
+            }
+        }
+    }
+
+    return nbEntities;
 }
 
 void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsigned short clientPort)
@@ -149,46 +101,69 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
         }
     }
 
+    int playerToSend = 0;
+    for (const auto &player : waitingRoom.getPlayers()) {
+        sf::Packet clientInitialization;
+        clientInitialization << static_cast<int>(PacketType::ClientIndependentInitialization);
+        clientInitialization << playerToSend;
+        sendPacketToClient(clientInitialization, player->address, player->port);
+        player->nbPlayer = playerToSend;
+        playerToSend++;
+    }
+
     if (waitingRoom.allPlayersSwitchedWorld()) {
+
         sf::Packet packet;
         packet << static_cast<int>(PacketType::InitializeGame);
+        packet << static_cast<int>(waitingRoom.getPlayers().size());
         World &world = Engine::EngineClass::getEngine().world();
-        GameWorld::addToGameWorldServerSide(&world);
-        int nbEntities = 0;
-        for (const auto &pair : world.getEntities()) {
-            for (const auto &component : pair.second->getComponents()) {
-                if (component.second->getType() != ComponentType::NoneComponent && component.second->hasChanged()) {
-                    nbEntities++;
-                    break;
-                }
-            }
-        }
+        GameWorld::addToGameWorldServerSide(&world, waitingRoom.getPlayers().size());
+        int nbEntities = getNbEntitiesModified();
         packet << nbEntities;
         for (const auto &pair : world.getEntities())
             addSerializedEntityToPacket(packet, pair);
-        std::cout << "Size restant: " << packet.getDataSize() << std::endl;
         sendPacketToAllClients(packet);
     }
 }
 
-void ECS::Network::addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort)
+void ECS::Network::addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort, bool isHost)
 {
-    World &world = Engine::EngineClass::getEngine().world();
-    waitingRoom.addPlayer(clientAddress, clientPort);
-    // Si tous les joueurs sont connectés, envoyer les informations du lobby
-    std::cout << "Nb players: " << waitingRoom.getPlayers().size() << std::endl;
+    waitingRoom.addPlayer(clientAddress, clientPort, isHost);
+
     if (waitingRoom.isReadyToStart()) {
         sf::Packet packet;
         packet << static_cast<int>(PacketType::SwitchWorld);
         sendPacketToAllClients(packet);
-        // for (const auto &client : waitingRoom.getPlayers()) {
-        //     sf::Packet packet;
-        //     packet << static_cast<int>(PacketType::InitializeGame);
-        //     for (const auto &pair : world.getEntities()) {
-        //         Entity &entity = *pair.second;
-        //         addSerializedEntityToPacket(packet, pair);
-        //     }
-        //     sendPacketToClient(packet, client.address, client.port);
-        // }
+    }
+}
+
+void ECS::Network::handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
+{
+    int nbEntities = 0;
+    packet >> nbEntities;
+    for (int i = 0; i < nbEntities; i++) {
+        deserializeEntityAndApply(packet);
+    }
+}
+
+int ECS::Network::findPlayerNb(const sf::IpAddress &sender, unsigned short senderPort)
+{
+    for (const auto &player : waitingRoom.getPlayers()) {
+        if (player->address == sender && player->port == senderPort) {
+            return player->nbPlayer;
+        }
+    }
+    return -1;
+}
+
+void ECS::Network::handleKeyInputs(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
+{
+    int nbEvents = 0;
+    packet >> nbEvents;
+    for (int i = 0; i < nbEvents; i++) {
+        sf::Event event    = deserializeEvent(packet);
+        int       playerNb = findPlayerNb(sender, senderPort);
+        if (playerNb == -1) continue;
+        serverEvents[playerNb].push_back(event);
     }
 }

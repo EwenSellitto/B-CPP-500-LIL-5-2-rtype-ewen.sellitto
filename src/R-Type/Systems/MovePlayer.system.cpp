@@ -26,7 +26,26 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    ECS::Entity *player = EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+    std::vector<ECS::Entity *> players = EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+    ECS::Entity               *player  = nullptr;
+
+    for (auto &p : players) {
+        if (p->getComponent<PlayerComponent>()->playerNb == EngineClass::getEngine().getCurrentPlayer()) {
+            player = p;
+            break;
+        }
+    }
+
+    std::cout << "Current player: " << EngineClass::getEngine().getCurrentPlayer() << std::endl;
+
+    std::cout << "Size of players: " << players.size() << std::endl;
+
+    for (auto &p : players) {
+        std::cout << "NbComponent: " << p->getComponents().size() << std::endl;
+        if (!p->has<PlayerComponent>()) continue;
+        std::cout << "Player: " << p->getComponent<PlayerComponent>()->playerNb << std::endl;
+    }
+
     if (!player) {
         std::cerr << "PlayerMissing: entity with PlayerComponent must be declared in world before movePlayer "
                      "system creation, it must have a speedComponent"
@@ -48,7 +67,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
-            player->getComponent<Components::MovingComponent>());
+            player->getComponent<Components::MovingComponent>(true));
 
         if ((movingComponent->moveAmount.y == moves_zdqs[0].y || movingComponent->moveAmount.y == moves_zdqs[3].y) &&
             (key.code == sf::Keyboard::Z || key.code == sf::Keyboard::S))

@@ -25,7 +25,7 @@ namespace GameWorld
         Systems::addEnemySystem(world);
         Systems::addParallaxSystem(world);
         Systems::addBulletSystem(world);
-        // Systems::addWorldMoveSystem(world);
+        Systems::addWorldMoveSystem(world);
         Systems::addAnimationSystem(world);
 
         // Subscribe to events
@@ -34,12 +34,13 @@ namespace GameWorld
         return world;
     }
 
-    inline void addToGameWorldServerSide(ECS::World *world)
+    inline void addToGameWorldServerSide(ECS::World *world, int players)
     {
         // Setup view and create entities
-        Entities::createPlayerEntities(world);
+        for (int i = 0; i < players; i++)
+            Entities::createPlayerEntities(world, i);
         // Entities::createEnemyQueue(world);
-        // Entities::createWorldMoveProgress(world);
+        Entities::createWorldMoveProgress(world);
     }
 
     // inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)

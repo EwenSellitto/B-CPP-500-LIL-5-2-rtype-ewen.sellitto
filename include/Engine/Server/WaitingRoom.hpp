@@ -6,14 +6,19 @@
 
 struct WaitingRoom {
 
-        void addPlayer(const sf::IpAddress &player, unsigned short port)
+        void addPlayer(const sf::IpAddress &player, unsigned short port, bool isServer = false)
         {
-            players.push_back(new ClientInfo(player, port, ClientState::InLobby));
+            players.push_back(new ClientInfo(player, port, ClientState::InLobby, isServer));
         }
 
         std::vector<ClientInfo *> getPlayers() const
         {
             return players;
+        }
+
+        bool isGameStarted() const
+        {
+            return isStarted;
         }
 
         bool isReadyToStart() const
@@ -31,13 +36,14 @@ struct WaitingRoom {
             return true;
         }
 
-        bool allPlayersInitializedGame() const
+        bool allPlayersInitializedGame()
         {
             for (const auto &player : players) {
                 if (!player->isInitialized) {
                     return false;
                 }
             }
+            isStarted = true;
             return true;
         }
 
@@ -51,6 +57,12 @@ struct WaitingRoom {
             }
         }
 
+        std::vector<ClientInfo *> getPlayers()
+        {
+            return players;
+        }
+
     private:
         std::vector<ClientInfo *> players;
+        bool                      isStarted = false;
 };

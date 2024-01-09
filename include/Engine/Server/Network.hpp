@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <SFML/Window/Event.hpp>
 #include <iostream>
 #include <thread>
 #include <unordered_map>
@@ -24,9 +25,11 @@ enum class PacketType {
     SwitchWorldOkForMe,
     LeaveLobby,
     LeaveLobbyResponse,
+    ClientIndependentInitialization,
     InitializeGame,
     InitializeGameOkForMe,
     LaunchGame,
+    KeyInputs,
     ClientUpdate,
     ClientUpdateACK,
     GlobalState,
@@ -59,7 +62,6 @@ namespace ECS
 
             void startServer(unsigned short port);
             void startClient(unsigned short port);
-            void startServerUpdateLoop();
 
             void connectToServer(const sf::IpAddress &serverAddress, unsigned short port);
             void sendConnectionToServer(const sf::IpAddress &serverAddress, unsigned short port);
@@ -70,14 +72,19 @@ namespace ECS
             // ======================= ENVOI ===========================
             // =========================================================
 
-            void sendComponentsUpdate();
+            void sendUpdatedEntitiesToClients();
+            void sendEventsToServer();
+
+            int getNbEntitiesModified();
+
+            void addSerializedEventToPacket(sf::Packet &packet, sf::Event event);
             void addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseComponent *component);
             void addSerializedEntityToPacket(sf::Packet                                                     &packet,
                                              const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair);
             void sendPacketTypeToServer(PacketType packetType, const sf::IpAddress &recipient, unsigned short port);
-            void sendPacketToServer(sf::Packet &packet, const sf::IpAddress &recipient, unsigned short port);
+            void sendPacketToServer(sf::Packet &packet);
 
-            void sendPacketToAllClients(sf::Packet &packet);
+            void sendPacketToAllClients(sf::Packet &packet, bool includeServer = true);
             void sendPacketToClient(sf::Packet &packet, const sf::IpAddress &address, unsigned short port);
 
             // =========================================================
@@ -89,6 +96,51 @@ namespace ECS
             template <typename T>
             ECS::BaseComponent *deserializeComponent(const std::vector<char> &serialized, T componentType);
             void                deserializeEntityAndApply(sf::Packet &packet);
+            sf::Event           deserializeEvent(sf::Packet &packet);
+
+            // =========================================================
+            // ======================= GETTERS =========================
+            // =========================================================
+
+            std::vector<sf::Event> getEvents() const
+            {
+                return clientEvents;
+            }
+            bool getIsServer() const
+            {
+                return isServer;
+            }
+            bool getGameHasStarted() const
+            {
+                return gameHasStarted;
+            }
+            std::map<int, std::vector<sf::Event>> &getServerEvents()
+            {
+                return serverEvents;
+            }
+            WaitingRoom &getWaitingRoom()
+            {
+                return waitingRoom;
+            }
+
+            // =========================================================
+            // ======================= SETTERS =========================
+            // =========================================================
+
+            // =========================================================
+            // =================== EVENTS HANDLING =====================
+            // =========================================================
+
+            void addEvent(sf::Event event)
+            {
+                clientEvents.push_back(event);
+            }
+
+            void clearEvents()
+            {
+                if (isServer) return;
+                clientEvents.clear();
+            }
 
         private:
             // =========================================================
@@ -96,15 +148,15 @@ namespace ECS
             // =========================================================
 
             // Méthode pour gérer la connexion d'un client
-            void handleClientConnection(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
+            void handleClientConnection(const sf::IpAddress &sender, unsigned short senderPort, bool isHost = false)
             {
                 sf::Packet responsePacket;
                 responsePacket << static_cast<int>(PacketType::HandshakeResponse) << true;
                 sendPacketToClient(responsePacket, sender, senderPort);
-                addPlayerToLobby(sender, senderPort);
+                addPlayerToLobby(sender, senderPort, isHost);
             }
 
-            void addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort);
+            void addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort, bool isHost = false);
 
             void switchToGame();
 
@@ -113,21 +165,31 @@ namespace ECS
             // =========================================================
 
             void handleHandshakeRequest(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
-            void handleHandshakeResponse(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
 
             void handleLeaveLobby(sf::Packet &packet, const sf::IpAddress &sender);
 
+            void handleClientIndependentInitialization(sf::Packet &packet);
             void handleInitializeGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short clientPort);
             void handleReceiveInitializedGame(const sf::IpAddress &sender, unsigned short clientPort);
             void handleSwitchWorld(const sf::IpAddress &sender, unsigned short clientPort);
             void handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsigned short clientPort);
 
+            void handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
+            void handleKeyInputs(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
+
+            int findPlayerNb(const sf::IpAddress &sender, unsigned short senderPort);
+
             // ================== ATTRIBUTS ==================
 
-            WaitingRoom         waitingRoom;
-            sf::UdpSocket       socket;
-            std::thread         thread;
-            bool                running = true;
-            ComponentsConvertor componentsConvertor;
+            WaitingRoom                              waitingRoom;
+            sf::UdpSocket                            socket;
+            std::thread                              thread;
+            bool                                     running        = true;
+            bool                                     isServer       = false;
+            bool                                     gameHasStarted = false;
+            ComponentsConvertor                      componentsConvertor;
+            std::vector<sf::Event>                   clientEvents;
+            std::map<int, std::vector<sf::Event>>    serverEvents;
+            std::pair<sf::IpAddress, unsigned short> serverHost;
     };
 } // namespace ECS

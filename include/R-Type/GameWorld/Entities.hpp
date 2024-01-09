@@ -28,14 +28,15 @@ namespace Entities
             it.second->setHasChanged(false);
     }
 
-    inline void createPlayerEntities(ECS::World *world)
+    inline void createPlayerEntities(ECS::World *world, int playerNb)
     {
         using namespace Engine::Components;
+        std::vector<std::pair<int, int>> playerPos = {{100, 300}, {100, 360}, {100, 300}, {100, 400}};
 
-        [[maybe_unused]] ECS::id_t ship_id =
-            world->createEntity(new PlayerComponent(), new PositionComponent(100, 100),
-                                new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
-                                new CollisionComponent(9, 11, 30, 26), new SpeedComponent(150));
+        [[maybe_unused]] ECS::id_t ship_id = world->createEntity(
+            new PlayerComponent(playerNb), new PositionComponent(playerPos[playerNb].first, playerPos[playerNb].second),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
+            new CollisionComponent(9, 11, 30, 26), new SpeedComponent(150));
     }
 
     inline void createButtonEntities(ECS::World *world)
@@ -119,7 +120,7 @@ namespace Entities
     {
         using namespace Engine::Components;
 
-        auto test = world->createEntity(
+        world->createEntity(
             new EnemyQueueComponent({std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), 0)),
                                      std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), 0)),
                                      std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), 0)),

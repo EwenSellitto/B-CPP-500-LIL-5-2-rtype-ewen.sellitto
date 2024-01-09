@@ -48,7 +48,7 @@ namespace Engine::Components
                 return std::vector<char>(str.begin(), str.end());
             }
 
-             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 if (component == nullptr) {
                     component = new EnemyMovementsComponent();
@@ -60,9 +60,9 @@ namespace Engine::Components
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
 
                 // Désérialiser currentMove
-                size_t currentMove;
-                iss.read(reinterpret_cast<char *>(&currentMove), sizeof(size_t));
-                enemyMovement->currentMove = currentMove;
+                size_t move;
+                iss.read(reinterpret_cast<char *>(&move), sizeof(size_t));
+                enemyMovement->currentMove = move;
 
                 // Désérialiser movementsQueueLoop
                 enemyMovement->movementsQueueLoop.clear();

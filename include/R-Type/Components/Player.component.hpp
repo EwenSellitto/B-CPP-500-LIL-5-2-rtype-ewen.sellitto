@@ -22,13 +22,17 @@ namespace Engine::Components
 {
     struct PlayerComponent : public ECS::BaseComponent {
         public:
-            PlayerComponent() = default;
+            PlayerComponent() : playerNb(0){};
+
+            PlayerComponent(int playerNb) : playerNb(playerNb){};
 
             ~PlayerComponent() override = default;
 
             std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
+
+                oss.write(reinterpret_cast<const char *>(&playerNb), sizeof(playerNb));
 
                 const std::string &str = oss.str();
                 return {str.begin(), str.end()};
@@ -46,6 +50,8 @@ namespace Engine::Components
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
 
+                iss.read(reinterpret_cast<char *>(&playerComponent->playerNb), sizeof(playerComponent->playerNb));
+
                 return playerComponent;
             }
 
@@ -54,6 +60,6 @@ namespace Engine::Components
                 return ComponentType::PlayerComponent;
             }
 
-        private:
+            int playerNb;
     };
 } // namespace Engine::Components

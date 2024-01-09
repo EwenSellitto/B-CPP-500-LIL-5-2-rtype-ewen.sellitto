@@ -43,7 +43,8 @@ EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t wind
     : window(sf::RenderWindow(sf::VideoMode(window_size_x, window_size_y), window_name,
                               sf::Style::Close | sf::Style::Resize)),
       _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(start_world),
-      _windowSizeX(window_size_x), _windowSizeY(window_size_y)
+      _windowSizeX(window_size_x), _windowSizeY(window_size_y), _network(), _playersAmount(1), _currentPlayer(0),
+      _ownPlayer(0)
 {
     window.setFramerateLimit(60);
 }
@@ -78,6 +79,36 @@ std::size_t EngineClass::getWindowSizeX()
 std::size_t EngineClass::getWindowSizeY()
 {
     return _windowSizeY;
+}
+
+void EngineClass::setCurrentPlayer(int player)
+{
+    _currentPlayer = player;
+}
+
+void EngineClass::setPlayersAmount(int players)
+{
+    _playersAmount = players;
+}
+
+void EngineClass::setOwnPlayer(int player)
+{
+    _ownPlayer = player;
+}
+
+int EngineClass::getCurrentPlayer()
+{
+    return _currentPlayer;
+}
+
+int EngineClass::getPlayersAmount()
+{
+    return _playersAmount;
+}
+
+int EngineClass::getOwnPlayer()
+{
+    return _ownPlayer;
 }
 
 /*===================//
@@ -153,62 +184,89 @@ ECS::Network &EngineClass::network()
 //  Events handling  //
 //===================*/
 
+void EngineClass::processSwitchEvent(sf::Event event)
+{
+    switch (event.type) {
+        case sf::Event::Closed:
+            window.close();
+            break;
+
+        case sf::Event::KeyPressed:
+#ifdef BIND_F11_TO_FULLSCREEN
+            if (event.key.code == sf::Keyboard::F11)
+                toggleFullscreen();
+            else
+#endif
+#ifdef BIND_ESC_TO_CLOSE
+                if (event.key.code == sf::Keyboard::Escape)
+                window.close();
+            else
+#endif
+
+                world().broadcastEvent<sf::Event::KeyEvent>(event.key);
+            world().broadcastEvent<KeyPressedEvent>(KeyPressedEvent{event.key});
+            break;
+
+        case sf::Event::Resized:
+            world().broadcastEvent<ResizeEvent>(ResizeEvent(event.size.width, event.size.height));
+            break;
+
+        case sf::Event::KeyReleased:
+            world().broadcastEvent<KeyReleasedEvent>(KeyReleasedEvent{event.key});
+            break;
+
+        case sf::Event::TextEntered:
+        case sf::Event::LostFocus:
+        case sf::Event::GainedFocus:
+        case sf::Event::MouseWheelMoved:
+        case sf::Event::MouseWheelScrolled:
+        case sf::Event::MouseButtonPressed:
+        case sf::Event::MouseButtonReleased:
+        case sf::Event::MouseMoved:
+        case sf::Event::MouseEntered:
+        case sf::Event::MouseLeft:
+        case sf::Event::JoystickButtonPressed:
+        case sf::Event::JoystickButtonReleased:
+        case sf::Event::JoystickMoved:
+        case sf::Event::JoystickConnected:
+        case sf::Event::JoystickDisconnected:
+        case sf::Event::TouchBegan:
+        case sf::Event::TouchMoved:
+        case sf::Event::TouchEnded:
+        case sf::Event::SensorChanged:
+        case sf::Event::Count:
+        default:
+            break;
+    }
+}
+
+void EngineClass::processClientsEvents()
+{
+    if (!network().getGameHasStarted() || !network().getIsServer()) return;
+    for (auto &player : network().getWaitingRoom().getPlayers()) {
+        if (player->isServer) continue;
+        _currentPlayer = player->nbPlayer;
+        for (const auto &event : network().getServerEvents()[player->nbPlayer]) {
+            processSwitchEvent(event);
+        }
+    }
+    _currentPlayer = _ownPlayer;
+}
+
 void EngineClass::handleEvents()
 {
     sf::Event event;
+
     while (window.pollEvent(event)) {
-        switch (event.type) {
-            case sf::Event::Closed:
-                window.close();
-                break;
-
-            case sf::Event::KeyPressed:
-#ifdef BIND_F11_TO_FULLSCREEN
-                if (event.key.code == sf::Keyboard::F11)
-                    toggleFullscreen();
-                else
-#endif
-#ifdef BIND_ESC_TO_CLOSE
-                    if (event.key.code == sf::Keyboard::Escape)
-                    window.close();
-                else
-#endif
-
-                    world().broadcastEvent<sf::Event::KeyEvent>(event.key);
-                world().broadcastEvent<KeyPressedEvent>(KeyPressedEvent{event.key});
-                break;
-
-            case sf::Event::Resized:
-                world().broadcastEvent<ResizeEvent>(ResizeEvent(event.size.width, event.size.height));
-                break;
-
-            case sf::Event::KeyReleased:
-                world().broadcastEvent<KeyReleasedEvent>(KeyReleasedEvent{event.key});
-                break;
-
-            case sf::Event::TextEntered:
-            case sf::Event::LostFocus:
-            case sf::Event::GainedFocus:
-            case sf::Event::MouseWheelMoved:
-            case sf::Event::MouseWheelScrolled:
-            case sf::Event::MouseButtonPressed:
-            case sf::Event::MouseButtonReleased:
-            case sf::Event::MouseMoved:
-            case sf::Event::MouseEntered:
-            case sf::Event::MouseLeft:
-            case sf::Event::JoystickButtonPressed:
-            case sf::Event::JoystickButtonReleased:
-            case sf::Event::JoystickMoved:
-            case sf::Event::JoystickConnected:
-            case sf::Event::JoystickDisconnected:
-            case sf::Event::TouchBegan:
-            case sf::Event::TouchMoved:
-            case sf::Event::TouchEnded:
-            case sf::Event::SensorChanged:
-            case sf::Event::Count:
-            default:
-                break;
-        }
+        if (network().getGameHasStarted() && !network().getIsServer() &&
+            (event.type == sf::Event::KeyPressed
+             // event.type == sf::Event::KeyReleased ||
+             // event.type == sf::Event::MouseButtonPressed ||
+             // event.type == sf::Event::MouseButtonReleased ||
+             // event.type == sf::Event::MouseMoved ||))
+             ))
+            network().addEvent(event);
+        processSwitchEvent(event);
     }
 }
 
@@ -225,6 +283,7 @@ void EngineClass::run()
 
     while (window.isOpen()) {
         destroyPendingWorlds();
+        processClientsEvents();
         handleEvents();
         world().tick();
     }

@@ -100,9 +100,11 @@ namespace ECS
              * @throw std::out_of_range if the component does not exist.
              * @note You should not destroy the component.
              */
-            template <typename T> ComponentHandle<T> getComponent()
+            template <typename T> ComponentHandle<T> getComponent(bool modifiedComponent = false)
             {
-                auto               baseComponentPtr     = _components.at(ECS_TYPEID(T));
+                auto baseComponentPtr = _components.at(ECS_TYPEID(T));
+
+                if (modifiedComponent) baseComponentPtr->setHasChanged(true);
                 std::shared_ptr<T> specificComponentPtr = std::dynamic_pointer_cast<T>(baseComponentPtr);
                 return ComponentHandle<T>(specificComponentPtr);
             }
@@ -113,8 +115,12 @@ namespace ECS
              * @throw std::out_of_range if a component does not exist.
              * @note You should not destroy the components.
              */
-            std::unordered_map<id_t, std::shared_ptr<BaseComponent>> &getComponents()
+            std::unordered_map<id_t, std::shared_ptr<BaseComponent>> &getComponents(bool modifiedComponent = false)
             {
+                if (!modifiedComponent) return _components;
+
+                for (auto &component : _components)
+                    component.second->setHasChanged(true);
                 return _components;
             }
 

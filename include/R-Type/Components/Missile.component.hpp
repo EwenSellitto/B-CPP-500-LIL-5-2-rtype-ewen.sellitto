@@ -28,12 +28,25 @@ namespace Engine::Components
 
             std::vector<char> serialize() override
             {
-                return {};
+                std::ostringstream oss(std::ios::binary);
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
             }
 
             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
-                return nullptr;
+                MissileComponent *missileComponent;
+                if (component == nullptr) {
+                    missileComponent = new MissileComponent();
+                } else {
+                    missileComponent = dynamic_cast<MissileComponent *>(component);
+                    if (missileComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                return missileComponent;
             }
 
             ComponentType getType() override

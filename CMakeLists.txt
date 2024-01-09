@@ -90,6 +90,8 @@ add_executable(r-type
         src/Engine/Server/Packets/HandlePackets.cpp
         src/Engine/Server/Packets/ReceivePackets.cpp
         src/Engine/Server/Packets/SendPackets.cpp
+        src/Engine/Server/Packets/Serialization/Serialize.cpp
+        src/Engine/Server/Packets/Serialization/Deserialize.cpp
         src/Engine/Server/ServerHandler.cpp
 
         include/public/AvailableComponents.hpp
