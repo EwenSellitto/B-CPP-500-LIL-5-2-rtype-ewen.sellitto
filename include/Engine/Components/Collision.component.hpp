@@ -13,6 +13,7 @@
 #include <string>
 
 #include "ECS/Components.hpp"
+#include "R-Type/sprites.hpp"
 #include "SFML/Graphics/Rect.hpp"
 
 namespace Engine::Components
@@ -24,8 +25,16 @@ namespace Engine::Components
             {
             }
 
+            explicit CollisionComponent(const std::string &spriteName) : name(spriteName)
+            {
+                auto it = spriteInfoMap.find(spriteName);
+                if (it == spriteInfoMap.end()) throw std::runtime_error("Cannot find sprite " + spriteName);
+                const SpriteInfo &info = it->second;
+                rect                   = sf::FloatRect(info.offsetX, info.offsetY, info.width, info.height);
+            }
             ~CollisionComponent() override = default;
 
             sf::FloatRect rect;
+            std::string   name;
     };
 } // namespace Engine::Components

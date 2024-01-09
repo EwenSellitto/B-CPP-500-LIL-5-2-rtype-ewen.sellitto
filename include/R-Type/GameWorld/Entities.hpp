@@ -225,8 +225,8 @@ namespace Entities
         ECS::id_t   enemyId     = world.createEntity(
             new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
             new RenderableComponent("Klaed-Scout-Base"),
-            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
-            new ExcludeCollisionComponent(0), new HealthComponent(40));
+            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak),
+            new CollisionComponent("Klaed-Scout-Base"), new ExcludeCollisionComponent(0), new HealthComponent(40));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
