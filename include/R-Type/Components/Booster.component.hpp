@@ -9,7 +9,7 @@
 
 #include "ECS/Components.hpp"
 
-namespace RType::Component
+namespace Rtype::Components
 {
     struct BoosterComponent : ECS::BaseComponent {
         public:
@@ -33,4 +33,4 @@ namespace RType::Component
             WeaponType type;
     };
 
-} // namespace RType::Component
+} // namespace Rtype::Components

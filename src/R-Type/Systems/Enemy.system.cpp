@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include "ECS/Components.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
@@ -22,7 +23,9 @@
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/Components/Player.component.hpp"
 #include "R-Type/Systems/Bullets.system.hpp"
+#include "SFML/System/Vector2.hpp"
 
 using namespace Engine::System;
 
@@ -80,23 +83,76 @@ void EnemySystem::tryChangeEnemiesMovement()
     }
 }
 
+sf::Vector2f getBulletDestination(sf::Vector2f &playerPos, sf::Vector2f &enemyPos)
+{
+    const int screenWidth  = WINDOW.getSize().x;
+    const int screenHeight = WINDOW.getSize().y;
+
+    const int offset = 100;
+
+    sf::Vector2<float> enemyPosVector = {static_cast<float>(enemyPos.x), static_cast<float>(enemyPos.y)};
+
+    sf::Vector2<float> direction           = playerPos - enemyPosVector;
+    float              magnitude           = sqrt(direction.x * direction.x + direction.y * direction.y);
+    sf::Vector2<float> normalizedDirection = {direction.x / magnitude, direction.y / magnitude};
+
+    sf::Vector2<float> horizontalIntersection =
+        enemyPosVector +
+        normalizedDirection * ((enemyPosVector.y < playerPos.y ? screenHeight + offset : -offset - enemyPosVector.y) /
+                               normalizedDirection.y);
+    sf::Vector2<float> verticalIntersection =
+        enemyPosVector +
+        normalizedDirection * ((enemyPosVector.x < playerPos.x ? screenWidth + offset : -offset - enemyPosVector.x) /
+                               normalizedDirection.x);
+
+    sf::Vector2<float> intersection;
+    if ((horizontalIntersection.x >= -offset && horizontalIntersection.x <= screenWidth + offset) &&
+        (horizontalIntersection.y >= -offset && horizontalIntersection.y <= screenHeight + offset)) {
+        intersection = horizontalIntersection;
+    } else {
+        intersection = verticalIntersection;
+    }
+
+    sf::Vector2<float> extendedPoint = intersection + normalizedDirection * 100.0f;
+
+    if (extendedPoint.x <= 1000 && extendedPoint.y <= 1000) {
+        float scaleFactor =
+            std::max((1000 - intersection.x) / normalizedDirection.x, (1000 - intersection.y) / normalizedDirection.y);
+
+        extendedPoint = intersection + normalizedDirection * scaleFactor;
+    }
+
+    return extendedPoint;
+}
+
 void EnemySystem::tryMakeEnemyAttack()
 {
     using namespace Engine::Components;
 
     ECS::World                &world = WORLD;
     std::vector<ECS::Entity *> enemies =
-        world.getEntitiesWithComponents<RenderableComponent, EnemyComponent, EnemyAttackComponent>();
+        world.getEntitiesWithComponents<RenderableComponent, EnemyComponent, EnemyAttackComponent, PositionComponent>();
 
     if (enemies.empty()) return;
+    auto player = WORLD.getEntityWithComponents<PositionComponent, PlayerComponent>();
+    if (!player) return;
 
-    auto   now         = std::chrono::high_resolution_clock::now();
-    auto   epoch       = now.time_since_epoch();
-    size_t currentTime = std::chrono::duration_cast<std::chrono::milliseconds>(epoch).count();
+    auto   now                = std::chrono::high_resolution_clock::now();
+    auto   epoch              = now.time_since_epoch();
+    size_t currentTime        = std::chrono::duration_cast<std::chrono::milliseconds>(epoch).count();
+    auto   playerPosComponent = player->getComponent<PositionComponent>();
 
     for (auto &currentEnemy : enemies) {
         ECS::ComponentHandle<EnemyAttackComponent> comp = currentEnemy->getComponent<EnemyAttackComponent>();
         if (currentTime - comp->lastAttack < comp->attackRate) continue;
+
+        auto               enemyPosComponent = currentEnemy->getComponent<PositionComponent>();
+        sf::Vector2<float> enemyPos          = {static_cast<float>(enemyPosComponent->x),
+                                                static_cast<float>(enemyPosComponent->y)};
+        sf::Vector2<float> playerPos         = {static_cast<float>(playerPosComponent->x),
+                                                static_cast<float>(playerPosComponent->y)};
+
+        comp->bulletDestination = getBulletDestination(playerPos, enemyPos);
 
         comp->lastAttack = currentTime;
 

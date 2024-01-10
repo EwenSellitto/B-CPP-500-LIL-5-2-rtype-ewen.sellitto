@@ -13,6 +13,7 @@
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/Drawable.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
@@ -31,17 +32,17 @@ sf::FloatRect Physics::get_hitbox_with_rotation(ECS::ComponentHandle<Engine::Com
 {
     sf::FloatRect newHitbox = {};
 
-    switch (rotation) {
-        case 90:
+    switch (static_cast<int>(rotation / 90)) {
+        case 1:
             newHitbox = sf::FloatRect(x - hitbox->rect.top - hitbox->rect.width, y + hitbox->rect.left,
                                       hitbox->rect.height, hitbox->rect.width);
             break;
-        case 180:
+        case 2:
             newHitbox =
                 sf::FloatRect(x - hitbox->rect.left - hitbox->rect.width, y - hitbox->rect.top - hitbox->rect.height,
                               hitbox->rect.width, hitbox->rect.height);
             break;
-        case 270:
+        case 3:
             newHitbox = sf::FloatRect(x + hitbox->rect.top, y - hitbox->rect.left - hitbox->rect.height,
                                       hitbox->rect.height, hitbox->rect.width);
             break;
