@@ -11,21 +11,17 @@ namespace Subscribers
 {
     inline void subscribeToEvents(ECS::World *world)
     {
-        auto *subMovePressed   = new Rtype::Subscriber::PlayerMovePressedSubscriber();
-        auto *subMoveReleased  = new Rtype::Subscriber::PlayerMoveReleasedSubscriber();
-        auto *subCollision     = new Rtype::Subscriber::CollisionEventSubscriber();
-        auto *subShootPlayer   = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
-        auto *subShootPlayer2  = new Rtype::Subscriber::ShootPlayerPressedSubscriber();
-        auto *keyboardPressed  = new Rtype::Subscriber::KeyboardPressedSubscriber();
-        auto *keyboardReleased = new Rtype::Subscriber::KeyboardReleasedSubscriber();
+        auto *subMovePressed  = new Rtype::Subscriber::PlayerMovePressedSubscriber();
+        auto *subMoveReleased = new Rtype::Subscriber::PlayerMoveReleasedSubscriber();
+        auto *subCollision    = new Rtype::Subscriber::CollisionEventSubscriber();
+        auto *subShootPlayer  = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
+        auto *subShootPlayer2 = new Rtype::Subscriber::ShootPlayerPressedSubscriber();
 
         world->subscribe<KeyPressedEvent>(subMovePressed);
         world->subscribe<KeyReleasedEvent>(subMoveReleased);
         world->subscribe<CollisionEvent>(subCollision);
         world->subscribe<KeyReleasedEvent>(subShootPlayer);
         world->subscribe<KeyPressedEvent>(subShootPlayer2);
-        world->subscribe<KeyPressedEvent>(keyboardPressed);
-        world->subscribe<KeyReleasedEvent>(keyboardReleased);
     }
 
     inline void subscribeToEventsInputs(ECS::World *world)
