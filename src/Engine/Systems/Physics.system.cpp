@@ -7,6 +7,9 @@
 
 #include "Engine/Systems/Physics.system.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Collision.component.hpp"
@@ -16,7 +19,6 @@
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Events/Collision.event.hpp"
-#include "SFML/Graphics/Rect.hpp"
 
 using namespace Engine::System;
 
@@ -31,16 +33,16 @@ sf::FloatRect Physics::get_hitbox_with_rotation(ECS::ComponentHandle<Engine::Com
 
     switch (rotation) {
         case 90:
-            newHitbox = sf::FloatRect(x + hitbox->rect.top - hitbox->rect.width, y + hitbox->rect.left,
+            newHitbox = sf::FloatRect(x - hitbox->rect.top - hitbox->rect.width, y + hitbox->rect.left,
                                       hitbox->rect.height, hitbox->rect.width);
             break;
         case 180:
             newHitbox =
-                sf::FloatRect(x + hitbox->rect.left - hitbox->rect.width, y + hitbox->rect.top - hitbox->rect.height,
+                sf::FloatRect(x - hitbox->rect.left - hitbox->rect.width, y - hitbox->rect.top - hitbox->rect.height,
                               hitbox->rect.width, hitbox->rect.height);
             break;
         case 270:
-            newHitbox = sf::FloatRect(x + hitbox->rect.top, y + hitbox->rect.left - hitbox->rect.height,
+            newHitbox = sf::FloatRect(x + hitbox->rect.top, y - hitbox->rect.left - hitbox->rect.height,
                                       hitbox->rect.height, hitbox->rect.width);
             break;
         default:
@@ -96,6 +98,20 @@ void Physics::collide(ECS::Entity *entity, int x, int y)
         } else {
             hit = sf::FloatRect(pos->x + col->rect.left, pos->y + col->rect.top, col->rect.width, col->rect.height);
         }
+
+#ifndef NOT_SHOW_HITBOX
+        sf::RectangleShape *rect;
+        if (!ent->has<DrawableComponent>()) {
+            rect = new sf::RectangleShape(sf::Vector2f(hit.width, hit.height));
+            ent->addComponent(new DrawableComponent(rect));
+        } else {
+            rect = (sf::RectangleShape *)ent->getComponent<DrawableComponent>()->drawable;
+        }
+        rect->setPosition(hit.left, hit.top);
+        rect->setOutlineThickness(2);
+        rect->setFillColor(sf::Color::Transparent);
+        rect->setOutlineColor(sf::Color::Red);
+#endif
 
         if (hitbox.intersects(hit)) collisionEntities.push_back(ent);
     }

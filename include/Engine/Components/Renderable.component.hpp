@@ -30,9 +30,10 @@ namespace Engine::Components
             }
 
             RenderableComponent(const std::string &texture_path, float pos_x, float pos_y, int priority,
-                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
+                                float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false,
+                                bool isDisplayed = true)
                 : texture(), sprite(), size(), position({pos_x, pos_y}), priority(priority), rotation(rotation),
-                  scale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
+                  scale(scale), savedScale(scale), isDisplayed(isDisplayed), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture();
@@ -41,7 +42,7 @@ namespace Engine::Components
             RenderableComponent(const std::string &texture_path, sf::Vector2<float> pos, int priority,
                                 float rotation = 0, sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
                 : texture(), sprite(), size(), position(pos), priority(priority), rotation(rotation), scale(scale),
-                  isDisplayed(true), path(texture_path), setOrigin(setOrigin)
+                  savedScale(scale), isDisplayed(true), path(texture_path), setOrigin(setOrigin)
 
             {
                 setTexture();
@@ -56,6 +57,19 @@ namespace Engine::Components
                 sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
                 if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
+            }
+
+            void reset(const std::string &texture_path, sf::Vector2<float> pos, int priority, float rotation = 0,
+                       sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
+            {
+                this->position  = pos;
+                this->priority  = priority;
+                this->rotation  = rotation;
+                this->scale     = scale;
+                this->path      = texture_path;
+                this->setOrigin = setOrigin;
+
+                setTexture();
             }
 
             ~RenderableComponent() override = default;
@@ -129,6 +143,7 @@ namespace Engine::Components
             int                      priority;
             float                    rotation;
             sf::Vector2<float>       scale;
+            sf::Vector2<float>       savedScale;
             bool                     isDisplayed;
             std::string              path;
             bool                     setOrigin = false;

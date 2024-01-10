@@ -21,6 +21,7 @@
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
+#include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Missile.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 #include "public/ComponentsType.hpp"
@@ -48,6 +49,7 @@ class ComponentsConvertor
             registerComponent<Engine::Components::EnemyQueueComponent>(ComponentType::EnemyQueueComponent);
             registerComponent<Engine::Components::MissileComponent>(ComponentType::MissileComponent);
             registerComponent<Engine::Components::PlayerComponent>(ComponentType::PlayerComponent);
+            registerComponent<Rtype::Components::HealthComponent>(ComponentType::HealthComponent);
         }
 
         template <typename T> void registerComponent(ComponentType type)

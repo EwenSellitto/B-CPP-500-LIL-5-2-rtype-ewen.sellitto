@@ -13,6 +13,7 @@
 #include <functional>
 #include <unordered_map>
 
+#include "ECS/Entity.hpp"
 #include "Server/Network.hpp"
 
 namespace ECS
@@ -45,6 +46,7 @@ namespace ECS
 #endif
 
 #define WINDOW Engine::EngineClass::getEngine().window
+#define WORLD Engine::EngineClass::getEngine().world()
 
 namespace Engine
 {
@@ -129,28 +131,56 @@ namespace Engine
 
             sf::RenderWindow window;
 
+            /*===================//
+            //  Private Methods  //
+            //===================*/
+
+            ECS::id_t                addGlobalEntity(std::unique_ptr<ECS::GlobalEntity> entity);
+            void                     removeGlobalEntity(ECS::id_t id);
+            const ECS::GlobalEntity &getGlobalEntity(ECS::id_t id);
+            ECS::GlobalEntity       &getMutGlobalEntity(ECS::id_t id);
+
+            template <typename T> std::unordered_map<ECS::GlobalEntity *, ECS::ComponentHandle<T>> getGlobal();
+
+            template <typename T> void each(std::function<void(ECS::GlobalEntity *, ECS::ComponentHandle<T>)> func);
+
+            template <typename... Types>
+            void each(std::function<void(ECS::GlobalEntity *, ECS::ComponentHandle<Types...>)> func);
+
+            template <typename... Types> std::vector<ECS::GlobalEntity *> getGlobalEntitiesWithComponents();
+            template <typename... Types> ECS::GlobalEntity               *getGlobalEntityWithComponents();
+
         private:
             /*==============//
             //  Attributes  //
             //==============*/
 
-            bool                 _running;
-            bool                 _fullscreen;
-            world_factories_t    _worldsFactories;
-            world_t              _currentWorld;
-            std::vector<world_t> _pending_destroy;
-            std::string          _startWorld;
-            std::size_t          _windowSizeX;
-            std::size_t          _windowSizeY;
-            ECS::Network         _network;
-            int                  _playersAmount;
-            int                  _currentPlayer;
-            int                  _ownPlayer;
+            bool                                                              _running;
+            bool                                                              _fullscreen;
+            world_factories_t                                                 _worldsFactories;
+            world_t                                                           _currentWorld;
+            std::vector<world_t>                                              _pending_destroy;
+            std::string                                                       _startWorld;
+            std::size_t                                                       _windowSizeX;
+            std::size_t                                                       _windowSizeY;
+            ECS::Network                                                      _network;
+            int                                                               _playersAmount;
+            int                                                               _currentPlayer;
+            int                                                               _ownPlayer;
+            std::unordered_map<ECS::id_t, std::unique_ptr<ECS::GlobalEntity>> _global_entities;
 
             /*===================//
             //  Private Methods  //
             //===================*/
 
             void destroyPendingWorlds();
+
+            template <typename T>
+            void _eachHelper(ECS::GlobalEntity                                                *g_entity,
+                             std::function<void(ECS::GlobalEntity *, ECS::ComponentHandle<T>)> func);
+
+            template <typename T, typename V, typename... Types>
+            void _eachHelper(ECS::GlobalEntity                                                *g_entity,
+                             std::function<void(ECS::GlobalEntity *, ECS::ComponentHandle<T>)> func);
     };
 } // namespace Engine

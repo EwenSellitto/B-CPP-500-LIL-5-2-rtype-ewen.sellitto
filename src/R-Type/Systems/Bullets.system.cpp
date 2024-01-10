@@ -23,7 +23,18 @@ void Bullets::configure([[maybe_unused]] ECS::World &world) {}
 
 void Bullets::unconfigure() {}
 
-void Bullets::tick() {}
+void Bullets::tick()
+{
+    using namespace Engine::Components;
+    for (auto ent : WORLD.getEntitiesWithComponents<BaseBulletComponent, PositionComponent>()) {
+        auto bullet = ent->getComponent<BaseBulletComponent>();
+        auto pos    = ent->getComponent<PositionComponent>();
+        if ((int)WINDOW.getSize().x + 100 <= pos->x || pos->x <= -100 || (int)WINDOW.getSize().y + 100 <= pos->y ||
+            pos->y <= -100) {
+            WORLD.removeEntity(ent->getId());
+        }
+    }
+}
 
 void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time)
 {
@@ -33,7 +44,7 @@ void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f d
         new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
         new MovingComponent({posx, posy}, time * 10, destination),
         new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-Rocket.png", posx, posy, 2, 90),
-        new CollisionComponent(7, 13, 18, 5), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
+        new CollisionComponent(0, 13, 5, 18), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
         new BaseBulletComponent(fromEnemy), new MissileComponent());
 }
 
@@ -45,6 +56,6 @@ void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f d
         new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
         new MovingComponent({posx, posy}, time * 10, destination),
         new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-Rocket.png", 0, 0, 2, rotation),
-        new CollisionComponent(7, 13, 18, 5), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
+        new CollisionComponent(0, 13, 5, 18), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
         new BaseBulletComponent(fromEnemy), new MissileComponent());
 }

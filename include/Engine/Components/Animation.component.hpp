@@ -7,13 +7,12 @@
 
 #pragma once
 
-#include <vector>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Clock.hpp>
 #include <sstream>
+#include <vector>
 
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/Rect.hpp"
-#include "SFML/System/Clock.hpp"
-
 #include "public/ComponentsType.hpp"
 
 namespace Engine::Components
@@ -21,7 +20,17 @@ namespace Engine::Components
     struct AnimationComponent : ECS::BaseComponent {
         public:
             AnimationComponent() = default;
-            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount)
+            /*
+             * @brief AnimationComponent constructor
+             * @param x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,
+             * its x, y after looking are : 13, 10
+             * @param width, height; ex: the 5, 18 in question.
+             * @param tileSize (tx, ty);      ex: the 32, 32 in question.
+             * @param animationSpeed in ms.
+             * @param frameCount = number of frame in the animation.
+             */
+            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount,
+                               [[maybe_unused]] bool doAnimation = true)
                 : textureRect(x, y, width, height), tileSize(tx, ty), animationSpeed(animationSpeed),
                   frameCount(frameCount){};
             ~AnimationComponent() override = default;
@@ -38,12 +47,13 @@ namespace Engine::Components
                 oss.write(reinterpret_cast<const char *>(&frame), sizeof(frame));
                 oss.write(reinterpret_cast<const char *>(&animationSpeed), sizeof(animationSpeed));
                 oss.write(reinterpret_cast<const char *>(&frameCount), sizeof(frameCount));
+                oss.write(reinterpret_cast<const char *>(&doAnimation), sizeof(doAnimation));
 
                 const std::string &str = oss.str();
                 return {str.begin(), str.end()};
             }
 
-             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 AnimationComponent *animationComponent;
                 if (component == nullptr) {
@@ -71,6 +81,8 @@ namespace Engine::Components
                          sizeof(animationComponent->animationSpeed));
                 iss.read(reinterpret_cast<char *>(&animationComponent->frameCount),
                          sizeof(animationComponent->frameCount));
+                iss.read(reinterpret_cast<char *>(&animationComponent->doAnimation),
+                         sizeof(animationComponent->doAnimation));
 
                 return animationComponent;
             }
@@ -91,5 +103,6 @@ namespace Engine::Components
             int           animationSpeed{0};
             int           frameCount{0};
             sf::Clock     clock{};
+            bool          doAnimation = true;
     };
 } // namespace Engine::Components

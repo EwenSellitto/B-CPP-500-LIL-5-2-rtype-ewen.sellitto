@@ -18,7 +18,7 @@ namespace Engine::Components
 {
     struct EnemyComponent : ECS::BaseComponent {
         public:
-            EnemyComponent() : health(0), enemyType(EnemyData::EnemyType::Normal) {}
+            EnemyComponent() : health(0), enemyType(EnemyData::EnemyType::Medium) {}
             EnemyComponent(int health, EnemyData::EnemyType enemyType) : health(health), enemyType(enemyType) {}
 
             ~EnemyComponent() override = default;
@@ -34,7 +34,7 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 EnemyComponent *enemyComponent;
                 if (component == nullptr) {

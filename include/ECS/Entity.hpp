@@ -40,7 +40,8 @@ namespace ECS
              * @note The Entity will be destroyed when the World is destroyed.
              * @warning Only create an Entity with a World.
              */
-            explicit Entity() : _components(), _componentsToDelete(), _clock(){};
+            explicit Entity() : _components(), _componentsToDelete(), _clock(), _id(0){};
+            explicit Entity(ECS::id_t id) : _components(), _componentsToDelete(), _clock(), _id(id){};
 
             /**
              * @brief Destroy the Entity object.
@@ -54,6 +55,24 @@ namespace ECS
             {
                 removeAllComponents();
             };
+
+            /**
+             * @brief set the id of the entity
+             * @param id the id to set
+             */
+            void setId(ECS::id_t id)
+            {
+                _id = id;
+            }
+
+            /**
+             * @brief get the id of the entity
+             * @return the id of the entity
+             */
+            ECS::id_t getId() const
+            {
+                return _id;
+            }
 
             /**
              * @brief Add a component to the Entity.
@@ -172,6 +191,7 @@ namespace ECS
             std::unordered_map<id_t, std::shared_ptr<BaseComponent>> _components;
             std::vector<ComponentType>                               _componentsToDelete;
             Clock                                                    _clock;
+            ECS::id_t                                                _id;
     };
 
     class GlobalEntity : public Entity

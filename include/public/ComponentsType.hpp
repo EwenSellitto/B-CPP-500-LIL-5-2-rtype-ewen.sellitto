@@ -24,5 +24,6 @@ enum class ComponentType {
     EnemyQueueComponent,
     MissileComponent,
     PlayerComponent,
+    HealthComponent,
     NoneComponent,
 };

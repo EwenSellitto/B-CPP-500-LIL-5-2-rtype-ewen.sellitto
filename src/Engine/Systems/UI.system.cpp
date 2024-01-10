@@ -33,12 +33,17 @@ void UI::tick()
     sf::Vector2f      worldPos      = window->mapPixelToCoords(mousePosition);
 
     auto &world = getWorld();
-
+    // std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
     world.each<ButtonComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                          ECS::ComponentHandle<ButtonComponent>     buttonComp,
                                                          ECS::ComponentHandle<RenderableComponent> renderable) {
         updateButtonState(buttonComp, renderable, worldPos);
     });
+    world.each<CursorComponent, PositionComponent, RenderableComponent>(
+        [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<CursorComponent> cursorComp,
+            ECS::ComponentHandle<PositionComponent> position, ECS::ComponentHandle<RenderableComponent> renderable) {
+            updateCursorState(cursorComp, renderable, position, mousePosition, worldPos);
+        });
 }
 
 void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
@@ -49,7 +54,7 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>    
     sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
 
     resetButtonVisual(renderable);
-
+    if (!buttonComp->isActivated) return;
     if (buttonRect.contains(worldPos)) {
         hoverEffect(buttonComp, renderable);
         handleClick(buttonComp, renderable);
@@ -61,10 +66,26 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>    
     }
 }
 
+void UI::updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
+                           ECS::ComponentHandle<Components::RenderableComponent> renderable,
+                           ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
+                           const sf::Vector2f &worldPos)
+{
+
+    sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
+
+    resetButtonVisual(renderable);
+
+    if (buttonRect.contains(worldPos))
+        handleChange(cursorComp, position, mousePosition, renderable);
+    else if (cursorComp->isClicked)
+        cursorComp->isClicked = false;
+}
+
 void UI::resetButtonVisual(ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     renderable->sprite.setColor(sf::Color(255, 255, 255, 255));
-    renderable->scale = {1, 1};
+    renderable->scale = renderable->savedScale;
 }
 
 void UI::hoverEffect(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
@@ -72,6 +93,12 @@ void UI::hoverEffect(ECS::ComponentHandle<Components::ButtonComponent>     butto
 {
     buttonComp->isHovered = true;
     renderable->sprite.setColor(sf::Color(255, 255, 255, 200));
+}
+
+void UI::handleQuitGame()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.window.close();
 }
 
 void UI::handleStartGame()
@@ -84,14 +111,23 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        renderable->scale = {0.9f, 0.9f};
+        renderable->scale = {static_cast<float>(renderable->scale.x * 0.9),
+                             static_cast<float>(renderable->scale.y * 0.9)};
         if (!buttonComp->isClicked) {
             buttonComp->isClicked = true;
         }
     } else if (buttonComp->isClicked) {
         buttonComp->onClick();
         buttonComp->isClicked = false;
+    }
+}
 
-        if (buttonComp->text == "Start Game") handleStartGame();
+void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
+                      ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
+                      [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+{
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (position->x > 250 && position->x < 490) cursorComp->onChange();
+        position->x = mousePosition.x;
     }
 }

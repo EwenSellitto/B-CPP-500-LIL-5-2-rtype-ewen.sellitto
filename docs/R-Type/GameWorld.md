@@ -33,7 +33,7 @@ namespace Entities
 
         ECS::id_t ship_id = world->createEntity(
             new PlayerComponent(), new PositionComponent(100, 100),
-            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 0),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
 

@@ -11,6 +11,8 @@
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Button.component.hpp"
+#include "Engine/Components/Cursor.component.hpp"
+#include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 
 namespace Engine::System
@@ -28,8 +30,15 @@ namespace Engine::System
 
             void tick() override;
 
-        private:
             void handleStartGame();
+
+            void handleQuitGame();
+
+        private:
+            void updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
+                                   ECS::ComponentHandle<Components::RenderableComponent> renderable,
+                                   ECS::ComponentHandle<Components::PositionComponent>   position,
+                                   sf::Vector2i mousePosition, const sf::Vector2f &worldPos);
             void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                                    ECS::ComponentHandle<Components::RenderableComponent> renderable,
                                    const sf::Vector2f                                   &worldPos);
@@ -38,5 +47,8 @@ namespace Engine::System
                              ECS::ComponentHandle<Components::RenderableComponent> renderable);
             void handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                              ECS::ComponentHandle<Components::RenderableComponent> renderable);
+            void handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
+                              ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
+                              ECS::ComponentHandle<Components::RenderableComponent> renderable);
     };
 } // namespace Engine::System

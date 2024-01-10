@@ -7,11 +7,10 @@
 
 #pragma once
 
-#include "ECS/Components.hpp"
+#include <chrono>
+
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
-#include "Engine/Components/Button.component.hpp"
-#include "Engine/Components/Renderable.component.hpp"
 
 namespace Engine::System
 {

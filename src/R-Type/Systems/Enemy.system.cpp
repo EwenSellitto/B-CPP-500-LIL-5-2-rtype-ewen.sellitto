@@ -30,11 +30,11 @@ void EnemySystem::configure([[maybe_unused]] ECS::World &world) {}
 
 void EnemySystem::unconfigure() {}
 
-void EnemySystem::trySpawnEnemies()
+void EnemySystem::tryMoveEnemies()
 {
     using namespace Engine::Components;
 
-    ECS::World  &world         = getWorld();
+    ECS::World  &world         = WORLD;
     ECS::Entity *enemyQueue    = world.getEntityWithComponents<EnemyQueueComponent>();
     ECS::Entity *worldProgress = world.getEntityWithComponents<WorldMoveProgressComponent>();
 
@@ -59,7 +59,7 @@ void EnemySystem::trySpawnEnemies()
 void EnemySystem::tryChangeEnemiesMovement()
 {
     using namespace Engine::Components;
-    ECS::World &world = getWorld();
+    ECS::World &world = WORLD;
 
     std::vector<ECS::Entity *> enemies = world.getEntitiesWithComponents<RenderableComponent, EnemyComponent>();
 
@@ -85,7 +85,7 @@ void EnemySystem::tryMakeEnemyAttack()
 {
     using namespace Engine::Components;
 
-    ECS::World                &world = getWorld();
+    ECS::World                &world = WORLD;
     std::vector<ECS::Entity *> enemies =
         world.getEntitiesWithComponents<RenderableComponent, EnemyComponent, EnemyAttackComponent>();
 
@@ -119,7 +119,7 @@ void EnemySystem::tick()
 {
     using namespace Engine::Components;
 
-    trySpawnEnemies();
+    tryMoveEnemies();
     tryChangeEnemiesMovement();
     tryMakeEnemyAttack();
 }
@@ -138,13 +138,13 @@ size_t EnemySystem::spawnEnemy(float posx, float posy)
     EnemyData::EnemyType type       = getRandomEnemyType();
     auto                 attributes = EnemyData::enemyTypeAttributes.at(type);
 
-    size_t entityId = getWorld().createEntity(
-        new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
-        new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(attributes.health, type),
-        new CollisionComponent(0, 0, 100, 100));
-    getWorld().getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
-        sf::Vector2f{static_cast<float>(getWorld().getMutEntity(entityId).getComponent<PositionComponent>()->x),
-                     static_cast<float>(getWorld().getMutEntity(entityId).getComponent<PositionComponent>()->y)},
+    size_t entityId =
+        WORLD.createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+                           new RenderableComponent(attributes.spritePath, 20, 20, 0),
+                           new EnemyComponent(attributes.health, type), new CollisionComponent(0, 0, 100, 100));
+    WORLD.getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
+        sf::Vector2f{static_cast<float>(WORLD.getMutEntity(entityId).getComponent<PositionComponent>()->x),
+                     static_cast<float>(WORLD.getMutEntity(entityId).getComponent<PositionComponent>()->y)},
         3000, {-100, -100}));
     return entityId;
 }
@@ -155,7 +155,7 @@ EnemyData::EnemyType EnemySystem::getRandomEnemyType()
     if (chance < 70)
         return EnemyData::EnemyType::Weak;
     else if (chance < 95)
-        return EnemyData::EnemyType::Normal;
+        return EnemyData::EnemyType::Medium;
     else
         return EnemyData::EnemyType::Strong;
 }

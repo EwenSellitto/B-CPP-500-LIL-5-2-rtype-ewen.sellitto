@@ -7,10 +7,8 @@
 
 #pragma once
 
-#include <chrono>
 #include <ctime>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <unordered_map>
 
@@ -23,6 +21,10 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 typedef long int Int64;
+#endif
+
+#ifndef PRINT_EVENTS
+#define NO_PRINT_EVENTS
 #endif
 
 namespace ECS
@@ -39,11 +41,7 @@ namespace ECS
             /**
              * @brief Construct a new World object.
              */
-            World()
-                : _entities(), _global_entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine())
-            {
-                std::cout << "New world created" << std::endl;
-            }
+            World() : _entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine()) {}
 
             /**
              * @brief Destroy the World object.
@@ -58,7 +56,6 @@ namespace ECS
                         delete pair.second;
                     }
                 }
-                std::cout << "World destroyed" << std::endl;
             }
 
             /*===================//
@@ -94,6 +91,7 @@ namespace ECS
                 type_t                  id = Utils::getNewId<Entity>();
                 Events::OnEntityCreated event{entity.get()};
 
+                entity->setId(id);
                 _entities.emplace(id, std::move(entity));
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
                     broadcastEvent<Events::OnEntityCreated>(event);
@@ -166,6 +164,21 @@ namespace ECS
             }
 
             /**
+             * @brief Remove an entity from the world.
+             *
+             * @param entity The entity to be removed.
+             * @note The entity will be properly destroyed when removed.
+             */
+            void removeEntity(ECS::Entity *entity)
+            {
+                id_t                      id = entity->getId();
+                Events::OnEntityDestroyed event{entity};
+                _entities.erase(id);
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityDestroyed>(event);
+            }
+
+            /**
              * @brief Get an immutable reference to an entity.
              *
              * @param id The unique identifier of the entity to get.
@@ -215,12 +228,11 @@ namespace ECS
              */
             template <typename T> void each(std::function<void(Entity *, ComponentHandle<T>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>()) {
-                        ComponentHandle<T> component = entity.getComponent<T>();
-                        func(&entity, component);
-                    }
+                auto entities = getEntitiesWithComponents<T>();
+                for (auto &entity : entities) {
+                    if (!entity->template has<T>()) continue;
+                    auto component = entity->template getComponent<T>();
+                    func(entity, component);
                 }
             }
 
@@ -234,13 +246,13 @@ namespace ECS
             template <typename T, typename U>
             void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>() && entity.has<U>()) {
-                        ComponentHandle<T> componentT = entity.getComponent<T>();
-                        ComponentHandle<U> componentU = entity.getComponent<U>();
-                        func(&entity, componentT, componentU);
-                    }
+                auto entities = getEntitiesWithComponents<T, U>();
+                for (auto &entity : entities) {
+                    if (!(entity->template has<T>() && entity->template has<U>())) continue;
+
+                    auto componentT = entity->template getComponent<T>();
+                    auto componentU = entity->template getComponent<U>();
+                    func(entity, componentT, componentU);
                 }
             }
 
@@ -253,14 +265,15 @@ namespace ECS
             template <typename T, typename U, typename V>
             void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>, ComponentHandle<V>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>() && entity.has<U>()) {
-                        ComponentHandle<T> componentT = entity.getComponent<T>();
-                        ComponentHandle<U> componentU = entity.getComponent<U>();
-                        ComponentHandle<V> componentV = entity.getComponent<V>();
-                        func(&entity, componentT, componentU, componentV);
-                    }
+                auto entities = getEntitiesWithComponents<T, U, V>();
+                for (auto &entity : entities) {
+                    if (!(entity->template has<T>() && entity->template has<U>() && entity->template has<V>()))
+                        continue;
+
+                    auto componentT = entity->template getComponent<T>();
+                    auto componentU = entity->template getComponent<U>();
+                    auto componentV = entity->template getComponent<V>();
+                    func(entity, componentT, componentU, componentV);
                 }
             }
 
@@ -273,11 +286,8 @@ namespace ECS
              */
             template <typename... Types> void each(std::function<void(Entity *, ComponentHandle<Types...>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<Types...>()) {
-                        _eachHelper<Types...>(&entity, func);
-                    }
+                for (auto &entity : getEntitiesWithComponents<Types...>()) {
+                    _eachHelper<Types...>(entity, func);
                 }
             }
 
@@ -313,113 +323,6 @@ namespace ECS
 
                 return entities[0];
             }
-
-            /*=========================//
-            //  GlobalEntity Handling  //
-            //=========================*/
-
-            /**
-             * @brief Add a global entity to the world.
-             *
-             * @param entity A unique pointer to the GlobalEntity to be added. Ownership of the global entity is
-             * transferred to the World.
-             * @return id_t The unique identifier for the added global entity.
-             */
-            id_t addGlobalEntity(std::unique_ptr<GlobalEntity> entity)
-            {
-                type_t id = Utils::getNewId<GlobalEntity>();
-
-                _global_entities.emplace(id, std::move(entity));
-                return id;
-            }
-
-            /**
-             * @brief Remove a global entity from the world.
-             *
-             * @param id The unique identifier of the global entity to be removed.
-             * @note The global entity will be properly destroyed when removed from all the worlds.
-             */
-            void removeGlobalEntity(id_t id)
-            {
-                _global_entities.erase(id);
-            }
-
-            /**
-             * @brief Get an immutable reference to a global entity.
-             *
-             * @param id The unique identifier of the global entity to get.
-             * @return const GlobalEntity& An immutable reference to the global entity.
-             */
-            const GlobalEntity &getGlobalEntity(id_t id)
-            {
-                return *_global_entities.at(id);
-            }
-
-            /**
-             * @brief Get a mutable reference to a global entity.
-             *
-             * @param id The unique identifier of the global entity to get.
-             * @return GlobalEntity& A mutable reference to the global entity.
-             */
-            GlobalEntity &getMutGlobalEntity(id_t id)
-            {
-                return *_global_entities.at(id);
-            }
-
-            /**
-             * @brief Get all global entities that have a specific component type.
-             *
-             * @tparam T The component type to filter global entities.
-             * @return std::vector<GlobalEntity *> A vector of pointers to the global entities.
-             */
-            template <typename T> std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> getGlobal()
-            {
-                std::unordered_map<ECS::GlobalEntity *, ComponentHandle<T>> entities;
-                for (auto &pair : _global_entities) {
-                    GlobalEntity &entity = *pair.second;
-                    if (entity.has<T>()) {
-                        ComponentHandle<T> component = entity.getComponent<T>();
-                        entities.emplace(&entity, component);
-                    }
-                }
-                return entities;
-            }
-
-            // /**
-            //  * @brief Iterates over all entities that have a specific component type.
-            //  *
-            //  * @tparam T The component type to filter entities.
-            //  * @param func The callable function that will be applied to each global entity and its component.
-            //  */
-            // template <typename T> void each(std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
-            // {
-            //     for (auto &pair : _global_entities) {
-            //         Entity &entity = *pair.second;
-            //         if (entity.has<T>()) {
-            //             ComponentHandle<T> component = entity.getComponent<T>();
-            //             func(&entity, component);
-            //         }
-            //     }
-            // }
-            //
-            // /**
-            //  * @brief Iterates over all entities that have a specific set of component types.
-            //  *
-            //  * @tparam Types Component types to filter entities.
-            //  * @param func The callable function that will be applied to each global entity and its components.
-            //  * @note This function utilizes a helper function to handle the iteration and application of the
-            //  function.
-            //  */
-            // template <typename... Types> void each(std::function<void(GlobalEntity *, ComponentHandle<Types...>)>
-            // func)
-            // {
-            //     for (auto &pair : _global_entities) {
-            //         Entity &entity = *pair.second;
-            //         if (entity.has<Types...>()) {
-            //             _eachHelper<Types...>(&entity, func);
-            //         }
-            //     }
-            // }
 
             /*==================//
             //  Event Handling  //
@@ -471,13 +374,7 @@ namespace ECS
              */
             template <typename T> void broadcastEvent(T data, const std::string name = "")
             {
-                using namespace std::chrono;
-
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
-
-                //                std::cout << "[" <<
-                //                duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-                //                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);
@@ -614,42 +511,11 @@ namespace ECS
                 _eachHelper<V, Types...>(entity, func);
             }
 
-            /**
-             * @brief Helper function to call a function on a global entity with a single component type.
-             *
-             * @tparam T The component type.
-             * @param g_entity Pointer to the entity.
-             * @param func The function to be applied to the global entity and its component.
-             */
-            template <typename T>
-            void _eachHelper(GlobalEntity *g_entity, std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
-            {
-                func(&g_entity, g_entity->getComponent<T>());
-            }
-
-            /**
-             * @brief Recursive helper function to call a function on a global entity with multiple component types.
-             *
-             * @tparam T The current component type being processed.
-             * @tparam V The next component type to be processed.
-             * @tparam Types Remaining component types to be processed.
-             * @param g_entity Pointer to the entity.
-             * @param func The function to be applied to the global entity and its component.
-             * @note This function recursively iterates through the component types.
-             */
-            template <typename T, typename V, typename... Types>
-            void _eachHelper(GlobalEntity *g_entity, std::function<void(GlobalEntity *, ComponentHandle<T>)> func)
-            {
-                g_entity->has<T>() ? _eachHelper<T>(g_entity, func) : nullptr;
-                _eachHelper<V, Types...>(g_entity, func);
-            }
-
             /*==============//
             //  Attributes  //
             //==============*/
 
             std::unordered_map<id_t, std::unique_ptr<Entity>>                           _entities;
-            std::unordered_map<id_t, std::unique_ptr<GlobalEntity>>                     _global_entities;
             std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> _subscribers;
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>>                _systems;
             Clock                                                                       _clock;

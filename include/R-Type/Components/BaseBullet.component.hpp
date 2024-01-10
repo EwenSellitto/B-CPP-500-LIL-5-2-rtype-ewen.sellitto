@@ -8,34 +8,31 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <vector>
-#include <sstream>
 
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/RenderTexture.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/System/Vector2.hpp"
 
 namespace Engine::Components
 {
     struct BaseBulletComponent : public ECS::BaseComponent {
         public:
-            BaseBulletComponent() : fromEnemy(false) {}
-            explicit BaseBulletComponent(bool fromEnemy) : fromEnemy(fromEnemy) {}
+            BaseBulletComponent() = default;
+            explicit BaseBulletComponent(bool fromEnemy, int dmg = 20) : fromEnemy(fromEnemy), damage(dmg) {}
             ~BaseBulletComponent() override = default;
 
             std::vector<char> serialize(void) override
             {
                 std::ostringstream oss(std::ios::binary);
                 oss.write(reinterpret_cast<const char *>(&fromEnemy), sizeof(fromEnemy));
+                oss.write(reinterpret_cast<const char *>(&damage), sizeof(damage));
 
                 const std::string &str = oss.str();
                 return std::vector<char>(str.begin(), str.end());
             }
 
-             ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
             {
                 BaseBulletComponent *bulletComponent;
                 if (component == nullptr) {
@@ -47,6 +44,7 @@ namespace Engine::Components
 
                 std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
                 iss.read(reinterpret_cast<char *>(&bulletComponent->fromEnemy), sizeof(bulletComponent->fromEnemy));
+                iss.read(reinterpret_cast<char *>(&bulletComponent->damage), sizeof(bulletComponent->damage));
 
                 return bulletComponent;
             }
@@ -57,6 +55,7 @@ namespace Engine::Components
             }
 
             bool fromEnemy;
+            int  damage;
 
         private:
     };

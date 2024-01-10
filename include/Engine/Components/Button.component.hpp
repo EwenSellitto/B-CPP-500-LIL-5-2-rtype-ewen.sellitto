@@ -25,10 +25,12 @@ namespace Engine::Components
     struct ButtonComponent : public ECS::BaseComponent {
             std::string           text;
             std::function<void()> onClick;
+            bool                  isActivated;
             bool                  isHovered = false;
             bool                  isClicked = false;
 
-            ButtonComponent(std::string text, std::function<void()> onClick) : text(std::move(text)), onClick(onClick)
+            ButtonComponent(const std::string &text, std::function<void()> onClick, bool isActivated = true)
+                : text(text), onClick(onClick), isActivated(isActivated)
             {
             }
 

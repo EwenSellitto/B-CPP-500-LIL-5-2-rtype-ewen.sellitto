@@ -24,6 +24,7 @@
 namespace EnemyMakers
 {
     size_t basicEnemyMaker(float y, bool isAttacking);
+    size_t mediumEnemyMaker(float y, bool isAttacking);
 } // namespace EnemyMakers
 
 extern std::map<size_t, std::function<size_t(float, bool)>> functionMap;
