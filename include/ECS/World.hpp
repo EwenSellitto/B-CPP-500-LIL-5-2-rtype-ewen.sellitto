@@ -130,6 +130,21 @@ namespace ECS
             }
 
             /**
+             * @brief Remove an entity from the world.
+             *
+             * @param entity The entity to be removed.
+             * @note The entity will be properly destroyed when removed.
+             */
+            void removeEntity(ECS::Entity *entity)
+            {
+                id_t                      id = entity->getId();
+                Events::OnEntityDestroyed event{entity};
+                _entities.erase(id);
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityDestroyed>(event);
+            }
+
+            /**
              * @brief Get an immutable reference to an entity.
              *
              * @param id The unique identifier of the entity to get.
@@ -179,12 +194,11 @@ namespace ECS
              */
             template <typename T> void each(std::function<void(Entity *, ComponentHandle<T>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>()) {
-                        ComponentHandle<T> component = entity.getComponent<T>();
-                        func(&entity, component);
-                    }
+                auto entities = getEntitiesWithComponents<T>();
+                for (auto &entity : entities) {
+                    if (!entity->template has<T>()) continue;
+                    auto component = entity->template getComponent<T>();
+                    func(entity, component);
                 }
             }
 
@@ -198,13 +212,13 @@ namespace ECS
             template <typename T, typename U>
             void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>() && entity.has<U>()) {
-                        ComponentHandle<T> componentT = entity.getComponent<T>();
-                        ComponentHandle<U> componentU = entity.getComponent<U>();
-                        func(&entity, componentT, componentU);
-                    }
+                auto entities = getEntitiesWithComponents<T, U>();
+                for (auto &entity : entities) {
+                    if (!(entity->template has<T>() && entity->template has<U>())) continue;
+
+                    auto componentT = entity->template getComponent<T>();
+                    auto componentU = entity->template getComponent<U>();
+                    func(entity, componentT, componentU);
                 }
             }
 
@@ -217,14 +231,15 @@ namespace ECS
             template <typename T, typename U, typename V>
             void each(std::function<void(Entity *, ComponentHandle<T>, ComponentHandle<U>, ComponentHandle<V>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<T>() && entity.has<U>()) {
-                        ComponentHandle<T> componentT = entity.getComponent<T>();
-                        ComponentHandle<U> componentU = entity.getComponent<U>();
-                        ComponentHandle<V> componentV = entity.getComponent<V>();
-                        func(&entity, componentT, componentU, componentV);
-                    }
+                auto entities = getEntitiesWithComponents<T, U, V>();
+                for (auto &entity : entities) {
+                    if (!(entity->template has<T>() && entity->template has<U>() && entity->template has<V>()))
+                        continue;
+
+                    auto componentT = entity->template getComponent<T>();
+                    auto componentU = entity->template getComponent<U>();
+                    auto componentV = entity->template getComponent<V>();
+                    func(entity, componentT, componentU, componentV);
                 }
             }
 
@@ -237,11 +252,8 @@ namespace ECS
              */
             template <typename... Types> void each(std::function<void(Entity *, ComponentHandle<Types...>)> func)
             {
-                for (auto &pair : _entities) {
-                    Entity &entity = *pair.second;
-                    if (entity.has<Types...>()) {
-                        _eachHelper<Types...>(&entity, func);
-                    }
+                for (auto &entity : getEntitiesWithComponents<Types...>()) {
+                    _eachHelper<Types...>(entity, func);
                 }
             }
 

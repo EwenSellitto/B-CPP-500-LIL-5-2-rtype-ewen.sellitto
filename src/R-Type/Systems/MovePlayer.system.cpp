@@ -10,6 +10,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "ECS/Entity.hpp"
+#include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
@@ -44,7 +45,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
     float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
@@ -60,26 +61,47 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
         sf::Vector2f movingValuesSave = movingComponent->moveAmount;
         player->removeComponent<MovingComponent>();
 
-        if (key.code == sf::Keyboard::Z) movingValuesSave.y = moves_zdqs[0].y;
-        if (key.code == sf::Keyboard::D) movingValuesSave.x = moves_zdqs[1].x;
-        if (key.code == sf::Keyboard::Q) movingValuesSave.x = moves_zdqs[2].x;
-        if (key.code == sf::Keyboard::S) movingValuesSave.y = moves_zdqs[3].y;
+        switch (key.code) {
+            case sf::Keyboard::Z:
+                movingValuesSave.y = moves_zdqs[0].y;
+                break;
+            case sf::Keyboard::D:
+                movingValuesSave.x = moves_zdqs[1].x;
+                break;
+            case sf::Keyboard::Q:
+                movingValuesSave.x = moves_zdqs[2].x;
+                break;
+            case sf::Keyboard::S:
+                movingValuesSave.y = moves_zdqs[3].y;
+                break;
+            default:
+                break;
+        }
         player->addComponent(new MovingComponent({static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)},
                                                  1000 * 100, movingValuesSave));
         return;
     }
-    if (key.code == sf::Keyboard::Z)
-        player->addComponent(new MovingComponent({static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)},
-                                                 1000 * 100, moves_zdqs[0]));
-    if (key.code == sf::Keyboard::D)
-        player->addComponent(new MovingComponent({static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)},
-                                                 1000 * 100, moves_zdqs[1]));
-    if (key.code == sf::Keyboard::Q)
-        player->addComponent(new MovingComponent({static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)},
-                                                 1000 * 100, moves_zdqs[2]));
-    if (key.code == sf::Keyboard::S)
-        player->addComponent(new MovingComponent({static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)},
-                                                 1000 * 100, moves_zdqs[3]));
+
+    switch (key.code) {
+        case sf::Keyboard::Z:
+            player->addComponent(new MovingComponent(
+                {static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)}, 1000 * 100, moves_zdqs[0]));
+            break;
+        case sf::Keyboard::D:
+            player->addComponent(new MovingComponent(
+                {static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)}, 1000 * 100, moves_zdqs[1]));
+            break;
+        case sf::Keyboard::Q:
+            player->addComponent(new MovingComponent(
+                {static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)}, 1000 * 100, moves_zdqs[2]));
+            break;
+        case sf::Keyboard::S:
+            player->addComponent(new MovingComponent(
+                {static_cast<float>(playerPos->x), static_cast<float>(playerPos->y)}, 1000 * 100, moves_zdqs[3]));
+            break;
+        default:
+            break;
+    }
 }
 
 void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
@@ -94,7 +116,7 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
     float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(

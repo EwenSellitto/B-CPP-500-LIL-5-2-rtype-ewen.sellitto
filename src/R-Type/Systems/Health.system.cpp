@@ -50,7 +50,7 @@ void HealthSystem::tick()
         if (entity->has<Engine::Components::EnemyComponent>()) {
             enemyDeath(entity);
         } else {
-            entity->removeAllComponents();
+            WORLD.removeEntity(entity);
         }
     }
 }
