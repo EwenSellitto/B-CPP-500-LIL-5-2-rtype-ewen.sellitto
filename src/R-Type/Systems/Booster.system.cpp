@@ -20,7 +20,6 @@ static void moveBoosters(std::vector<ECS::Entity *> entities)
         auto booster = entity->getComponent<Rtype::Components::BoosterComponent>();
     }
 }
-}
 
 void BoosterSystem::tick()
 {

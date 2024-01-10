@@ -33,7 +33,7 @@ void EnemySystem::configure([[maybe_unused]] ECS::World &world) {}
 
 void EnemySystem::unconfigure() {}
 
-void EnemySystem::tryMoveEnemies()
+void EnemySystem::trySpawnEnemies()
 {
     using namespace Engine::Components;
 
@@ -174,7 +174,7 @@ void EnemySystem::tick()
 {
     using namespace Engine::Components;
 
-    tryMoveEnemies();
+    trySpawnEnemies();
     tryChangeEnemiesMovement();
     tryMakeEnemyAttack();
 }
