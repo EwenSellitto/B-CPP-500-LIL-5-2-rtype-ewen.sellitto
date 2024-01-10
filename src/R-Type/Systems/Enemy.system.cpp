@@ -137,10 +137,10 @@ size_t EnemySystem::spawnEnemy(float posx, float posy)
     EnemyData::EnemyType type       = getRandomEnemyType();
     auto                 attributes = EnemyData::enemyTypeAttributes.at(type);
 
-    size_t entityId = WORLD.createEntity(
-        new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
-        new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(attributes.health, type),
-        new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
+    size_t entityId =
+        WORLD.createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+                           new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(type),
+                           new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
     WORLD.getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
         sf::Vector2f{static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->x),
                      static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->y)},

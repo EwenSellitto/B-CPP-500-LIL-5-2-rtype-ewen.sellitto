@@ -35,7 +35,7 @@ static const std::map<std::string, SpriteInfo> spriteInfoMap = {
     {"Klaed-Bullet", {"./assets/klaed/Klaed-Bullet.png", 1, 4, 2, 12, 4, 16, 4, 100}},
     {"Klaed-Bomber-Base", {"./assets/klaed/Klaed-Bomber-Base.png", 17, 20, 30, 27, 64, 64, 1, 0}},
     {"Klaed-Bomber-Destruction", {"./assets/klaed/Klaed-Bomber-Destruction.png", 0, 0, 512, 64, 64, 64, 8, 100}},
-    {"Klaed-Dreadnought-Base", {"./assets/klaed/Klaed-Dreadnought-Base.png", 28, 13, 72, 100, 128, 128, 1, 0}},
+    {"Klaed-Dreadnought-Base", {"./assets/klaed/Klaed-Dreadnought-Base.png", 27, 13, 74, 100, 128, 128, 1, 0}},
     {"Klaed-Dreadnought-Destruction",
      {"./assets/klaed/Klaed-Dreadnought-Destruction.png", 0, 0, 1536, 128, 128, 128, 12, 100}},
     {"Klaed-Fighter-Base", {"./assets/klaed/Klaed-Fighter-Base.png", 20, 21, 24, 22, 64, 64, 1, 0}},
