@@ -18,11 +18,29 @@ void ECS::Network::sendUpdatedEntitiesToClients()
     sf::Packet packet;
     int        nbEntities = 0;
     packet << static_cast<int>(PacketType::ClientUpdate);
+    packet << static_cast<int>(UpdateType::AddComponents);
 
     nbEntities = getNbEntitiesModified();
+    if (nbEntities == 0) return;
     packet << nbEntities;
     for (const auto &pair : EngineClass::getEngine().world().getEntities()) {
         addSerializedEntityToPacket(packet, pair);
+    }
+    sendPacketToAllClients(packet, false);
+}
+
+void ECS::Network::sendRemovedComponentsToClients()
+{
+    sf::Packet packet;
+    int        nbEntities = 0;
+    packet << static_cast<int>(PacketType::ClientUpdate);
+    packet << static_cast<int>(UpdateType::RemoveComponents);
+
+    nbEntities = getNbEntitiesWithDeletedComponents();
+    packet << nbEntities;
+    if (nbEntities == 0) return;
+    for (const auto &pair : EngineClass::getEngine().world().getEntities()) {
+        addSerializedDeletedEntityToPacket(packet, pair);
     }
     sendPacketToAllClients(packet, false);
 }

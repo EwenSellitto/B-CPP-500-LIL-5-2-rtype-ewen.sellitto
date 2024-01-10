@@ -246,9 +246,11 @@ void EngineClass::processClientsEvents()
     for (auto &player : network().getWaitingRoom().getPlayers()) {
         if (player->isServer) continue;
         _currentPlayer = player->nbPlayer;
+        if (network().getServerEvents().find(player->nbPlayer) == network().getServerEvents().end()) continue;
         for (const auto &event : network().getServerEvents()[player->nbPlayer]) {
             processSwitchEvent(event);
         }
+        network().getServerEvents()[player->nbPlayer].clear();
     }
     _currentPlayer = _ownPlayer;
 }
@@ -259,8 +261,7 @@ void EngineClass::handleEvents()
 
     while (window.pollEvent(event)) {
         if (network().getGameHasStarted() && !network().getIsServer() &&
-            (event.type == sf::Event::KeyPressed
-             // event.type == sf::Event::KeyReleased ||
+            (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased
              // event.type == sf::Event::MouseButtonPressed ||
              // event.type == sf::Event::MouseButtonReleased ||
              // event.type == sf::Event::MouseMoved ||))
@@ -286,6 +287,10 @@ void EngineClass::run()
         processClientsEvents();
         handleEvents();
         world().tick();
+        if (network().getGameHasStarted() && network().getIsServer()) {
+            network().sendUpdatedEntitiesToClients();
+            network().sendRemovedComponentsToClients();
+        }
     }
 }
 

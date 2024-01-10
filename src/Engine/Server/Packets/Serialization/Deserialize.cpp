@@ -78,7 +78,6 @@ void ECS::Network::deserializeEntityAndApply(sf::Packet &packet)
             }
             ECS::BaseComponent *comp =
                 componentsConvertor.createComponent(static_cast<ComponentType>(componentType))->deserialize(serialised);
-            std::cout << "Deserialized components: " << static_cast<int>(comp->getType()) << std::endl;
             components.emplace_back(comp, static_cast<ComponentType>(componentType));
         } else {
             std::cerr << "Invalid serialized data size" << std::endl;
@@ -108,13 +107,33 @@ void ECS::Network::deserializeEntityAndApply(sf::Packet &packet)
         }
         return;
     }
-    std::cout << "entityId " << entityId << std::endl;
     Engine::EngineClass::getEngine().world().addEntity(entityId);
-    std::cout << "nextId " << Utils::getNewId<Entity>() << std::endl;
     for (auto &comp : components) {
         componentsConvertor.adders[comp.second](Engine::EngineClass::getEngine().world().getMutEntity(entityId),
                                                 comp.first);
         if (comp.second == ComponentType::RenderableComponent)
             dynamic_cast<RenderableComponent *>(comp.first)->setTexture();
+    }
+}
+
+void ECS::Network::deserializeRemovedComponentsAndApply(sf::Packet &packet)
+{
+    using namespace Engine::Components;
+    int        nbComponents = 0;
+    int        componentType;
+    sf::Uint64 entityId;
+
+    packet >> entityId;
+    packet >> nbComponents;
+    for (int i = 0; i < nbComponents; i++) {
+        packet >> componentType;
+        ECS::Entity &entity = Engine::EngineClass::getEngine().world().getMutEntity(entityId);
+        for (auto &comp : entity.getComponents()) {
+            if (comp.second->getType() == static_cast<ComponentType>(componentType)) {
+                std::cout << "Destroying component " << componentType << std::endl;
+                componentsConvertor.destroyers[static_cast<ComponentType>(componentType)](entity);
+                break;
+            }
+        }
     }
 }

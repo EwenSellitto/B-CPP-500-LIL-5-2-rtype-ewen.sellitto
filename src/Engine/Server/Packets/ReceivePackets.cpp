@@ -19,9 +19,6 @@ void ECS::Network::receivePackets()
         while (socket.receive(packet, sender, senderPort) == sf::Socket::Done) {
             handleReceivedPacket(packet, sender, senderPort);
         }
-        if (isServer && waitingRoom.isGameStarted()) {
-            sendUpdatedEntitiesToClients();
-        }
         if (!isServer && gameHasStarted) {
             sendEventsToServer();
         }
@@ -62,7 +59,6 @@ void ECS::Network::handleReceivedPacket(sf::Packet &packet, const sf::IpAddress 
             handleKeyInputs(packet, sender, senderPort);
             break;
         case PacketType::LaunchGame:
-            std::cout << "Received LaunchGame" << std::endl;
             gameHasStarted = true;
             break;
         case PacketType::ClientUpdate:

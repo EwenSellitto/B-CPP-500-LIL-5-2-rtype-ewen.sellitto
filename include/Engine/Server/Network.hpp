@@ -43,6 +43,11 @@ enum class PacketType {
     EndGameAcknowledged,
 };
 
+enum class UpdateType {
+    AddComponents,
+    RemoveComponents
+};
+
 struct IpAddressHash {
         std::size_t operator()(const sf::IpAddress &ip) const
         {
@@ -73,14 +78,19 @@ namespace ECS
             // =========================================================
 
             void sendUpdatedEntitiesToClients();
+            void sendRemovedComponentsToClients();
             void sendEventsToServer();
 
             int getNbEntitiesModified();
+            int getNbEntitiesWithDeletedComponents();
 
             void addSerializedEventToPacket(sf::Packet &packet, sf::Event event);
             void addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseComponent *component);
             void addSerializedEntityToPacket(sf::Packet                                                     &packet,
                                              const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair);
+            void
+                 addSerializedDeletedEntityToPacket(sf::Packet                                                     &packet,
+                                                    const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair);
             void sendPacketTypeToServer(PacketType packetType, const sf::IpAddress &recipient, unsigned short port);
             void sendPacketToServer(sf::Packet &packet);
 
@@ -91,12 +101,11 @@ namespace ECS
             // ====================== RECEPTION ========================
             // =========================================================
 
-            void receivePackets();
-            void handleReceivedPacket(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
-            template <typename T>
-            ECS::BaseComponent *deserializeComponent(const std::vector<char> &serialized, T componentType);
-            void                deserializeEntityAndApply(sf::Packet &packet);
-            sf::Event           deserializeEvent(sf::Packet &packet);
+            void      receivePackets();
+            void      handleReceivedPacket(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
+            void      deserializeEntityAndApply(sf::Packet &packet);
+            void      deserializeRemovedComponentsAndApply(sf::Packet &packet);
+            sf::Event deserializeEvent(sf::Packet &packet);
 
             // =========================================================
             // ======================= GETTERS =========================
@@ -138,7 +147,6 @@ namespace ECS
 
             void clearEvents()
             {
-                if (isServer) return;
                 clientEvents.clear();
             }
 

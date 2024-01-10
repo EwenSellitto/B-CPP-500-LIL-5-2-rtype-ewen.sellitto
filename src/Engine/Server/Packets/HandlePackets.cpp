@@ -70,7 +70,6 @@ void ECS::Network::handleClientIndependentInitialization(sf::Packet &packet)
 
 void ECS::Network::handleSwitchWorld(const sf::IpAddress &sender, unsigned short senderPort)
 {
-    std::cout << "Received SwitchWorld" << std::endl;
     switchToGame();
     sf::Packet responsePacket;
     responsePacket << static_cast<int>(PacketType::SwitchWorldOkForMe);
@@ -87,6 +86,26 @@ int ECS::Network::getNbEntitiesModified()
                 break;
             }
         }
+    }
+
+    return nbEntities;
+}
+
+int ECS::Network::getNbEntitiesWithDeletedComponents()
+{
+    int nbEntities      = 0;
+    int nbCompsToDelete = 0;
+
+    for (const auto &pair : Engine::EngineClass::getEngine().world().getEntities()) {
+        nbCompsToDelete = pair.second->getComponentsToDelete().size();
+        for (const auto &component : pair.second->getComponents()) {
+            if (component.second->getType() != ComponentType::NoneComponent &&
+                std::find(pair.second->getComponentsToDelete().begin(), pair.second->getComponentsToDelete().end(),
+                          component.second->getType()) != pair.second->getComponentsToDelete().end()) {
+                nbCompsToDelete--;
+            }
+        }
+        if (nbCompsToDelete > 0) nbEntities++;
     }
 
     return nbEntities;
@@ -140,9 +159,16 @@ void ECS::Network::addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned
 void ECS::Network::handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
 {
     int nbEntities = 0;
+    int updateType = 0;
+
+    packet >> updateType;
     packet >> nbEntities;
     for (int i = 0; i < nbEntities; i++) {
-        deserializeEntityAndApply(packet);
+        if (updateType == static_cast<int>(UpdateType::AddComponents)) {
+            deserializeEntityAndApply(packet);
+        } else if (updateType == static_cast<int>(UpdateType::RemoveComponents)) {
+            deserializeRemovedComponentsAndApply(packet);
+        }
     }
 }
 

@@ -86,3 +86,32 @@ void ECS::Network::addSerializedEntityToPacket(sf::Packet                       
         }
     }
 }
+
+void ECS::Network::addSerializedDeletedEntityToPacket(
+    sf::Packet &packet, const std::pair<const ECS::id_t, std::unique_ptr<ECS::Entity>> &pair)
+{
+    if (pair.second == nullptr) return;
+
+    int nbCompsToDelete = pair.second->getComponentsToDelete().size();
+
+    for (const auto &component : pair.second->getComponents()) {
+        if (component.second->getType() != ComponentType::NoneComponent &&
+            std::find(pair.second->getComponentsToDelete().begin(), pair.second->getComponentsToDelete().end(),
+                      component.second->getType()) != pair.second->getComponentsToDelete().end()) {
+            nbCompsToDelete--;
+            pair.second->getComponentsToDelete().erase(std::find(pair.second->getComponentsToDelete().begin(),
+                                                                 pair.second->getComponentsToDelete().end(),
+                                                                 component.second->getType()));
+        }
+    }
+    if (nbCompsToDelete <= 0) {
+        pair.second->getComponentsToDelete().clear();
+        return;
+    }
+
+    packet << static_cast<sf::Uint64>(pair.first);
+    packet << nbCompsToDelete;
+    for (const auto &component : pair.second->getComponentsToDelete())
+        packet << static_cast<int>(component);
+    pair.second->getComponentsToDelete().clear();
+}

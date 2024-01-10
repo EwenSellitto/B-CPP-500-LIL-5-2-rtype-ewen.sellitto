@@ -40,7 +40,7 @@ namespace ECS
              * @note The Entity will be destroyed when the World is destroyed.
              * @warning Only create an Entity with a World.
              */
-            explicit Entity() : _components(), _clock(){};
+            explicit Entity() : _components(), _componentsToDelete(), _clock(){};
 
             /**
              * @brief Destroy the Entity object.
@@ -74,11 +74,12 @@ namespace ECS
              * @throw std::out_of_range if the component does not exist.
              * @note This function will destroy the component.
              */
-            template <typename T> void removeComponent()
+            template <typename T> void removeComponent(bool needToDelete = false)
             {
                 auto index = ECS_TYPEID(T);
                 auto it    = _components.find(index);
                 if (it != _components.end()) {
+                    if (needToDelete) _componentsToDelete.push_back(it->second->getType());
                     _components.erase(it);
                 }
             }
@@ -125,6 +126,17 @@ namespace ECS
             }
 
             /**
+             * @brief Get components to delete
+             * @return
+             * @throw
+             * @note
+             */
+            std::vector<ComponentType> &getComponentsToDelete()
+            {
+                return _componentsToDelete;
+            }
+
+            /**
              * @brief Check if the Entity has a component of a specific type.
              * @tparam T Type of the component.
              * @return bool True if the component exists, false otherwise.
@@ -158,6 +170,7 @@ namespace ECS
 
         private:
             std::unordered_map<id_t, std::shared_ptr<BaseComponent>> _components;
+            std::vector<ComponentType>                               _componentsToDelete;
             Clock                                                    _clock;
     };
 
