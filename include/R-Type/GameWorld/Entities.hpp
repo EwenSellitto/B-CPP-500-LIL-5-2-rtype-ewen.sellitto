@@ -23,9 +23,11 @@
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
 #include "Engine/Components/Text.component.hpp"
+#include "Engine/Components/TextInput.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
+#include "Engine/Systems/Inputs.system.hpp"
 #include "Engine/Systems/Options.system.hpp"
 #include "Engine/Systems/Sound.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
@@ -59,7 +61,34 @@ namespace Entities
             new LayeredAnimationComponent(new AnimationComponent(0, 0, 48, 48, 48, 48, 100, 4)),
             new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
-    inline void createOptionsEntities(ECS::World *world)
+
+    void createInputsEntities(ECS::World *world)
+    {
+        using namespace Engine::Components;
+        sf::Font font;
+        if (!font.loadFromFile("./assets/fonts/font.ttf")) {
+            return;
+        }
+        world->createEntity(
+            new PositionComponent(400, 200), new TextComponent("PORT", font, 30, {310, 180}, false, true),
+            new OptionsComponent(), new TextInputComponent("PORT", []() {}),
+            new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(400, 300), new TextComponent("IP", font, 30, {310, 280}, false, true),
+            new OptionsComponent(), new TextInputComponent("IP", []() {}),
+            new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(400, 410),
+                            new TextComponent("Send", font, 40, {400, 385}, true, true), new OptionsComponent(),
+                            new ButtonComponent("send",
+                                                [world]() {
+                                                    Engine::System::InputsSystem inputsSystem =
+                                                        Engine::System::InputsSystem(*world);
+                                                    inputsSystem.handleSend({"PORT", "IP"});
+                                                }),
+                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+    }
+
+    void createOptionsEntities(ECS::World *world)
     {
         using namespace Engine::Components;
         sf::Font font;
@@ -72,22 +101,17 @@ namespace Entities
                             new PositionComponent(450, 300), new OptionsComponent());
         world->createEntity(
             new PositionComponent(360, 300), new TextComponent("vsync", font, 40, {250, 300}, false, false),
-            new ButtonComponent(
-                "vsync",
-                [world]() { Engine::System::OptionsSystem optionsSystem = Engine::System::OptionsSystem(*world); },
-                false),
             new OptionsComponent(),
+            new CheckBoxComponent(
+                "vsync", []() { Engine::EngineClass::getEngine().window.setVerticalSyncEnabled(true); },
+                []() { Engine::EngineClass::getEngine().window.setVerticalSyncEnabled(false); }, false),
             new RenderableComponent("./assets/menu/button_check/check_off.png", 0, 0, 3, 0, {2, 2}, false, false));
         world->createEntity(
             new PositionComponent(650, 300), new TextComponent("FullScreen", font, 40, {520, 300}, false, false),
-            new ButtonComponent(
-                "FullScreen",
-                [world]() {
-                    Engine::System::Sound SoundSystem = Engine::System::Sound(*world);
-                    SoundSystem.DownVolumeMusic();
-                },
-                false),
             new OptionsComponent(),
+            new CheckBoxComponent(
+                "vsync", []() { Engine::EngineClass::getEngine().toggleFullscreen(); },
+                []() { Engine::EngineClass::getEngine().toggleFullscreen(); }, false),
             new RenderableComponent("./assets/menu/button_check/check_off.png", 0, 0, 3, 0, {2, 2}, false, false));
         world->createEntity(
             new PositionComponent(250, 450), new TextComponent("musique", font, 40, {250, 400}, false, false),
@@ -196,20 +220,25 @@ namespace Entities
             return;
         }
         world->createEntity(
-            new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [&]() {}),
-            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 39, 0, {2, 2}, true));
-        world->createEntity(
-            new PositionComponent(30, 100), new MenuComponent(),
-            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 40, 0, {2, 2}, true));
-        // world->createEntity(
-        //     new PositionComponent(position.x, position.y),
-        //     new TextComponent(sceneName, font, 40, {position.x, position.y}, true, false),
-        //     new OptionsComponent(),
-        //     new ButtonComponent(sceneName,
-        //         []() {
-        //             std::cout << "back to menu" << std::endl;
-        //         }),
-        //     new RenderableComponent(texturePath, 0, 0, 3, 0, {2, 2}, true, false));
+            new PositionComponent(40, 100), new MenuComponent(),
+            new ButtonComponent("Pause Game",
+                                [world]() {
+                                    Engine::System::OptionsSystem OptionsComponent =
+                                        Engine::System::OptionsSystem(*world);
+                                    OptionsComponent.openOptions();
+                                }),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
+                            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 2, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(position.x, position.y),
+                            new TextComponent(sceneName, font, 40, {position.x, position.y - 20}, true, false),
+                            new OptionsComponent(),
+                            new ButtonComponent(sceneName,
+                                                [world]() {
+                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                                    uiSystem.handleGoMenu();
+                                                }),
+                            new RenderableComponent(texturePath, 0, 0, 3, 0, {2, 2}, true, false));
     }
 
     inline void createParallax(ECS::World *world)
@@ -237,10 +266,10 @@ namespace Entities
         auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
         ECS::id_t   enemyId     = world.createEntity(
-            new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-            new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
-            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
-            new ExcludeCollisionComponent(0), new HealthComponent(20));
+                  new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
+                  new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
+                  new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
+                  new ExcludeCollisionComponent(0), new HealthComponent(20));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 

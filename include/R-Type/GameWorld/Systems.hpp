@@ -45,6 +45,11 @@ namespace Systems
         world->addSystem<Engine::System::UI>("UISystem");
     }
 
+    inline void addInputsSystem(ECS::World *world)
+    {
+        world->addSystem<Engine::System::InputsSystem>("InputsSystem");
+    }
+
     inline void addBulletSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::Bullets>("BulletsSystem");

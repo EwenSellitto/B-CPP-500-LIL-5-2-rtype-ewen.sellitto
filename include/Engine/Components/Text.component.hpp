@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
+#include <functional>
 #include <string>
 
 #include "ECS/Components.hpp"
@@ -16,10 +17,11 @@
 namespace Engine::Components
 {
     struct TextComponent : public ECS::BaseComponent {
-            sf::Text  text;
-            sf::Font  font;
-            sf::Color fillColor;
-            bool      isDisplay;
+            sf::Text    text;
+            std::string content;
+            sf::Font    font;
+            sf::Color   fillColor;
+            bool        isDisplay;
 
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
                           bool centered = false, bool isDisplay = true)
@@ -32,20 +34,40 @@ namespace Engine::Components
                 text.setCharacterSize(characterSize);
                 text.setPosition(pos);
                 text.setFillColor(sf::Color::White);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
             }
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
                           const sf::Color &fillColor, bool centered = false, bool isDisplay = true)
                 : isDisplay(isDisplay), centered(false)
             {
                 font = newFont;
-                if (centered) {
-                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
-                }
                 text.setString(str);
                 text.setFont(font);
                 text.setCharacterSize(characterSize);
                 text.setPosition(pos);
                 text.setFillColor(fillColor);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
+            }
+            void changeText(const std::string &str)
+            {
+                content = str;
+                text.setString(content);
+            }
+
+            void addText(const std::string &str)
+            {
+                content += str;
+                text.setString(content);
+            }
+
+            void removeText()
+            {
+                if (content.size() > 0) content.pop_back();
+                text.setString(content);
             }
 
             bool centered;
