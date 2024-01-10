@@ -14,15 +14,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
 {
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
 
-    // try {
-    engine.setStartWorld("menu");
-    engine.addWorldFactory("menu", GameWorld::createMenuWorld);
-    engine.addWorldFactory("game", GameWorld::createGameWorld);
-    engine.run();
-    // } catch (std::exception &e) {
-    //     std::cerr << e.what() << std::endl;
-    //     return 84;
-    // }
+    try {
+        engine.setStartWorld("menu");
+        engine.addWorldFactory("menu", GameWorld::createMenuWorld);
+        engine.addWorldFactory("game", GameWorld::createGameWorld);
+        engine.run();
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 84;
+    }
 
     return 0;
 }
