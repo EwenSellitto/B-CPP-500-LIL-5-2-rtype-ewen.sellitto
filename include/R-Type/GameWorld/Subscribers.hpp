@@ -3,6 +3,7 @@
 
 #include "ECS/World.hpp"
 #include "R-Type/Subscribers/Collision.subscriber.hpp"
+#include "R-Type/Subscribers/Keyboard.subscriber.hpp"
 #include "R-Type/Subscribers/PlayerMove.subscriber.hpp"
 #include "R-Type/Subscribers/ShootPlayer.subscriber.hpp"
 
@@ -21,5 +22,15 @@ namespace Subscribers
         world->subscribe<CollisionEvent>(subCollision);
         world->subscribe<KeyReleasedEvent>(subShootPlayer);
         world->subscribe<KeyPressedEvent>(subShootPlayer2);
+    }
+
+    inline void subscribeToEventsInputs(ECS::World *world)
+    {
+
+        auto *keyboardPressed  = new Rtype::Subscriber::KeyboardPressedSubscriber();
+        auto *keyboardReleased = new Rtype::Subscriber::KeyboardReleasedSubscriber();
+
+        world->subscribe<KeyPressedEvent>(keyboardPressed);
+        world->subscribe<KeyReleasedEvent>(keyboardReleased);
     }
 } // namespace Subscribers

@@ -15,5 +15,22 @@ class DrawableComponent : public ECS::BaseComponent
     public:
         DrawableComponent(sf::Drawable *drawable) : drawable(drawable){};
 
+        ~DrawableComponent() override = default;
+
+        std::vector<char> serialize() override
+        {
+            return {};
+        }
+
+        ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
+        {
+            return component;
+        }
+
+        ComponentType getType() override
+        {
+            return ComponentType::NoneComponent;
+        }
+
         sf::Drawable *drawable;
 };

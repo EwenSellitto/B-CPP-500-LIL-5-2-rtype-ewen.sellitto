@@ -28,6 +28,7 @@ namespace GameWorld
         Systems::addPhysics(world);
         Systems::addPlayerMovement(world);
         Systems::addEnemySystem(world);
+        Systems::addUISystem(world);
         Systems::addParallaxSystem(world);
         Systems::addBulletSystem(world);
         Systems::addWorldMoveSystem(world);
@@ -68,6 +69,38 @@ namespace GameWorld
         // while we're in it, and remove it safely when we've truly exited the world
         // engine.addWorldFactory("menu", [world]() { return world; });
 
+        return world;
+    }
+
+    inline ECS::World *joinRoomWorld()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createInputsEntitiesForJoin(world);
+        Entities::createParallax(world);
+
+        Systems::addUISystem(world);
+        Systems::addInputsSystem(world);
+        Systems::addParallaxSystem(world);
+
+        Subscribers::subscribeToEventsInputs(world);
+        return world;
+    }
+
+    inline ECS::World *createRoomWorld()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createInputsEntitiesForCreate(world);
+        Entities::createParallax(world);
+
+        Systems::addUISystem(world);
+        Systems::addInputsSystem(world);
+        Systems::addParallaxSystem(world);
+
+        Subscribers::subscribeToEventsInputs(world);
         return world;
     }
 } // namespace GameWorld

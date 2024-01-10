@@ -4,6 +4,7 @@ project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
 if(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
@@ -41,6 +42,7 @@ add_executable(r-type
         ##==================##
 
         include/Engine/Components/Button.component.hpp
+        include/Engine/Components/CheckBox.component.hpp
         include/Engine/Components/ExcludeCollision.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Parallax.component.hpp
@@ -60,6 +62,7 @@ add_executable(r-type
         include/Engine/Events/KeyReleased.event.hpp
         include/Engine/Systems/Animation.system.hpp
         include/Engine/Systems/Renderer.system.hpp
+        include/Engine/Systems/Inputs.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/UI.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
@@ -76,6 +79,7 @@ add_executable(r-type
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Sound.system.cpp
         src/Engine/Systems/Options.system.cpp
+        src/Engine/Systems/Inputs.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
         src/Engine/Systems/Physics.system.cpp
@@ -89,6 +93,7 @@ add_executable(r-type
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Subscribers/Keyboard.subscriber.hpp
         include/R-Type/Components/BaseBullet.component.hpp
         include/R-Type/Components/Enemy.component.hpp
         include/R-Type/Components/EnemyAttack.component.hpp
@@ -142,6 +147,9 @@ add_executable(r-type
 
         src/main.cpp
 )
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+        target_compile_definitions(r-type PRIVATE DEBUG_MODE)
+endif()
 
 target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio)
 # TODO: Fix network for windows

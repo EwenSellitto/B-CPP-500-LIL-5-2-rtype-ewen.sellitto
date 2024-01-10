@@ -26,6 +26,7 @@ namespace Engine::Components
                 : rect(off_x, off_y, size_x, size_y)
             {
             }
+            explicit CollisionComponent(sf::FloatRect rect) : rect(rect) {}
 
             ~CollisionComponent() override = default;
 
