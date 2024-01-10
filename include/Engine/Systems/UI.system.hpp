@@ -15,6 +15,7 @@
 #include "Engine/Components/Cursor.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Text.component.hpp"
 #include "Engine/Components/TextInput.component.hpp"
 
 namespace Engine::System
@@ -46,7 +47,8 @@ namespace Engine::System
             void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                                    ECS::ComponentHandle<Components::RenderableComponent> renderable,
                                    const sf::Vector2f                                   &worldPos);
-            void updateInputState(ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
+            void updateInputState(ECS::Entity                                          *entity,
+                                  ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
                                   ECS::ComponentHandle<Components::RenderableComponent> renderable,
                                   const sf::Vector2f                                   &worldPos);
             void updateCheckBoxState(ECS::Entity                                          *entity,
@@ -63,10 +65,12 @@ namespace Engine::System
             void handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
                               ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
                               ECS::ComponentHandle<Components::RenderableComponent> renderable);
-            void handleTextInput(ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
+            void handleTextInput(ECS::Entity                                          *entity,
+                                 ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
                                  ECS::ComponentHandle<Components::RenderableComponent> renderable);
             void checkboxChangeRenderable(ECS::Entity                                          *entity,
                                           ECS::ComponentHandle<Components::CheckBoxComponent>   checkboxComp,
                                           ECS::ComponentHandle<Components::RenderableComponent> renderable);
+            void handleKeyboard();
     };
 } // namespace Engine::System

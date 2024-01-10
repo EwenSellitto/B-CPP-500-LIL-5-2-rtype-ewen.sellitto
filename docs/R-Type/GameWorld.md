@@ -257,12 +257,16 @@ namespace Subscribers
         auto *subCollision    = new Rtype::Subscriber::CollisionEventSubscriber();
         auto *subShootPlayer  = new Rtype::Subscriber::ShootPlayerReleasedSubscriber();
         auto *subShootPlayer2 = new Rtype::Subscriber::ShootPlayerPressedSubscriber();
+        auto *KeyboardPressed   = new Rtype::Subscriber::KeyboardPressedSubscriber();
+        auto *KeyboardRelease   = new Rtype::Subscriber::KeyboardReleasedSubscriber();
 
         world->subscribe<KeyPressedEvent>(subMovePressed);
         world->subscribe<KeyReleasedEvent>(subMoveReleased);
         world->subscribe<CollisionEvent>(subCollision);
         world->subscribe<KeyReleasedEvent>(subShootPlayer);
         world->subscribe<KeyPressedEvent>(subShootPlayer2);
+        world->subscribe<KeyPressedEvent>(KeyboardPressed);
+        world->subscribe<KeyReleasedEvent>(KeyboardRelease);
     }
 } // namespace Subscribers
 ```

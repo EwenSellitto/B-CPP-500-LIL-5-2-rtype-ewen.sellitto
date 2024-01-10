@@ -64,6 +64,7 @@ add_executable(r-type
         include/Engine/Events/KeyReleased.event.hpp
         include/Engine/Systems/Animation.system.hpp
         include/Engine/Systems/Renderer.system.hpp
+        include/Engine/Systems/Inputs.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/UI.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
@@ -80,6 +81,7 @@ add_executable(r-type
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Sound.system.cpp
         src/Engine/Systems/Options.system.cpp
+        src/Engine/Systems/Inputs.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
         src/Engine/Systems/Physics.system.cpp
@@ -93,6 +95,7 @@ add_executable(r-type
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Subscribers/Keyboard.subscriber.hpp
         include/R-Type/Components/BaseBullet.component.hpp
         include/R-Type/Components/Enemy.component.hpp
         include/R-Type/Components/EnemyAttack.component.hpp

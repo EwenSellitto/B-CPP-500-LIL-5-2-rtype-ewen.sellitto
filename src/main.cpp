@@ -18,6 +18,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         engine.setStartWorld("menu");
         engine.addWorldFactory("menu", GameWorld::createMenuWorld);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
+        engine.addWorldFactory("chooseIP", GameWorld::createChooseIP);
+
         engine.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

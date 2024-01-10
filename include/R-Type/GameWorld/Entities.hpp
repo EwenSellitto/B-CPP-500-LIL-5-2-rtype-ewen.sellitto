@@ -17,6 +17,7 @@
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
+#include "Engine/Systems/Inputs.system.hpp"
 #include "Engine/Systems/Options.system.hpp"
 #include "Engine/Systems/Sound.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
@@ -46,13 +47,26 @@ namespace Entities
     {
         using namespace Engine::Components;
         sf::Font font;
-        if (!font.loadFromFile("./assets/fonts/font_big.ttf")) {
+        if (!font.loadFromFile("./assets/fonts/font.ttf")) {
             return;
         }
         world->createEntity(
-            new PositionComponent(360, 300), new TextComponent("IP", font, 40, {360, 300}, true, true),
-            new OptionsComponent(), new TextInputComponent("IP", []() { std::cout << "IP" << std::endl; }),
+            new PositionComponent(360, 200), new TextComponent("PORT", font, 40, {360, 200}, true, true),
+            new OptionsComponent(), new TextInputComponent("PORT", []() {}),
             new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(360, 300), new TextComponent("IP", font, 40, {360, 300}, true, true),
+            new OptionsComponent(), new TextInputComponent("IP", []() {}),
+            new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(360, 400),
+                            new TextComponent("Send", font, 40, {360, 400}, false, true), new OptionsComponent(),
+                            new ButtonComponent("send",
+                                                [world]() {
+                                                    Engine::System::InputsSystem inputsSystem =
+                                                        Engine::System::InputsSystem(*world);
+                                                    inputsSystem.handleSend({"PORT", "IP"});
+                                                }),
+                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
     }
 
     void createOptionsEntities(ECS::World *world)

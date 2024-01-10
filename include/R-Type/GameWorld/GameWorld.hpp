@@ -67,7 +67,9 @@ namespace GameWorld
         Entities::createViewEntity(world);
         Entities::createInputsEntities(world);
         Systems::addUISystem(world);
+        Systems::addInputsSystem(world);
 
+        Subscribers::subscribeToEventsInputs(world);
         return world;
     }
 } // namespace GameWorld

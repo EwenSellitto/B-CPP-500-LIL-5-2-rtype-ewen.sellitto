@@ -52,7 +52,7 @@ void UI::tick()
     world.each<TextInputComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                             ECS::ComponentHandle<TextInputComponent>  textinputComp,
                                                             ECS::ComponentHandle<RenderableComponent> renderable) {
-        updateInputState(textinputComp, renderable, worldPos);
+        updateInputState(entity, textinputComp, renderable, worldPos);
     });
 }
 
@@ -76,7 +76,7 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>    
     }
 }
 
-void UI::updateInputState(ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
+void UI::updateInputState(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
                           ECS::ComponentHandle<Components::RenderableComponent> renderable,
                           const sf::Vector2f                                   &worldPos)
 {
@@ -84,7 +84,7 @@ void UI::updateInputState(ECS::ComponentHandle<Components::TextInputComponent>  
     sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
 
     if (buttonRect.contains(worldPos)) {
-        handleTextInput(textInputComp, renderable);
+        handleTextInput(entity, textInputComp, renderable);
     } else {
         if (textInputComp->isClicked) {
             textInputComp->isClicked = false;
@@ -170,16 +170,23 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
     }
 }
 
-void UI::handleTextInput(ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
+void UI::handleTextInput(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
                          ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
+    using namespace Engine::Components;
+
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (!textInputComp->isClicked) {
             textInputComp->isClicked = true;
         }
     } else if (textInputComp->isClicked) {
         textInputComp->onChange();
-        textInputComp->text      = "d:qskmkmldksq";
+        getWorld().each<TextInputComponent>(
+            [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<TextInputComponent> textinputComp) {
+                textinputComp->isFocused = false;
+            });
+        textInputComp->isFocused = true;
+        entity->getComponent<Components::TextComponent>()->changeText("");
         textInputComp->isClicked = false;
     }
 }
@@ -226,3 +233,5 @@ void UI::checkboxChangeRenderable(ECS::Entity *entity, ECS::ComponentHandle<Comp
             "./assets/menu/button_check/check_off.png", 0, 0, 3, 0, {2, 2}, false, true));
     }
 }
+
+void UI::handleKeyboard() {}

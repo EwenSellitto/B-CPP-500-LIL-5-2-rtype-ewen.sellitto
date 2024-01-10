@@ -9,6 +9,7 @@ namespace Engine::Components
     struct TextInputComponent : public ECS::BaseComponent {
             std::string           text;
             std::function<void()> onChange;
+            bool                  isFocused = false;
             bool                  isClicked = false;
 
             TextInputComponent(std::string defaultValue, std::function<void()> onChange)
