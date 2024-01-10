@@ -19,6 +19,8 @@ namespace Engine::System
 
             void changeText(std::string &text);
 
+            void removeText();
+
             void handleSend(std::vector<std::string> args);
     };
 } // namespace Engine::System

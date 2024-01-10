@@ -15,7 +15,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
     Engine::EngineClass &engine = Engine::EngineClass::getEngine();
 
     try {
-        engine.setStartWorld("menu");
+        engine.setStartWorld("chooseIP");
         engine.addWorldFactory("menu", GameWorld::createMenuWorld);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.addWorldFactory("chooseIP", GameWorld::createChooseIP);

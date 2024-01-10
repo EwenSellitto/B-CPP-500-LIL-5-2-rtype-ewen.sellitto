@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <functional>
+#include <regex>
 #include <string>
 
 #include "ECS/Components.hpp"
@@ -52,6 +53,12 @@ namespace Engine::Components
             void addText(const std::string &str)
             {
                 content += str;
+                text.setString(content);
+            }
+
+            void removeText()
+            {
+                if (content.size() > 0) content.pop_back();
                 text.setString(content);
             }
     };

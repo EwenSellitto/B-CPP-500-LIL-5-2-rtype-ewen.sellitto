@@ -1,6 +1,7 @@
 #include "Engine/Systems/Inputs.system.hpp"
 
 #include <algorithm>
+#include <regex>
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Button.component.hpp"
@@ -26,7 +27,21 @@ void InputsSystem::changeText(std::string &text)
                                                       ECS::ComponentHandle<TextComponent>      textComp,
                                                       ECS::ComponentHandle<TextInputComponent> textInputComp) {
         if (textInputComp->isFocused && entity->has<TextComponent>()) {
-            entity->getComponent<TextComponent>()->addText(text);
+            if (entity->getComponent<TextComponent>()->content.size() <= 15)
+                entity->getComponent<TextComponent>()->addText(text);
+        }
+    });
+}
+
+void InputsSystem::removeText()
+{
+    ECS::World &world = getWorld();
+    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity            *entity,
+                                                      ECS::ComponentHandle<TextComponent>      textComp,
+                                                      ECS::ComponentHandle<TextInputComponent> textInputComp) {
+        if (textInputComp->isFocused && entity->has<TextComponent>()) {
+            if (entity->getComponent<TextComponent>()->content.size() > 0)
+                entity->getComponent<TextComponent>()->removeText();
         }
     });
 }

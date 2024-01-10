@@ -51,15 +51,15 @@ namespace Entities
             return;
         }
         world->createEntity(
-            new PositionComponent(360, 200), new TextComponent("PORT", font, 40, {360, 200}, true, true),
+            new PositionComponent(400, 200), new TextComponent("PORT", font, 30, {310, 180}, false, true),
             new OptionsComponent(), new TextInputComponent("PORT", []() {}),
             new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(
-            new PositionComponent(360, 300), new TextComponent("IP", font, 40, {360, 300}, true, true),
+            new PositionComponent(400, 300), new TextComponent("IP", font, 30, {310, 280}, false, true),
             new OptionsComponent(), new TextInputComponent("IP", []() {}),
             new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
-        world->createEntity(new PositionComponent(360, 400),
-                            new TextComponent("Send", font, 40, {360, 400}, false, true), new OptionsComponent(),
+        world->createEntity(new PositionComponent(400, 410),
+                            new TextComponent("Send", font, 40, {400, 385}, true, true), new OptionsComponent(),
                             new ButtonComponent("send",
                                                 [world]() {
                                                     Engine::System::InputsSystem inputsSystem =

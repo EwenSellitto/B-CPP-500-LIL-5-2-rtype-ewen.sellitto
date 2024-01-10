@@ -66,8 +66,11 @@ namespace GameWorld
 
         Entities::createViewEntity(world);
         Entities::createInputsEntities(world);
+        Entities::createParallax(world);
+
         Systems::addUISystem(world);
         Systems::addInputsSystem(world);
+        Systems::addParallaxSystem(world);
 
         Subscribers::subscribeToEventsInputs(world);
         return world;
