@@ -133,7 +133,7 @@ target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-
 # endif()
 
 if (UNIX)
-    set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib64")
+    set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
 endif()
 
 install(TARGETS r-type DESTINATION .)
