@@ -19,7 +19,7 @@ namespace Rtype::Systems
             HealthSystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
             ~HealthSystem() override = default;
 
-            void configure(ECS::World &world) override {}
+            void configure([[maybe_unused]] ECS::World &world) override {}
             void unconfigure() override {}
 
             void tick() override;

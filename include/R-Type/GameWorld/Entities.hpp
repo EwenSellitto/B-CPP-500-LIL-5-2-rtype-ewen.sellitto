@@ -8,10 +8,13 @@
 #pragma once
 
 #include "ECS/World.hpp"
+#include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Button.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Cursor.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
+#include "Engine/Components/LayeredAnimation.component.hpp"
+#include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Menu.component.hpp"
 #include "Engine/Components/Music.component.hpp"
 #include "Engine/Components/Options.component.hpp"
@@ -43,10 +46,18 @@ namespace Entities
     inline void createPlayerEntities(ECS::World *world)
     {
         using namespace Engine::Components;
-        world->createEntity(new PlayerComponent(), new PositionComponent(100, 100),
-                            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 1, 90),
-                            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player),
-                            new SpeedComponent(150));
+
+        world->createEntity(
+            new PlayerComponent(), new PositionComponent(100, 100),
+            new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 2, 90),
+            new LayeredRenderableComponent(
+                1,
+                new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine-Powering.png", 0, 0, 1, 90,
+                                        {1, 1}, false),
+                new RenderableComponent("./assets/MainShip/MainShip-Weapons-Rockets-Croped.png", 0, 0, 1, 90),
+                new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine.png", 0, 0, 1, 90)),
+            new LayeredAnimationComponent(new AnimationComponent(0, 0, 48, 48, 48, 48, 100, 4)),
+            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
     }
     inline void createOptionsEntities(ECS::World *world)
     {
@@ -174,8 +185,10 @@ namespace Entities
         }
     }
 
-    inline void createChangeSceneButton(ECS::World *world, const std::string &texturePath, const std::string &sceneName,
-                                        const sf::Vector2f &position, const sf::Vector2f &scale, int priority)
+    inline void createChangeSceneButton(ECS::World *world, [[maybe_unused]] const std::string &texturePath,
+                                        [[maybe_unused]] const std::string  &sceneName,
+                                        [[maybe_unused]] const sf::Vector2f &position,
+                                        [[maybe_unused]] const sf::Vector2f &scale, [[maybe_unused]] int priority)
     {
         using namespace Engine::Components;
         sf::Font font;
@@ -183,10 +196,11 @@ namespace Entities
             return;
         }
         world->createEntity(
-            new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [world]() {}),
-            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
-        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
-                            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 2, 0, {2, 2}, true));
+            new PositionComponent(40, 100), new MenuComponent(), new ButtonComponent("Pause Game", [&]() {}),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 39, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(30, 100), new MenuComponent(),
+            new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 40, 0, {2, 2}, true));
         // world->createEntity(
         //     new PositionComponent(position.x, position.y),
         //     new TextComponent(sceneName, font, 40, {position.x, position.y}, true, false),

@@ -124,7 +124,7 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
 
 void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
                       ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
-                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                      [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (position->x > 250 && position->x < 490) cursorComp->onChange();
