@@ -130,8 +130,7 @@ void ECS::Network::deserializeRemovedComponentsAndApply(sf::Packet &packet)
         ECS::Entity &entity = Engine::EngineClass::getEngine().world().getMutEntity(entityId);
         for (auto &comp : entity.getComponents()) {
             if (comp.second->getType() == static_cast<ComponentType>(componentType)) {
-                std::cout << "Destroying component " << componentType << std::endl;
-                componentsConvertor.destroyers[static_cast<ComponentType>(componentType)](entity);
+                componentsToRemove.emplace_back(entityId, static_cast<ComponentType>(componentType));
                 break;
             }
         }

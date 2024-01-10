@@ -46,7 +46,7 @@ namespace GameWorld
         // Setup view and create entities
         for (int i = 0; i < players; i++)
             Entities::createPlayerEntities(world, i);
-        // Entities::createEnemyQueue(world);
+        Entities::createEnemyQueue(world);
         Entities::createWorldMoveProgress(world);
     }
 

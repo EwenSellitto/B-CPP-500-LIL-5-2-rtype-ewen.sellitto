@@ -112,6 +112,7 @@ namespace ECS
                 std::unique_ptr<Entity> entity = std::make_unique<Entity>();
                 Events::OnEntityCreated event{entity.get()};
 
+                entity->setId(id);
                 _entities.emplace(id, std::move(entity));
                 if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
                     broadcastEvent<Events::OnEntityCreated>(event);
@@ -434,7 +435,7 @@ namespace ECS
              */
             void tick()
             {
-                BaseSystem *renderer;
+                BaseSystem *renderer = nullptr;
 
                 for (int i = 0; i < Engine::EngineClass::getEngine().getPlayersAmount(); i++) {
                     Engine::EngineClass::getEngine().setCurrentPlayer(i);
@@ -447,7 +448,7 @@ namespace ECS
                     }
                 }
                 Engine::EngineClass::getEngine().setCurrentPlayer(Engine::EngineClass::getEngine().getOwnPlayer());
-                renderer->tick();
+                if (renderer != nullptr) renderer->tick();
             }
 
             /*===================//

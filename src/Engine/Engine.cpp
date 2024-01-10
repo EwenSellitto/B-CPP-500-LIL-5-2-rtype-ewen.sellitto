@@ -292,6 +292,14 @@ void EngineClass::run()
             network().sendUpdatedEntitiesToClients();
             network().sendRemovedComponentsToClients();
         }
+        if (!network().getComponentsToRemove().empty()) {
+            for (auto &pair : network().getComponentsToRemove()) {
+                if (!WORLD.entityExists(pair.first)) continue;
+                ECS::Entity &entity = WORLD.getMutEntity(pair.first);
+                network().getComponentsConvertor().destroyers[static_cast<ComponentType>(pair.second)](entity);
+            }
+            network().getComponentsToRemove().clear();
+        }
     }
 }
 

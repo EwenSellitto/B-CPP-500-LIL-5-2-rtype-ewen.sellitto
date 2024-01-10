@@ -39,6 +39,8 @@ void ECS::Network::addSerializedEventToPacket(sf::Packet &packet, sf::Event even
             packet << static_cast<int>(event.mouseWheelScroll.x);
             packet << static_cast<int>(event.mouseWheelScroll.y);
             break;
+        default:
+            break;
     }
 }
 

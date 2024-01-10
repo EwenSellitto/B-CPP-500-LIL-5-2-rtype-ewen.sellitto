@@ -110,3 +110,4 @@ r-type
 include/Engine/Components/Template.component.hpp
 test.cpp
 test
+cmake-build-release/build.ninja

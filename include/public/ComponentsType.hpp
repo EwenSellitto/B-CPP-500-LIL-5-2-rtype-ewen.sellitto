@@ -25,5 +25,7 @@ enum class ComponentType {
     MissileComponent,
     PlayerComponent,
     HealthComponent,
+    LayeredRenderableComponent,
+    LayeredAnimationComponent,
     NoneComponent,
 };

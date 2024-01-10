@@ -10,6 +10,8 @@
 #include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
+#include "Engine/Components/LayeredAnimation.component.hpp"
+#include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
@@ -50,6 +52,9 @@ class ComponentsConvertor
             registerComponent<Engine::Components::MissileComponent>(ComponentType::MissileComponent);
             registerComponent<Engine::Components::PlayerComponent>(ComponentType::PlayerComponent);
             registerComponent<Rtype::Components::HealthComponent>(ComponentType::HealthComponent);
+            registerComponent<Engine::Components::LayeredRenderableComponent>(
+                ComponentType::LayeredRenderableComponent);
+            registerComponent<Engine::Components::LayeredAnimationComponent>(ComponentType::LayeredAnimationComponent);
         }
 
         template <typename T> void registerComponent(ComponentType type)

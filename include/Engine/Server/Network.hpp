@@ -115,21 +115,35 @@ namespace ECS
             {
                 return clientEvents;
             }
+
             bool getIsServer() const
             {
                 return isServer;
             }
+
             bool getGameHasStarted() const
             {
                 return gameHasStarted;
             }
+
             std::map<int, std::vector<sf::Event>> &getServerEvents()
             {
                 return serverEvents;
             }
+
             WaitingRoom &getWaitingRoom()
             {
                 return waitingRoom;
+            }
+
+            std::vector<std::pair<ECS::id_t, ComponentType>> &getComponentsToRemove()
+            {
+                return componentsToRemove;
+            }
+
+            ComponentsConvertor &getComponentsConvertor()
+            {
+                return componentsConvertor;
             }
 
             // =========================================================
@@ -189,15 +203,16 @@ namespace ECS
 
             // ================== ATTRIBUTS ==================
 
-            WaitingRoom                              waitingRoom;
-            sf::UdpSocket                            socket;
-            std::thread                              thread;
-            bool                                     running        = true;
-            bool                                     isServer       = false;
-            bool                                     gameHasStarted = false;
-            ComponentsConvertor                      componentsConvertor;
-            std::vector<sf::Event>                   clientEvents;
-            std::map<int, std::vector<sf::Event>>    serverEvents;
-            std::pair<sf::IpAddress, unsigned short> serverHost;
+            WaitingRoom                                      waitingRoom;
+            sf::UdpSocket                                    socket;
+            std::thread                                      thread;
+            bool                                             running        = true;
+            bool                                             isServer       = false;
+            bool                                             gameHasStarted = false;
+            ComponentsConvertor                              componentsConvertor;
+            std::vector<sf::Event>                           clientEvents;
+            std::map<int, std::vector<sf::Event>>            serverEvents;
+            std::pair<sf::IpAddress, unsigned short>         serverHost;
+            std::vector<std::pair<ECS::id_t, ComponentType>> componentsToRemove;
     };
 } // namespace ECS
