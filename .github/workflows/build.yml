@@ -67,15 +67,6 @@ jobs:
           sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
           sudo apt update -y
           sudo apt install cmake -y
-      - name: install GCC latest
-        run: |
-          sudo apt purge gcc -y
-          sudo apt-get autoremove -y
-          sudo apt update -y
-          sudo apt upgrade -y
-          sudo apt full-upgrade -y
-          sudo apt install gcc -y
-
       - name: Build with CMake and Clang
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release
