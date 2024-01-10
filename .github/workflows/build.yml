@@ -69,12 +69,12 @@ jobs:
           sudo apt install cmake -y
       - name: install GCC latest
         run: |
-          sudo apt purge gcc
-          sudo apt-get autoremove
-          sudo apt update
-          sudo apt upgrade
-          sudo apt full-upgrade
-          sudo apt install gcc
+          sudo apt purge gcc -y
+          sudo apt-get autoremove -y
+          sudo apt update -y
+          sudo apt upgrade -y
+          sudo apt full-upgrade -y
+          sudo apt install gcc -y
 
       - name: Build with CMake and Clang
         run: |
