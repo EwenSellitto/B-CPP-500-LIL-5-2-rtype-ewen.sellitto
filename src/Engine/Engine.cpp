@@ -243,15 +243,15 @@ void EngineClass::processSwitchEvent(sf::Event event)
 
 void EngineClass::processClientsEvents()
 {
-    if (!network().getGameHasStarted() || !network().getIsServer()) return;
-    for (auto &player : network().getWaitingRoom().getPlayers()) {
+    if (!NETWORK.getGameHasStarted() || !NETWORK.getIsServer()) return;
+    for (auto &player : NETWORK.getWaitingRoom().getPlayers()) {
         if (player->isServer) continue;
         _currentPlayer = player->nbPlayer;
-        if (network().getServerEvents().find(player->nbPlayer) == network().getServerEvents().end()) continue;
-        for (const auto &event : network().getServerEvents()[player->nbPlayer]) {
+        if (NETWORK.getServerEvents().find(player->nbPlayer) == NETWORK.getServerEvents().end()) continue;
+        for (const auto &event : NETWORK.getServerEvents()[player->nbPlayer]) {
             processSwitchEvent(event);
         }
-        network().getServerEvents()[player->nbPlayer].clear();
+        NETWORK.getServerEvents()[player->nbPlayer].clear();
     }
     _currentPlayer = _ownPlayer;
 }
@@ -261,13 +261,13 @@ void EngineClass::handleEvents()
     sf::Event event;
 
     while (window.pollEvent(event)) {
-        if (network().getGameHasStarted() && !network().getIsServer() &&
+        if (NETWORK.getGameHasStarted() && !NETWORK.getIsServer() &&
             (event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased
              // event.type == sf::Event::MouseButtonPressed ||
              // event.type == sf::Event::MouseButtonReleased ||
              // event.type == sf::Event::MouseMoved ||))
              ))
-            network().addEvent(event);
+            NETWORK.addEvent(event);
         processSwitchEvent(event);
     }
 }
@@ -288,17 +288,17 @@ void EngineClass::run()
         processClientsEvents();
         handleEvents();
         world().tick();
-        if (network().getGameHasStarted() && network().getIsServer()) {
-            network().sendUpdatedEntitiesToClients();
-            network().sendRemovedComponentsToClients();
+        if (NETWORK.getGameHasStarted() && NETWORK.getIsServer()) {
+            NETWORK.sendUpdatedEntitiesToClients();
+            NETWORK.sendRemovedComponentsToClients();
         }
-        if (!network().getComponentsToRemove().empty()) {
-            for (auto &pair : network().getComponentsToRemove()) {
+        if (!NETWORK.getComponentsToRemove().empty()) {
+            for (auto &pair : NETWORK.getComponentsToRemove()) {
                 if (!WORLD.entityExists(pair.first)) continue;
                 ECS::Entity &entity = WORLD.getMutEntity(pair.first);
-                network().getComponentsConvertor().destroyers[static_cast<ComponentType>(pair.second)](entity);
+                NETWORK.getComponentsConvertor().destroyers[static_cast<ComponentType>(pair.second)](entity);
             }
-            network().getComponentsToRemove().clear();
+            NETWORK.getComponentsToRemove().clear();
         }
     }
 }
