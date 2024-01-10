@@ -7,10 +7,8 @@
 
 #pragma once
 
-#include <chrono>
 #include <ctime>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <unordered_map>
 
@@ -340,14 +338,7 @@ namespace ECS
              */
             template <typename T> void broadcastEvent(T data, const std::string name = "")
             {
-                using namespace std::chrono;
-
                 const std::unordered_map<id_t, BaseEventSubscriber *> &subscribers = _subscribers[ECS_TYPEID(T)];
-
-#ifndef NO_PRINT_EVENTS
-                std::cout << "[" << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()
-                          << "]\tBroadcasting event of type " << ECS_TYPEID(T) << std::endl;
-#endif
 
                 for (auto &subscriber : subscribers) {
                     auto *sub = static_cast<EventSubscriber<T> *>(subscriber.second);

@@ -9,12 +9,9 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <iostream>
-#include <tuple>
+#include <chrono>
 
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
 
 namespace Engine::Components
 {

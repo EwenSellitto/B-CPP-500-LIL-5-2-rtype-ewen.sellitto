@@ -266,7 +266,7 @@ void EngineClass::destroyPendingWorlds()
  * transferred to the World.
  * @return id_t The unique identifier for the added global entity.
  */
-id_t EngineClass::addGlobalEntity(std::unique_ptr<ECS::GlobalEntity> entity)
+ECS::id_t EngineClass::addGlobalEntity(std::unique_ptr<ECS::GlobalEntity> entity)
 {
     ECS::type_t id = ECS::Utils::getNewId<ECS::GlobalEntity>();
 
@@ -280,7 +280,7 @@ id_t EngineClass::addGlobalEntity(std::unique_ptr<ECS::GlobalEntity> entity)
  * @param id The unique identifier of the global entity to be removed.
  * @note The global entity will be properly destroyed when removed from all the worlds.
  */
-void EngineClass::removeGlobalEntity(id_t id)
+void EngineClass::removeGlobalEntity(ECS::id_t id)
 {
     _global_entities.erase(id);
 }
@@ -291,7 +291,7 @@ void EngineClass::removeGlobalEntity(id_t id)
  * @param id The unique identifier of the global entity to get.
  * @return const GlobalEntity& An immutable reference to the global entity.
  */
-const ECS::GlobalEntity &EngineClass::getGlobalEntity(id_t id)
+const ECS::GlobalEntity &EngineClass::getGlobalEntity(ECS::id_t id)
 {
     return *_global_entities.at(id);
 }
@@ -302,7 +302,7 @@ const ECS::GlobalEntity &EngineClass::getGlobalEntity(id_t id)
  * @param id The unique identifier of the global entity to get.
  * @return GlobalEntity& A mutable reference to the global entity.
  */
-ECS::GlobalEntity &EngineClass::getMutGlobalEntity(id_t id)
+ECS::GlobalEntity &EngineClass::getMutGlobalEntity(ECS::id_t id)
 {
     return *_global_entities.at(id);
 }

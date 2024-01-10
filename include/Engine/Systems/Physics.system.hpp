@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include "ECS/System.hpp"
 #include "ECS/World.hpp"
 #include "Engine/Components/Collision.component.hpp"
