@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <utility>
 
 #include "ECS/System.hpp"

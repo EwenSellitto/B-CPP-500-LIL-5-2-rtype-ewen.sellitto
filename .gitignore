@@ -22,13 +22,6 @@ cmake-build-debug/
 vgcore.*
 doc/
 
-assets/Environnement/
-assets/klaed/
-assets/MainShip/
-assets/MainShipWeapons/
-assets/Nairan/
-assets/Nautolan/
-assets/Pickup/
 
 # Fichiers générés par CMake
 CMakeFiles/

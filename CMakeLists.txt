@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.20.5)
 
-if (UNIX)
-    set(CMAKE_C_COMPILER clang)
-    set(CMAKE_CXX_COMPILER clang++)
-endif()
-
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -128,6 +123,14 @@ add_executable(r-type
 )
 
 target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio)
+# TODO: Fix network for windows
+# if (WIN32)
+#     target_link_libraries(r-type, PRIVATE ws2_32.lib)
+#     add_custom_command(TARGET r-type POST_BUILD
+#             COMMAND ${CMAKE_COMMAND} -E copy
+#             $<TARGET_RUNTIME_DLLS:r-type> $<TARGET_FILE_DIR:r-type> COMMAND_EXPAND_LISTS)
+#     set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}")
+# endif()
 
 if (UNIX)
     set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib64")
