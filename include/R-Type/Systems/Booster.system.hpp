@@ -7,11 +7,12 @@
 
 #pragma once
 
+#include "ECS/Entity.hpp"
 #include "ECS/System.hpp"
 
 namespace Rtype::System
 {
-    class BoosterSystem : ECS::BaseSystem
+    class BoosterSystem : public ECS::BaseSystem
     {
         public:
             BoosterSystem(ECS::World &world) : ECS::BaseSystem(world) {}
@@ -21,6 +22,7 @@ namespace Rtype::System
             void configure([[maybe_unused]] ECS::World &world) override {}
             void unconfigure() override {}
 
-            void tick() override;
+            void        tick() override;
+            static void takeBooster(ECS::Entity *player, ECS::Entity *booster);
     };
 } // namespace Rtype::System

@@ -11,9 +11,11 @@
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
+#include "R-Type/Components/Booster.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
+#include "R-Type/Systems/Booster.system.hpp"
 
 namespace Rtype::Subscriber
 {
@@ -40,6 +42,9 @@ namespace Rtype::Subscriber
                                data.collidingEntity->has<EnemyComponent>()) {
                         enemyCollision(data);
                     }
+                } else if (data.movingEntity->has<PlayerComponent>() &&
+                           data.collidingEntity->has<Components::BoosterComponent>()) {
+                    System::BoosterSystem::takeBooster(data.movingEntity, data.collidingEntity);
                 }
             }
 

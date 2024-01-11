@@ -12,6 +12,8 @@
 #include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Components/Animation.component.hpp"
+#include "Engine/Components/Collision.component.hpp"
+#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "R-Type/Components/Booster.component.hpp"
@@ -19,7 +21,7 @@
 #include "R-Type/Events/EnnemyDeath.event.hpp"
 #include "R-Type/Systems/Enemy.system.hpp"
 
-namespace Rtype::Subscribers
+namespace Rtype::Subscriber
 {
     class EnnemyDeathSubscriber : public ECS::EventSubscriber<Rtype::Events::EnnemyDeath>
     {
@@ -28,13 +30,13 @@ namespace Rtype::Subscribers
             ~EnnemyDeathSubscriber() override = default;
             void receiveEvent([[maybe_unused]] const std::string &name, const Rtype::Events::EnnemyDeath &data) override
             {
-                std::cout << "EnnemyDeathSubscriber" << std::endl;
                 ECS::ComponentHandle<Engine::Components::PositionComponent> position;
                 ECS::ComponentHandle<Engine::Components::EnemyComponent>    enemy;
 
                 if (!(data.Enemy->has<Engine::Components::PositionComponent>() &&
                       data.Enemy->has<Engine::Components::EnemyComponent>()))
                     return;
+
                 position = data.Enemy->getComponent<Engine::Components::PositionComponent>();
                 enemy    = data.Enemy->getComponent<Engine::Components::EnemyComponent>();
                 if (enemy->enemyType == EnemyData::EnemyType::Medium) {
@@ -42,9 +44,12 @@ namespace Rtype::Subscribers
                         new Engine::Components::PositionComponent(position->x, position->y),
                         new Rtype::Components::BoosterComponent(10),
                         new Engine::Components::RenderableComponent(
-                            "../../../assets/Pickup/PickupIcon-ShieldGenerator-Allaroundshield.png", 0, 0, 1),
-                        new Engine::Components::AnimationComponent(0, 0, 48, 48, 48, 48, 100, 15));
+                            "./assets/Pickup/PickupIcon-ShieldGenerator-Allaroundshield.png", 0, 0, 1, 0, {2, 2}),
+                        new Engine::Components::AnimationComponent(0, 0, 32, 32, 32, 32, 75, 15),
+                        new Engine::Components::CollisionComponent(8, 8, 48, 48),
+                        new Engine::Components::MovingComponent(
+                            {static_cast<float>(position->x), static_cast<float>(position->y)}, 20000, {-1000, 0}));
                 }
             }
     };
-} // namespace Rtype::Subscribers
+} // namespace Rtype::Subscriber

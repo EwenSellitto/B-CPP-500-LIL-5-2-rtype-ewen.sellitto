@@ -32,6 +32,7 @@ namespace GameWorld
         Systems::addAnimationSystem(world);
         Systems::addDeathAnimationSystem(world);
         Systems::addHealthSystem(world);
+        Systems::addBoosterSystem(world);
 
         // Subscribe to events
         Subscribers::subscribeToEvents(world);

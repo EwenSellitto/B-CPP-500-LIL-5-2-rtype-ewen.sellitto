@@ -13,7 +13,7 @@ namespace Engine::Components
 {
     struct BaseBulletComponent : public ECS::BaseComponent {
         public:
-            explicit BaseBulletComponent(bool fromEnemy, int dmg = 20) : fromEnemy(fromEnemy), damage(dmg) {}
+            explicit BaseBulletComponent(bool fromEnemy, int dmg = 2000) : fromEnemy(fromEnemy), damage(dmg) {}
             ~BaseBulletComponent() override = default;
 
             bool fromEnemy;

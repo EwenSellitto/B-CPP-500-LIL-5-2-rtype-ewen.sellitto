@@ -13,12 +13,17 @@
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
+#include "R-Type/Events/EnnemyDeath.event.hpp"
 
 using namespace Rtype::Systems;
 
 static void enemyDeath(ECS::Entity *entity)
 {
     using namespace Engine::Components;
+
+    entity->removeComponent<Rtype::Components::HealthComponent>();
+
+    WORLD.broadcastEvent<Rtype::Events::EnnemyDeath>(entity);
 
     entity->removeComponent<AnimationComponent>();
     entity->removeComponent<CollisionComponent>();

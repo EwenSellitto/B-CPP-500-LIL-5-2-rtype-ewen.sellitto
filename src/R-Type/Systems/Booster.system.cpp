@@ -7,18 +7,38 @@
 
 #include "R-Type/Systems/Booster.system.hpp"
 
+#include "ECS/Components.hpp"
 #include "ECS/World.hpp"
-#include "Engine/Components/Moving.component.hpp"
+#include "Engine/Components/Animation.component.hpp"
+#include "Engine/Components/Link.component.hpp"
+#include "Engine/Components/Position.component.hpp"
+#include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Engine.hpp"
 #include "R-Type/Components/Booster.component.hpp"
+#include "R-Type/Components/BoosterActive.component.hpp"
+#include "R-Type/Components/Player.component.hpp"
 
 using namespace Rtype::System;
 
-static void moveBoosters(std::vector<ECS::Entity *> entities)
+void BoosterSystem::takeBooster(ECS::Entity *player, ECS::Entity *booster)
 {
-    for (auto &entity : entities) {
-        auto moving  = entity->getComponent<Engine::Components::MovingComponent>();
-        auto booster = entity->getComponent<Rtype::Components::BoosterComponent>();
-    }
+    using namespace Rtype::Components;
+
+    ECS::ComponentHandle<BoosterComponent>                      boosterComponent;
+    ECS::ComponentHandle<Engine::Components::PositionComponent> playerPosition;
+
+    if (booster->has<BoosterComponent>()) boosterComponent = booster->getComponent<BoosterComponent>();
+    if (player->has<Engine::Components::PositionComponent>())
+        playerPosition = player->getComponent<Engine::Components::PositionComponent>();
+
+    player->addComponent(new BoosterActiveComponent(boosterComponent->duration_seconds));
+    player->addComponent(new Engine::Components::LinkComponent(player->getId()));
+    WORLD.removeEntity(booster);
+    WORLD.createEntity(new Engine::Components::RenderableComponent("./assets/MainShip/MainShip-Shields-RoundShield.png",
+                                                                   {0, 0}, 3, 90),
+                       new Engine::Components::PositionComponent(playerPosition->x + 4, playerPosition->y - 8),
+                       new Engine::Components::AnimationComponent(0, 0, 64, 64, 64, 64, 100, 12),
+                       new Engine::Components::LinkComponent(player->getId()), new isBoosterComponent());
 }
 
 void BoosterSystem::tick()
@@ -26,8 +46,29 @@ void BoosterSystem::tick()
     using namespace Rtype::Components;
     using namespace Engine::Components;
 
-    ECS::World world = this->getWorld();
-
-    auto booster_entities        = world.getEntitiesWithComponents<BoosterComponent, MovingComponent>();
-    auto weapon_booster_entities = world.getEntitiesWithComponents<WeaponBoosterComponent, MovingComponent>();
+    ECS::World                &world = WORLD;
+    std::vector<ECS::Entity *> players =
+        world.getEntitiesWithComponents<PlayerComponent, BoosterActiveComponent, LinkComponent>();
+    if (players.empty()) {
+        for (auto &ent : world.getEntitiesWithComponents<isBoosterComponent, LinkComponent, PositionComponent>()) {
+            world.removeEntity(ent);
+        }
+    }
+    for (auto &player : players) {
+        auto boosterActive = player->getComponent<BoosterActiveComponent>();
+        for (auto &ent : world.getEntitiesWithComponents<isBoosterComponent, LinkComponent, PositionComponent>()) {
+            if (ent->getComponent<LinkComponent>()->entity == player->getComponent<LinkComponent>()->entity) {
+                if (boosterActive->clock.getElapsedTime().asSeconds() >= boosterActive->duration) {
+                    world.removeEntity(ent);
+                    player->removeComponent<BoosterActiveComponent>();
+                    player->removeComponent<LinkComponent>();
+                    break;
+                } else {
+                    auto position = ent->getComponent<PositionComponent>();
+                    position->x   = player->getComponent<PositionComponent>()->x + 4;
+                    position->y   = player->getComponent<PositionComponent>()->y - 8;
+                }
+            }
+        }
+    }
 }
