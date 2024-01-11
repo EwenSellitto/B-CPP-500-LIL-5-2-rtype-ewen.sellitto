@@ -2,13 +2,8 @@
 
 #include <algorithm>
 #include <iostream>
-#include <regex>
 
 #include "ECS/World.hpp"
-#include "Engine/Components/Button.component.hpp"
-#include "Engine/Components/CheckBox.component.hpp"
-#include "Engine/Components/Menu.component.hpp"
-#include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Text.component.hpp"
 #include "Engine/Components/TextInput.component.hpp"
 
@@ -24,8 +19,8 @@ void InputsSystem::tick() {}
 void InputsSystem::changeText(std::string &text)
 {
     ECS::World &world = getWorld();
-    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity            *entity,
-                                                      ECS::ComponentHandle<TextComponent>      textComp,
+    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
+                                                      [[maybe_unused]] ECS::ComponentHandle<TextComponent> textComp,
                                                       ECS::ComponentHandle<TextInputComponent> textInputComp) {
         if (textInputComp->isFocused && entity->has<TextComponent>()) {
             if (entity->getComponent<TextComponent>()->content.size() <= 15)
@@ -37,8 +32,8 @@ void InputsSystem::changeText(std::string &text)
 void InputsSystem::removeText()
 {
     ECS::World &world = getWorld();
-    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity            *entity,
-                                                      ECS::ComponentHandle<TextComponent>      textComp,
+    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
+                                                      [[maybe_unused]] ECS::ComponentHandle<TextComponent> textComp,
                                                       ECS::ComponentHandle<TextInputComponent> textInputComp) {
         if (textInputComp->isFocused && entity->has<TextComponent>()) {
             if (entity->getComponent<TextComponent>()->content.size() > 0)
@@ -50,8 +45,8 @@ void InputsSystem::removeText()
 void InputsSystem::handleSend(std::vector<std::string> args)
 {
     ECS::World &world = getWorld();
-    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity            *entity,
-                                                      ECS::ComponentHandle<TextComponent>      textComp,
+    world.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
+                                                      [[maybe_unused]] ECS::ComponentHandle<TextComponent> textComp,
                                                       ECS::ComponentHandle<TextInputComponent> textInputComp) {
         std::string id = textInputComp->text;
         if (entity->has<TextComponent>()) {

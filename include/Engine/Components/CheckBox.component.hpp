@@ -16,7 +16,7 @@ namespace Engine::Components
 
             CheckBoxComponent(const std::string &text, std::function<void()> clickOn, std::function<void()> clickOff,
                               bool isActivated = true)
-                : text(text), clickOff(clickOff), clickOn(clickOn), isActivated(isActivated)
+                : text(text), clickOn(clickOn), clickOff(clickOff), isActivated(isActivated)
             {
             }
     };

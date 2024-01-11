@@ -171,7 +171,7 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
 }
 
 void UI::handleTextInput(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
-                         ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                         [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
     using namespace Engine::Components;
 
@@ -220,7 +220,7 @@ void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursor
 }
 
 void UI::checkboxChangeRenderable(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
-                                  ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                                  [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
 
     if (checkboxComp->status == true) {

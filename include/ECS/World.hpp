@@ -398,7 +398,7 @@ namespace ECS
              */
             void tick()
             {
-                BaseSystem *renderer;
+                BaseSystem *renderer = nullptr;
 
                 for (auto &system : _systems) {
                     if (system.first == "Renderer") {
@@ -407,6 +407,8 @@ namespace ECS
                     }
                     system.second->tick();
                 }
+                if (!renderer) throw std::runtime_error("No renderer found");
+
                 renderer->tick();
             }
 

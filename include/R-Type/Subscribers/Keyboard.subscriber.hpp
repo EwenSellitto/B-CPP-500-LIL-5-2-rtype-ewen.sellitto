@@ -12,7 +12,10 @@ namespace Rtype::Subscriber
         public:
             KeyboardPressedSubscriber()           = default;
             ~KeyboardPressedSubscriber() override = default;
-            void receiveEvent([[maybe_unused]] const std::string &name, const KeyPressedEvent &data) override {}
+            void receiveEvent([[maybe_unused]] const std::string     &name,
+                              [[maybe_unused]] const KeyPressedEvent &data) override
+            {
+            }
 
         private:
             std::vector<sf::Keyboard::Key> _keys = {sf::Keyboard::Num0,    sf::Keyboard::Num1,    sf::Keyboard::Num2,
