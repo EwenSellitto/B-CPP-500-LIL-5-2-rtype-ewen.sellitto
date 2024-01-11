@@ -17,6 +17,7 @@ namespace Rtype::Components
             ~BoosterActiveComponent() override = default;
 
             int       duration;
+            int       hitpoints = 3;
             sf::Clock clock;
     };
 

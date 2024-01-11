@@ -58,7 +58,8 @@ void BoosterSystem::tick()
         auto boosterActive = player->getComponent<BoosterActiveComponent>();
         for (auto &ent : world.getEntitiesWithComponents<isBoosterComponent, LinkComponent, PositionComponent>()) {
             if (ent->getComponent<LinkComponent>()->entity == player->getComponent<LinkComponent>()->entity) {
-                if (boosterActive->clock.getElapsedTime().asSeconds() >= boosterActive->duration) {
+                if (boosterActive->clock.getElapsedTime().asSeconds() >= boosterActive->duration ||
+                    boosterActive->hitpoints <= 0) {
                     world.removeEntity(ent);
                     player->removeComponent<BoosterActiveComponent>();
                     player->removeComponent<LinkComponent>();

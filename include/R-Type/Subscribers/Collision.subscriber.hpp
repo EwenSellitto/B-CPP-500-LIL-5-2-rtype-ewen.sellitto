@@ -12,6 +12,7 @@
 #include "Engine/Events/Collision.event.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
 #include "R-Type/Components/Booster.component.hpp"
+#include "R-Type/Components/BoosterActive.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
@@ -28,16 +29,23 @@ namespace Rtype::Subscriber
             void receiveEvent([[maybe_unused]] const std::string &name, const CollisionEvent &data) override
             {
                 using namespace Engine::Components;
+                using namespace Rtype::Components;
+
+                ECS::World &world = WORLD;
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     std::cout << "YOU LOSE" << std::endl;
                     data.movingEntity->removeAllComponents();
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
-                    if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
-                        data.collidingEntity->has<PlayerComponent>()) {
+                    if (data.collidingEntity->has<PlayerComponent, BoosterActiveComponent>()) {
+                        auto boosterActive = data.collidingEntity->getComponent<BoosterActiveComponent>();
+                        boosterActive->hitpoints -= 1;
+                        world.removeEntity(data.movingEntity);
+                    } else if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
+                               data.collidingEntity->has<PlayerComponent>()) {
                         std::cout << "YOU LOSE" << std::endl;
-                        data.movingEntity->removeAllComponents();
-                        data.collidingEntity->removeAllComponents();
+                        world.removeEntity(data.movingEntity);
+                        world.removeEntity(data.collidingEntity);
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
                         enemyCollision(data);
