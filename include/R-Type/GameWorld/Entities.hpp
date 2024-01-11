@@ -266,10 +266,10 @@ namespace Entities
         auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
         ECS::id_t   enemyId     = world.createEntity(
-                  new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-                  new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
-                  new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
-                  new ExcludeCollisionComponent(0), new HealthComponent(20));
+            new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
+            new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
+            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
+            new ExcludeCollisionComponent(0), new HealthComponent(20));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
@@ -291,7 +291,8 @@ namespace Entities
             world.createEntity(new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
                                new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
                                new EnemyComponent(attributes.health, EnemyData::EnemyType::Medium),
-                               new CollisionComponent(21, 23, 22, 22), new ExcludeCollisionComponent(0));
+                               new Rtype::Components::HealthComponent(60), new CollisionComponent(21, 23, 22, 22),
+                               new ExcludeCollisionComponent(0));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
@@ -306,14 +307,15 @@ namespace Entities
     {
         using namespace Engine::Components;
 
-        world->createEntity(new EnemyQueueComponent(
-            {std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
-             std::make_pair(false, std::make_pair(std::make_tuple(400, 300, true), mediumEnemyMaker))}));
+        world->createEntity(new EnemyQueueComponent({
+            std::make_pair(false, std::make_pair(std::make_tuple(100, 300, true), mediumEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), basicEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
+        }));
     }
 
     inline void createWorldMoveProgress(ECS::World *world)

@@ -19,6 +19,12 @@ namespace Rtype::Components
             int duration_seconds;
     };
 
+    struct isBoosterComponent : ECS::BaseComponent {
+        public:
+            isBoosterComponent()           = default;
+            ~isBoosterComponent() override = default;
+    };
+
     enum class WeaponType {
         BASIC,
         CANON,
