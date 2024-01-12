@@ -24,12 +24,49 @@
 
 namespace Rtype::Subscriber
 {
+    static sf::Clock _shared_clock = sf::Clock();
+
     class ShootPlayerPressedSubscriber : public virtual ECS::EventSubscriber<KeyPressedEvent>
     {
         public:
             ShootPlayerPressedSubscriber() : _clock(){};
             ~ShootPlayerPressedSubscriber() override = default;
             void receiveEvent([[maybe_unused]] const std::string &name, const KeyPressedEvent &data) override
+            {
+                // using namespace Engine::Components;
+                //
+                // if (_clock.getElapsedTime().asMilliseconds() < 200) return;
+                // _clock.restart();
+                // if (data.keyEvent.code != sf::Keyboard::Space) return;
+                // Engine::System::MovePlayer *movePlayerSystem =
+                //     dynamic_cast<Engine::System::MovePlayer *>(WORLD.getSystems()["MovePlayer"].get());
+                // Engine::System::Bullets *bulletsSystem =
+                //     dynamic_cast<Engine::System::Bullets *>(WORLD.getSystems()["BulletsSystem"].get());
+                // ECS::Entity *player = WORLD.getEntityWithComponents<PlayerComponent>();
+                // if (!player || !movePlayerSystem) return;
+                //
+                // ECS::ComponentHandle<Engine::Components::PositionComponent> pos =
+                //     player->getComponent<Engine::Components::PositionComponent>();
+                // ECS::ComponentHandle<Engine::Components::RenderableComponent> rend =
+                //     player->getComponent<Engine::Components::RenderableComponent>();
+                // bulletsSystem->spawnBullet(false, static_cast<float>(pos->x + static_cast<int>(rend->size.x / 2) -
+                // 20),
+                //                            static_cast<float>(pos->y + static_cast<int>(rend->size.x / 2) - 2),
+                //                            {1000, 0}, 200);
+                _shared_clock.restart();
+            }
+
+        private:
+            sf::Clock _clock;
+    };
+
+    class ShootPlayerReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
+    {
+        public:
+            ShootPlayerReleasedSubscriber() : _clock(){};
+            ~ShootPlayerReleasedSubscriber() override = default;
+
+            void receiveEvent([[maybe_unused]] const std::string &name, const KeyReleasedEvent &data) override
             {
                 using namespace Engine::Components;
 
@@ -50,24 +87,10 @@ namespace Rtype::Subscriber
                 bulletsSystem->spawnBullet(false, static_cast<float>(pos->x + static_cast<int>(rend->size.x / 2) - 20),
                                            static_cast<float>(pos->y + static_cast<int>(rend->size.x / 2) - 2),
                                            {1000, 0}, 200);
+                _shared_clock.restart();
             }
 
         private:
             sf::Clock _clock;
-    };
-
-    class ShootPlayerReleasedSubscriber : public virtual ECS::EventSubscriber<KeyReleasedEvent>
-    {
-        public:
-            ShootPlayerReleasedSubscriber()           = default;
-            ~ShootPlayerReleasedSubscriber() override = default;
-            void receiveEvent([[maybe_unused]] const std::string &name, const KeyReleasedEvent &data) override
-            {
-                using namespace Engine::Components;
-
-                if (!(data.keyEvent.code == sf::Keyboard::Z || data.keyEvent.code == sf::Keyboard::Q ||
-                      data.keyEvent.code == sf::Keyboard::S || data.keyEvent.code == sf::Keyboard::D))
-                    return;
-            }
     };
 } // namespace Rtype::Subscriber
