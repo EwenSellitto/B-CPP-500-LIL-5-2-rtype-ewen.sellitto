@@ -32,6 +32,7 @@
 #include "R-Type/Components/EnemyQueue.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
+#include "Waves.hpp"
 
 namespace Entities
 {
@@ -214,7 +215,8 @@ namespace Entities
                          ParallaxLayer::NearBackground, 4, false, -3);
     }
 
-    inline size_t basicEnemyMaker(float y, bool isAttacking)
+    inline size_t basicEnemyMaker(float y, bool isAttacking,
+                                  std::vector<std::pair<size_t, sf::Vector2f>> PatternMovements)
     {
         using namespace Engine::Components;
         using namespace Rtype::Components;
@@ -224,14 +226,16 @@ namespace Entities
         ECS::id_t   enemyId     = world.createEntity(
             new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
             new RenderableComponent("Klaed-Scout-Base"), new EnemyComponent(EnemyData::EnemyType::Weak),
-            new CollisionComponent("Klaed-Scout-Base"), new ExcludeCollisionComponent(0), new HealthComponent(40));
+            new CollisionComponent("Klaed-Scout-Base"), new ExcludeCollisionComponent(0), new HealthComponent(20));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
         if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
         enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
+            // {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
+            PatternMovements));
+
         return enemyId;
     }
 
@@ -252,8 +256,15 @@ namespace Entities
 
         if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
-        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
+        if (static_cast<float>(enemy.getComponent<PositionComponent>()->x) > 800) {
+            std::cout << (enemy.getComponent<PositionComponent>()->x) << std::endl;
+            enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
+                {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
+        } else {
+            std::cout << (enemy.getComponent<PositionComponent>()->x) << std::endl;
+            enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
+                {std::make_pair(800, sf::Vector2f(-50, 50)), std::make_pair(800, sf::Vector2f(-50, -50))}));
+        }
         return enemyId;
     }
 
@@ -274,8 +285,8 @@ namespace Entities
 
         if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
-        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
+        // enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
+        //     {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
         return enemyId;
     }
 
@@ -283,20 +294,81 @@ namespace Entities
     {
         using namespace Engine::Components;
 
+        // world->createEntity(new EnemyQueueComponent({TwinSnake(10,10)}));
+        auto UpAndDown = enemyPatternMovements.find("UpAndDown");
         world->createEntity(new EnemyQueueComponent({
-            std::make_pair(false, std::make_pair(std::make_tuple(100, 50, false), strongEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(150, 60, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(200, 70, true), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(250, 80, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(300, 90, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(350, 100, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(400, 300, true), mediumEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(500, 350, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(540, 380, true), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(580, 420, true), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(600, 440, false), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(620, 480, true), basicEnemyMaker)),
-            std::make_pair(false, std::make_pair(std::make_tuple(700, 350, true), strongEnemyMaker)),
+            // twin snake 1
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(160, 200, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(170, 210, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(180, 220, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(190, 230, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(200, 240, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(210, 250, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(220, 260, false), basicEnemyMaker(0, false, UpAndDown->second))),
+
+            // twin snake 2
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(160, 350, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(170, 360, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(180, 370, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(190, 380, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(200, 390, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(210, 400, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(220, 410, false), basicEnemyMaker(0, false, UpAndDown->second))),
+
+            std::make_pair(false, std::make_pair(std::make_tuple(350, 300, true), mediumEnemyMaker)),
+
+            // random movements
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(500, 450, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(540, 480, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(580, 450, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(600, 480, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(620, 450, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(640, 480, true), basicEnemyMaker(0, false, UpAndDown->second))),
+
+            std::make_pair(false, std::make_pair(std::make_tuple(660, 420, true), mediumEnemyMaker)),
+
+            // wall
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 140, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 160, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 180, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 200, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 220, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 240, false), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 260, true), basicEnemyMaker(0, false, UpAndDown->second))),
+            std::make_pair(
+                false, std::make_pair(std::make_tuple(800, 280, true), basicEnemyMaker(0, false, UpAndDown->second))),
+
+            // std::make_pair(false, std::make_pair(std::make_tuple(180, 370, true), basicEnemyMaker(0, false,
+            // UpAndDown->second))),
+
+            // std::make_pair(false, std::make_pair(std::make_tuple(700, 350, true), strongEnemyMaker)),
         }));
     }
 
