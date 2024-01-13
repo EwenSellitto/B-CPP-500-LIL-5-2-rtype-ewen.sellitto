@@ -11,6 +11,7 @@
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
+#include "Engine/Components/Score.component.hpp"
 #include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
@@ -322,6 +323,11 @@ namespace Systems
     inline void addUISystem(ECS::World *world)
     {
         world->addSystem<Engine::System::UI>("UISystem");
+    }
+
+    inline void addScoreSystem(ECS::World *world)
+    {
+        world->addSystem<Engine::System::ScoreSystem>("ScoreSystem");
     }
 
     inline void addBulletSystem(ECS::World *world)

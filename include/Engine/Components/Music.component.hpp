@@ -21,7 +21,6 @@ namespace Engine::Components
                 music.openFromFile(path);
                 music.setVolume(_volume);
                 music.setLoop(true);
-                std::cout << "Music component created" << std::endl;
                 music.play();
             }
 

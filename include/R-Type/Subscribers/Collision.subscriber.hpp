@@ -10,6 +10,7 @@
 #include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
 #include "Engine/Events/Collision.event.hpp"
+#include "Engine/Systems/Score.system.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
 #include "R-Type/Components/Booster.component.hpp"
 #include "R-Type/Components/BoosterActive.component.hpp"
@@ -33,6 +34,8 @@ namespace Rtype::Subscriber
 
                 ECS::World         &world = WORLD;
                 Engine::System::UI *ui    = dynamic_cast<Engine::System::UI *>(WORLD.getSystems()["UISystem"].get());
+                Engine::System::ScoreSystem *score =
+                    dynamic_cast<Engine::System::ScoreSystem *>(WORLD.getSystems()["ScoreSystem"].get());
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     data.movingEntity->removeAllComponents();
@@ -49,6 +52,7 @@ namespace Rtype::Subscriber
                         world.removeEntity(data.collidingEntity);
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
+                        score->incrementScore();
                         enemyCollision(data);
                     }
                 } else if (data.movingEntity->has<PlayerComponent>() &&

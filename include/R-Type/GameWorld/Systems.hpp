@@ -5,6 +5,7 @@
 #include "Engine/Systems/Parallax.system.hpp"
 #include "Engine/Systems/Physics.system.hpp"
 #include "Engine/Systems/Renderer.system.hpp"
+#include "Engine/Systems/Score.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
 #include "Engine/Systems/WorldMove.system.hpp"
 #include "R-Type/Systems/Booster.system.hpp"
@@ -44,6 +45,11 @@ namespace Systems
     inline void addUISystem(ECS::World *world)
     {
         world->addSystem<Engine::System::UI>("UISystem");
+    }
+
+    inline void addScoreSystem(ECS::World *world)
+    {
+        world->addSystem<Engine::System::ScoreSystem>("ScoreSystem");
     }
 
     inline void addInputsSystem(ECS::World *world)

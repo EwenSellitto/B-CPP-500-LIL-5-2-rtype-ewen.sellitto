@@ -17,6 +17,7 @@ namespace GameWorld
         Entities::createParallax(world);
         Entities::createPlayerEntities(world);
         Entities::createOptionsEntities(world);
+        Entities::createScoreEntities(world);
         Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {500, 200},
                                           {2, 2}, 4);
         Entities::createEnemyQueue(world);
@@ -27,6 +28,7 @@ namespace GameWorld
         Systems::addPlayerMovement(world);
         Systems::addEnemySystem(world);
         Systems::addUISystem(world);
+        Systems::addScoreSystem(world);
         Systems::addParallaxSystem(world);
         Systems::addBulletSystem(world);
         Systems::addWorldMoveSystem(world);

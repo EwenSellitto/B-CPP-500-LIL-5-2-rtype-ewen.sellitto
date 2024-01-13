@@ -21,6 +21,7 @@
 #include "Engine/Components/Parallax.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
+#include "Engine/Components/Score.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
 #include "Engine/Components/Text.component.hpp"
 #include "Engine/Components/TextInput.component.hpp"
@@ -114,6 +115,17 @@ namespace Entities
                                                     uiSystem.handleGoMenu();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+    }
+
+    inline void createScoreEntities(ECS::World *world)
+    {
+        using namespace Engine::Components;
+        sf::Font font;
+        if (!font.loadFromFile("./assets/fonts/font.ttf")) {
+            return;
+        }
+        world->createEntity(new TextComponent("Score : 0", font, 30, {650, 10}, sf::Color::White),
+                            new ScoreComponent(0));
     }
 
     inline void createOptionsEntities(ECS::World *world)

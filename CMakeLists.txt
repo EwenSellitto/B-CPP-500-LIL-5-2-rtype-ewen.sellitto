@@ -48,6 +48,7 @@ add_executable(r-type
         include/Engine/Components/Parallax.component.hpp
         include/Engine/Components/Position.component.hpp
         include/Engine/Components/Speed.component.hpp
+        include/Engine/Components/Score.component.hpp
         include/Engine/Components/Type.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/WorldMoveProgress.component.hpp
@@ -66,6 +67,7 @@ add_executable(r-type
         include/Engine/Systems/Inputs.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/UI.system.hpp
+        include/Engine/Systems/Score.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
         include/Engine/Systems/Physics.system.hpp
         include/Engine/Utils/Math.hpp
@@ -79,6 +81,7 @@ add_executable(r-type
         src/Engine/Systems/Renderer.system.cpp
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Sound.system.cpp
+        src/Engine/Systems/Score.system.cpp
         src/Engine/Systems/Options.system.cpp
         src/Engine/Systems/Inputs.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
