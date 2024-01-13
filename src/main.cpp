@@ -21,6 +21,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         engine.addWorldFactory("menu", GameWorld::createMenuWorld);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.addWorldFactory("chooseIP", GameWorld::createChooseIP);
+        engine.addWorldFactory("GameOver", GameWorld::createGameOver);
 
         engine.run();
 #ifndef DEBUG_MODE

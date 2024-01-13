@@ -31,11 +31,12 @@ namespace Rtype::Subscriber
                 using namespace Engine::Components;
                 using namespace Rtype::Components;
 
-                ECS::World &world = WORLD;
+                ECS::World         &world = WORLD;
+                Engine::System::UI *ui    = dynamic_cast<Engine::System::UI *>(WORLD.getSystems()["UISystem"].get());
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
-                    std::cout << "YOU LOSE" << std::endl;
                     data.movingEntity->removeAllComponents();
+                    ui->handleGameOver();
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.collidingEntity->has<PlayerComponent, BoosterActiveComponent>()) {
                         auto boosterActive = data.collidingEntity->getComponent<BoosterActiveComponent>();
@@ -43,7 +44,7 @@ namespace Rtype::Subscriber
                         world.removeEntity(data.movingEntity);
                     } else if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<PlayerComponent>()) {
-                        std::cout << "YOU LOSE" << std::endl;
+                        ui->handleGameOver();
                         world.removeEntity(data.movingEntity);
                         world.removeEntity(data.collidingEntity);
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&

@@ -155,6 +155,12 @@ void UI::handleGoMenu()
     engine.switchWorld("menu");
 }
 
+void UI::handleGameOver()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("GameOver");
+}
+
 void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {

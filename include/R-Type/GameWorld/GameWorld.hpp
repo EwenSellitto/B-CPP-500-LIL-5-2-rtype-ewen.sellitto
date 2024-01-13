@@ -77,4 +77,18 @@ namespace GameWorld
         Subscribers::subscribeToEventsInputs(world);
         return world;
     }
+
+    inline ECS::World *createGameOver()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createParallax(world);
+        Entities::createGameOverEntities(world);
+
+        Systems::addUISystem(world);
+        Systems::addParallaxSystem(world);
+
+        return world;
+    }
 } // namespace GameWorld

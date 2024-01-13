@@ -39,6 +39,8 @@ namespace Engine::System
 
             void handleQuitGame();
 
+            void handleGameOver();
+
         private:
             void updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
                                    ECS::ComponentHandle<Components::RenderableComponent> renderable,

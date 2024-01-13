@@ -90,6 +90,31 @@ namespace Entities
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
     }
+    inline void createGameOverEntities(ECS::World *world)
+    {
+        using namespace Engine::Components;
+        sf::Font font;
+        if (!font.loadFromFile("./assets/fonts/font_big.ttf")) {
+            return;
+        }
+        world->createEntity(new TextComponent("Game over", font, 80, {400, 50}, sf::Color::White, true));
+        world->createEntity(new PositionComponent(400, 325),
+                            new TextComponent("Restart", font, 40, {400, 300}, true, true),
+                            new ButtonComponent("Restart",
+                                                [world]() {
+                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                                    uiSystem.handleStartGame();
+                                                }),
+                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(400, 410),
+                            new TextComponent("Menu", font, 40, {400, 385}, true, true),
+                            new ButtonComponent("Menu",
+                                                [world]() {
+                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                                    uiSystem.handleGoMenu();
+                                                }),
+                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+    }
 
     inline void createOptionsEntities(ECS::World *world)
     {
@@ -269,10 +294,10 @@ namespace Entities
         auto        attributes  = EnemyData::enemyTypeAttributes.at(EnemyData::EnemyType::Weak);
         size_t      windowSizeX = Engine::EngineClass::getEngine().getWindowSizeX();
         ECS::id_t   enemyId     = world.createEntity(
-            new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
-            new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
-            new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
-            new ExcludeCollisionComponent(0), new HealthComponent(20));
+                  new PositionComponent(static_cast<int>(windowSizeX), static_cast<int>(y)),
+                  new RenderableComponent(attributes.spritePath, 20, 20, 0, 270),
+                  new EnemyComponent(attributes.health, EnemyData::EnemyType::Weak), new CollisionComponent(21, 23, 22, 22),
+                  new ExcludeCollisionComponent(0), new HealthComponent(20));
 
         ECS::Entity &enemy = world.getMutEntity(enemyId);
 
