@@ -10,7 +10,6 @@
 #include <SFML/Window/Event.hpp>
 
 #include "ECS/Entity.hpp"
-#include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Speed.component.hpp"

@@ -35,9 +35,7 @@ size_t EnemyMakers::basicEnemyMaker(float y, bool isAttacking,
 
     if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
-    enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-        // {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
-        PatternMovements));
+    enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(PatternMovements));
 
     return enemyId;
 }
@@ -64,9 +62,7 @@ size_t EnemyMakers::mediumEnemyMaker(float y, bool isAttacking,
         enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
             {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
     } else {
-        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            // {std::make_pair(800, sf::Vector2f(-50, 50)), std::make_pair(800, sf::Vector2f(-50, -50))}
-            PatternMovements));
+        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(PatternMovements));
     }
     return enemyId;
 }
@@ -93,9 +89,7 @@ size_t EnemyMakers::strongEnemyMaker(float y, bool isAttacking,
         enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
             {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
     } else {
-        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-            // {std::make_pair(800, sf::Vector2f(-50, 50)), std::make_pair(800, sf::Vector2f(-50, -50))}
-            PatternMovements));
+        enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(PatternMovements));
     }
     return enemyId;
 }
@@ -118,9 +112,7 @@ size_t EnemyMakers::ObstacleMaker(float y, bool isAttacking,
 
     if (isAttacking) enemy.addComponent(new EnemyAttackComponent(2000, 0, {-150 * 3, 500 * 3}, 400 * 3));
 
-    enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(
-        // {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}));
-        PatternMovements));
+    enemy.addComponent<EnemyMovementsComponent>(new EnemyMovementsComponent(PatternMovements));
 
     return enemyId;
 }

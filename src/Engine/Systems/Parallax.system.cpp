@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Parallax.system.cpp
+*/
+
 #include "Engine/Systems/Parallax.system.hpp"
 
 #include "ECS/World.hpp"

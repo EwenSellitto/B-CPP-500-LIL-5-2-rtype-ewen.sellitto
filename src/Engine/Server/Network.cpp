@@ -7,9 +7,7 @@
 
 #include "Engine/Server/Network.hpp"
 
-#include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
-#include "R-Type/GameWorld/Entities.hpp"
 
 using namespace Engine;
 using namespace ECS;

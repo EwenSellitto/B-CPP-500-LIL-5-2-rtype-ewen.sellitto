@@ -13,7 +13,6 @@
 #include "ECS/Components.hpp"
 #include "ECS/Entity.hpp"
 #include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Drawable.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
@@ -54,6 +53,10 @@ sf::FloatRect Physics::get_hitbox_with_rotation(ECS::ComponentHandle<Engine::Com
 
     return newHitbox;
 }
+
+#ifndef NOT_SHOW_HITBOX
+#include "Engine/Components/Drawable.component.hpp"
+#endif
 
 void Physics::collide(ECS::Entity *entity, int x, int y)
 {
