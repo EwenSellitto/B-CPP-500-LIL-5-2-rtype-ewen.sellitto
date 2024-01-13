@@ -9,7 +9,6 @@
 
 #include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "Engine/Systems/Score.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
@@ -40,7 +39,6 @@ namespace Rtype::Subscriber
                     dynamic_cast<Engine::System::ScoreSystem *>(WORLD.getSystems()["ScoreSystem"].get());
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
-                    std::cout << "YOU LOSE" << std::endl;
                     WORLD.removeEntity(data.movingEntity->getId());
                     ui->handleGameOver();
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
@@ -50,7 +48,6 @@ namespace Rtype::Subscriber
                         world.removeEntity(data.movingEntity);
                     } else if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<PlayerComponent>()) {
-                        std::cout << "YOU LOSE" << std::endl;
                         ui->handleGameOver();
                         WORLD.removeEntity(data.movingEntity->getId());
                         WORLD.removeEntity(data.collidingEntity->getId());

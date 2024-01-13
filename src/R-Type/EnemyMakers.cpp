@@ -7,6 +7,9 @@
 
 #include "R-Type/GameWorld/EnemyMakers.hpp"
 
+#include "ECS/World.hpp"
+#include "Engine/Engine.hpp"
+
 std::map<size_t, std::function<size_t(float, bool, std::vector<std::pair<size_t, sf::Vector2f>>)>> functionMap = {
     {0, EnemyMakers::basicEnemyMaker},
     {1, EnemyMakers::mediumEnemyMaker},

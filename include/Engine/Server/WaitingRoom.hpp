@@ -1,5 +1,13 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** WaitingRoom.hpp
+*/
+
+#pragma once
+
 #include <SFML/Network.hpp>
-#include <iostream>
 #include <vector>
 
 #include "Engine/Server/ClientInfo.hpp"

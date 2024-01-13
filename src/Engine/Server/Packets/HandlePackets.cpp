@@ -97,7 +97,7 @@ int ECS::Network::getNbEntitiesWithDeletedComponents()
     int nbCompsToDelete = 0;
 
     for (const auto &pair : Engine::EngineClass::getEngine().world().getEntities()) {
-        nbCompsToDelete = pair.second->getComponentsToDelete().size();
+        nbCompsToDelete = static_cast<int>(pair.second->getComponentsToDelete().size());
         for (const auto &component : pair.second->getComponents()) {
             if (component.second->getType() != ComponentType::NoneComponent &&
                 std::find(pair.second->getComponentsToDelete().begin(), pair.second->getComponentsToDelete().end(),
@@ -135,7 +135,7 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
         sf::Packet packet;
         packet << static_cast<int>(PacketType::InitializeGame);
         packet << static_cast<int>(waitingRoom.getPlayers().size());
-        GameWorld::addToGameWorldServerSide(&WORLD, waitingRoom.getPlayers().size());
+        GameWorld::addToGameWorldServerSide(&WORLD, static_cast<int>(waitingRoom.getPlayers().size()));
         int nbEntities = getNbEntitiesModified();
         packet << nbEntities;
         for (const auto &pair : WORLD.getEntities())
@@ -149,7 +149,8 @@ void ECS::Network::addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned
     waitingRoom.addPlayer(clientAddress, clientPort, isHost);
 }
 
-void ECS::Network::handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
+void ECS::Network::handleClientUpdate(sf::Packet &packet, [[maybe_unused]] const sf::IpAddress &sender,
+                                      [[maybe_unused]] unsigned short senderPort)
 {
     int nbEntities = 0;
     int updateType = 0;

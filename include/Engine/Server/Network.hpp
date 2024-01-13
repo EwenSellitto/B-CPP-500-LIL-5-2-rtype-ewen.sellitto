@@ -9,12 +9,9 @@
 
 #include <SFML/Network.hpp>
 #include <SFML/Window/Event.hpp>
-#include <iostream>
 #include <thread>
-#include <unordered_map>
 
 #include "ECS/Components.hpp"
-#include "Engine/Components/Position.component.hpp"
 #include "Engine/Server/WaitingRoom.hpp"
 #include "public/AvailableComponents.hpp"
 

@@ -70,8 +70,8 @@ namespace ECS
              */
             bool entityExists(id_t entityId)
             {
-                for (const auto &paire : _entities) {
-                    if (paire.first == entityId) {
+                for (const auto &entity : _entities) {
+                    if (entity.first == entityId) {
                         return true;
                     }
                 }
@@ -437,7 +437,7 @@ namespace ECS
                             renderer = system.second.get();
                             continue;
                         }
-                        system.second->tick();
+                        if (system.second) system.second->tick();
                     }
                 }
                 Engine::EngineClass::getEngine().setCurrentPlayer(Engine::EngineClass::getEngine().getOwnPlayer());

@@ -17,20 +17,6 @@ enum class bulletType {
     Strong
 };
 
-// struct BulletsAttributes {
-//         std::string spritePath;
-//         int         _damage;
-//         int         _speed;
-
-//         BulletsAttributes(std::string sprite, int damage, int speed) : spritePath(sprite), _damage(damage),
-//         _speed(speed) {}
-// };
-
-// const std::unordered_map<bulletType, BulletsAttributes> bulletTypeAttributes = {
-//     {bulletType::Weak, BulletsAttributes("./assets/Nairan/Nairan-Scout-Base.png", 50, 10)},
-//     {bulletType::Normal, BulletsAttributes("./assets/Nairan/Nairan-Battlecruiser-Base.png", 100, 15)},
-//     {bulletType::Strong, BulletsAttributes("./assets/Nairan/Nairan-Dreadnought-Base.png", 150, 20)}};
-
 namespace Engine::System
 {
     class Bullets : public ECS::BaseSystem

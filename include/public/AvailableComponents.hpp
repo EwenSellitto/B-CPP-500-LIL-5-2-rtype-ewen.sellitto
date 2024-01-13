@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <functional>
+
+#include "ECS/Entity.hpp"
 #include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/ExcludeCollision.component.hpp"

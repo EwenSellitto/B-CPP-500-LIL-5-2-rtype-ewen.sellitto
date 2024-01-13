@@ -1,5 +1,12 @@
-// GameWorld.hpp
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** GameWorld.hpp
+*/
+
 #pragma once
+
 #include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
 #include "Entities.hpp"

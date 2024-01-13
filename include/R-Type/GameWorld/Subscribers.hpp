@@ -1,4 +1,10 @@
-// Subscribers.hpp
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Subscribers.hpp
+*/
+
 #pragma once
 
 #include "ECS/World.hpp"

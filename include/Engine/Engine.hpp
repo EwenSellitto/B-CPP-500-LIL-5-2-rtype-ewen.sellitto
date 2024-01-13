@@ -62,7 +62,7 @@ namespace Engine
             //===================*/
 
             static EngineClass &getEngine();
-            static EngineClass &getEngine(std::size_t x, std::size_t y, std::string name);
+            static EngineClass &getEngine(std::size_t x, std::size_t y, const std::string &name);
 
             EngineClass &operator=(const EngineClass &engine) = delete;
             EngineClass(const EngineClass &engine)            = delete;
@@ -73,7 +73,7 @@ namespace Engine
             //============================*/
 
             EngineClass(std::size_t x = DEFAULT_WINDOW_SIZE_X, std::size_t y = DEFAULT_WINDOW_SIZE_Y,
-                        std::string name = DEFAULT_WINDOW_NAME, std::string start_world = DEFAULT_WINDOW_NAME);
+                        const std::string &name = DEFAULT_WINDOW_NAME, std::string start_world = DEFAULT_WINDOW_NAME);
 
             ~EngineClass();
 
@@ -85,30 +85,30 @@ namespace Engine
             void setStartWorld(const std::string &name);
             int  getNetwork();
 
-            std::size_t getWindowSizeX();
-            std::size_t getWindowSizeY();
+            std::size_t getWindowSizeX() const;
+            std::size_t getWindowSizeY() const;
 
             void setCurrentPlayer(int);
             void setPlayersAmount(int);
             void setOwnPlayer(int);
 
-            int getCurrentPlayer();
-            int getPlayersAmount();
-            int getOwnPlayer();
+            int getCurrentPlayer() const;
+            int getPlayersAmount() const;
+            int getOwnPlayer() const;
 
             /*===================//
             //  Worlds Handling  //
             //===================*/
 
-            void createEmptyWorld(std::string name);
+            void createEmptyWorld(const std::string &name);
 
-            void addWorldFactory(std::string name, std::function<ECS::World *()>);
+            void addWorldFactory(const std::string &name, std::function<ECS::World *()>);
 
-            void switchWorld(std::string name);
+            void switchWorld(const std::string &name);
 
             std::vector<std::string> getWorldsNames();
 
-            ECS::World   &world();
+            ECS::World   &world() const;
             ECS::Network &network();
 
             /*=================//

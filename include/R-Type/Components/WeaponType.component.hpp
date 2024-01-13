@@ -8,7 +8,6 @@
 #pragma once
 
 #include <array>
-#include <iostream>
 #include <vector>
 
 #include "ECS/Components.hpp"

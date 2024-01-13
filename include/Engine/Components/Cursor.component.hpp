@@ -1,6 +1,13 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Cursor.component.hpp
+*/
+
 #pragma once
+
 #include <functional>
-#include <string>
 #include <vector>
 
 #include "ECS/Components.hpp"

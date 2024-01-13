@@ -49,6 +49,8 @@ sf::Event ECS::Network::deserializeEvent(sf::Packet &packet)
             packet >> event.mouseWheelScroll.x;
             packet >> event.mouseWheelScroll.y;
             break;
+        default:
+            break;
     }
 
     return event;
@@ -60,11 +62,8 @@ void ECS::Network::deserializeRemoveEntitiesAndRemove(sf::Packet &packet)
 
     packet >> entityId;
     if (WORLD.entityExists(entityId)) {
-        std::cout << "REMOVED ENTITY " << std::endl;
         componentsToUpdate.emplace_back(static_cast<ECS::id_t>(entityId), std::vector<ComponentType>(),
                                         std::vector<std::pair<BaseComponent *, ComponentType>>());
-    } else {
-        std::cout << "nto removed entity" << std::endl;
     }
 }
 
@@ -111,21 +110,15 @@ void ECS::Network::deserializeEntityAndApply(sf::Packet &packet)
                 }
             }
         }
-        std::cout << "deserializeEntityAndApply SI CA EXISTE" << std::endl;
         if (components.empty()) {
-            std::cout << "CA FONCTIONNE PAS -> componentsToRemove ou components est vide " << std::endl;
             return;
         } else
             componentsToUpdate.emplace_back(entityId, componentsToRemove, components);
-        std::cout << "TOUT EST GOOD" << std::endl;
         return;
     }
-    std::cout << "deserializeEntityAndApply" << std::endl;
     if (components.empty()) {
-        std::cout << "CA FONCTIONNE PAS -> components est vide " << std::endl;
         return;
-    } else
-        std::cout << "TOUT EST GOOD" << std::endl;
+    }
     componentsToUpdate.emplace_back(entityId, std::vector<ComponentType>(), components);
 }
 
@@ -150,12 +143,9 @@ void ECS::Network::deserializeRemovedComponentsAndApply(sf::Packet &packet)
             }
         }
     }
-    std::cout << "deserializeRemovedComponentsAndApply" << std::endl;
     if (componentsToRemove.empty()) {
-        std::cout << "CA FONCTIONNE PAS -> componentsToRemove est vide " << std::endl;
         return;
-    } else
-        std::cout << "TOUT EST GOOD" << std::endl;
+    }
 
     componentsToUpdate.emplace_back(entityId, componentsToRemove,
                                     std::vector<std::pair<BaseComponent *, ComponentType>>());

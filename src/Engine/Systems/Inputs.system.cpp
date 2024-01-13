@@ -1,7 +1,6 @@
 #include "Engine/Systems/Inputs.system.hpp"
 
 #include <algorithm>
-#include <iostream>
 
 #include "ECS/World.hpp"
 #include "Engine/Components/Text.component.hpp"
@@ -47,8 +46,8 @@ void InputsSystem::handleSend(std::vector<std::string> args)
 {
     std::string ipAddress = "";
     int         port      = 0;
-    WORLD.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity            *entity,
-                                                      ECS::ComponentHandle<TextComponent>      textComp,
+    WORLD.each<TextComponent, TextInputComponent>([&]([[maybe_unused]] ECS::Entity                        *entity,
+                                                      [[maybe_unused]] ECS::ComponentHandle<TextComponent> textComp,
                                                       ECS::ComponentHandle<TextInputComponent> textInputComp) {
         std::string id = textInputComp->text;
         if (entity->has<TextComponent>()) {
@@ -63,7 +62,6 @@ void InputsSystem::handleSend(std::vector<std::string> args)
     });
 
     if (args.size() == 2) {
-        std::cout << "Connecting to " << ipAddress << ":" << port << std::endl;
         NETWORK.connectToServer(ipAddress, port);
     } else {
         NETWORK.startServer(port);

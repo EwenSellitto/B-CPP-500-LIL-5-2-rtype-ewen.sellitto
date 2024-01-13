@@ -7,19 +7,12 @@
 
 #pragma once
 
-#include <iostream>
-
 #include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
-#include "Engine/Components/Animation.component.hpp"
-#include "Engine/Components/Collision.component.hpp"
-#include "Engine/Components/Moving.component.hpp"
+#include "ECS/World.hpp"
 #include "Engine/Components/Position.component.hpp"
-#include "Engine/Components/Renderable.component.hpp"
-#include "R-Type/Components/Booster.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Events/EnnemyDeath.event.hpp"
-#include "R-Type/Systems/Enemy.system.hpp"
 
 namespace Rtype::Subscriber
 {

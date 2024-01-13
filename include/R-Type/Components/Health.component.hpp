@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <sstream>
+
 #include "ECS/Components.hpp"
 
 namespace Rtype::Components

@@ -64,7 +64,6 @@ void ECS::Network::handleReceivedPacket(sf::Packet &packet, const sf::IpAddress 
             handleClientUpdate(packet, sender, senderPort);
             break;
         default:
-            std::cout << static_cast<int>(packetType) << std::endl;
             std::cerr << "Paquet reçu inconnu" << std::endl;
             break;
     }

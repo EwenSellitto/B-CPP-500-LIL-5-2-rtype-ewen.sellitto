@@ -7,15 +7,11 @@
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-
 #include "ECS/World.hpp"
 #include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Button.component.hpp"
 #include "Engine/Components/Collision.component.hpp"
 #include "Engine/Components/Cursor.component.hpp"
-#include "Engine/Components/ExcludeCollision.component.hpp"
 #include "Engine/Components/LayeredAnimation.component.hpp"
 #include "Engine/Components/LayeredRenderable.component.hpp"
 #include "Engine/Components/Menu.component.hpp"
@@ -34,15 +30,9 @@
 #include "Engine/Systems/Options.system.hpp"
 #include "Engine/Systems/Sound.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
-#include "R-Type/Components/Booster.component.hpp"
-#include "R-Type/Components/Enemy.component.hpp"
-#include "R-Type/Components/EnemyAttack.component.hpp"
-#include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
-#include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
 #include "R-Type/Components/WeaponType.component.hpp"
-#include "R-Type/GameWorld/EnemyMakers.hpp"
 #include "Waves.hpp"
 
 namespace Entities
@@ -140,12 +130,7 @@ namespace Entities
                             new RenderableComponent("./assets/menu/icons/close_icon.png", 0, 0, 2, 0, {2, 2}, true));
         world->createEntity(
             new PositionComponent(400, 520), new TextComponent("Start Game", font, 40, {400, 500}, true),
-            new MenuComponent(),
-            new ButtonComponent("Start Game",
-                                [world]() {
-                                    std::cout << "Start Game" << std::endl;
-                                    NETWORK.setIsReadyToStart(true);
-                                }),
+            new MenuComponent(), new ButtonComponent("Start Game", []() { NETWORK.setIsReadyToStart(true); }),
             new RenderableComponent("./assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
     }
 

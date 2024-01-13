@@ -9,6 +9,7 @@
 
 #include <SFML/Window/Event.hpp>
 #include <functional>
+#include <utility>
 #include <vector>
 
 #include "ECS/Entity.hpp"
@@ -41,7 +42,7 @@ EngineClass &EngineClass::getEngine()
  * @param name The name of the window
  * @return EngineClass& the engine unique instance
  */
-EngineClass &EngineClass::getEngine(std::size_t x, std::size_t y, std::string name)
+EngineClass &EngineClass::getEngine(std::size_t x, std::size_t y, const std::string &name)
 {
     static EngineClass engine = EngineClass(x, y, name);
     return engine;
@@ -59,10 +60,10 @@ EngineClass &EngineClass::getEngine(std::size_t x, std::size_t y, std::string na
  * @param start_world The name of the world to start with
  */
 EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t window_size_y,
-                         const std::string window_name, std::string start_world)
+                         const std::string &window_name, std::string start_world)
     : window(sf::RenderWindow(sf::VideoMode(window_size_x, window_size_y), window_name,
                               sf::Style::Close | sf::Style::Resize)),
-      _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(start_world),
+      _running(false), _fullscreen(false), _worldsFactories(), _currentWorld(), _startWorld(std::move(start_world)),
       _windowSizeX(window_size_x), _windowSizeY(window_size_y), _network(), _playersAmount(1), _currentPlayer(0),
       _ownPlayer(0), _global_entities()
 {
@@ -87,7 +88,7 @@ void EngineClass::setStartWorld(const std::string &name)
  * @brief Get the Window Size X object
  * @return std::size_t
  */
-std::size_t EngineClass::getWindowSizeX()
+std::size_t EngineClass::getWindowSizeX() const
 {
     return _windowSizeX;
 }
@@ -96,7 +97,7 @@ std::size_t EngineClass::getWindowSizeX()
  * @brief Get the Window Size Y object
  * @return std::size_t
  */
-std::size_t EngineClass::getWindowSizeY()
+std::size_t EngineClass::getWindowSizeY() const
 {
     return _windowSizeY;
 }
@@ -116,17 +117,17 @@ void EngineClass::setOwnPlayer(int player)
     _ownPlayer = player;
 }
 
-int EngineClass::getCurrentPlayer()
+int EngineClass::getCurrentPlayer() const
 {
     return _currentPlayer;
 }
 
-int EngineClass::getPlayersAmount()
+int EngineClass::getPlayersAmount() const
 {
     return _playersAmount;
 }
 
-int EngineClass::getOwnPlayer()
+int EngineClass::getOwnPlayer() const
 {
     return _ownPlayer;
 }
@@ -142,7 +143,7 @@ int EngineClass::getOwnPlayer()
  * @note If the world already exists, it will be overwritten
  * @note This function will throw an error if the world doesn't exist
  */
-void EngineClass::createEmptyWorld(const std::string name)
+void EngineClass::createEmptyWorld(const std::string &name)
 {
     _currentWorld = std::make_pair(name, new ECS::World());
 }
@@ -155,19 +156,10 @@ void EngineClass::createEmptyWorld(const std::string name)
  * @note The factory function must return a shared_ptr to a world
  * @note If the world already exists, it will be overwritten
  */
-void EngineClass::addWorldFactory(std::string name, std::function<ECS::World *()> factory)
+void EngineClass::addWorldFactory(const std::string &name, std::function<ECS::World *()> factory)
 {
-    _worldsFactories[name] = factory;
+    _worldsFactories[name] = std::move(factory);
 }
-
-/**
- * @brief Sets the fallback world factory
- * @param factory The factory function
- * @return void
- * @note The factory function must return a shared_ptr to a world
- * @note this factory is called if the run function catch an error
- */
-void setFallBackWorld(std::function<ECS::World *()>) {}
 
 /**
  * @brief Switches the current world to the one with the given name
@@ -177,7 +169,7 @@ void setFallBackWorld(std::function<ECS::World *()>) {}
  * @note This function will throw an error if the world doesn't exist
  * @note You can define DONT_ADD_RENDERER_SYSTEM to not add the renderer system to the world automatically
  */
-void EngineClass::switchWorld(const std::string name)
+void EngineClass::switchWorld(const std::string &name)
 {
     auto it = _worldsFactories.find(name);
     auto c  = _currentWorld;
@@ -207,7 +199,7 @@ std::vector<std::string> EngineClass::getWorldsNames()
  * @brief Get the current world
  * @return ECS::World&
  */
-ECS::World &EngineClass::world()
+ECS::World &EngineClass::world() const
 {
     return *_currentWorld.second;
 }
@@ -294,7 +286,7 @@ void EngineClass::processClientsEvents()
 
 void EngineClass::handleEvents()
 {
-    sf::Event event;
+    sf::Event event{};
 
     while (window.pollEvent(event)) {
         if (NETWORK.getGameHasStarted() && !NETWORK.getIsServer() &&

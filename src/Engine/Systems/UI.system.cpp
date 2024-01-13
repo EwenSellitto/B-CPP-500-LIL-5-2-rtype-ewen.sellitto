@@ -14,15 +14,9 @@
 
 using namespace Engine::System;
 
-void UI::configure([[maybe_unused]] ECS::World &world)
-{
-    return;
-}
+void UI::configure([[maybe_unused]] ECS::World &world) {}
 
-void UI::unconfigure()
-{
-    return;
-}
+void UI::unconfigure() {}
 
 void UI::tick()
 {
@@ -33,26 +27,27 @@ void UI::tick()
     sf::Vector2f      worldPos      = window->mapPixelToCoords(mousePosition);
 
     auto &world = getWorld();
-    world.each<ButtonComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
-                                                         ECS::ComponentHandle<ButtonComponent>     buttonComp,
-                                                         ECS::ComponentHandle<RenderableComponent> renderable) {
+    world.each<ButtonComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity                    *entity,
+                                                         const ECS::ComponentHandle<ButtonComponent>     &buttonComp,
+                                                         const ECS::ComponentHandle<RenderableComponent> &renderable) {
         updateButtonState(buttonComp, renderable, worldPos);
     });
-    world.each<CheckBoxComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
-                                                           ECS::ComponentHandle<CheckBoxComponent>   checkboxComp,
-                                                           ECS::ComponentHandle<RenderableComponent> renderable) {
-        updateCheckBoxState(entity, checkboxComp, renderable, worldPos);
-    });
+    world.each<CheckBoxComponent, RenderableComponent>(
+        [&]([[maybe_unused]] ECS::Entity *entity, const ECS::ComponentHandle<CheckBoxComponent> &checkboxComp,
+            const ECS::ComponentHandle<RenderableComponent> &renderable) {
+            updateCheckBoxState(entity, checkboxComp, renderable, worldPos);
+        });
     world.each<CursorComponent, PositionComponent, RenderableComponent>(
-        [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<CursorComponent> cursorComp,
-            ECS::ComponentHandle<PositionComponent> position, ECS::ComponentHandle<RenderableComponent> renderable) {
+        [&]([[maybe_unused]] ECS::Entity *entity, const ECS::ComponentHandle<CursorComponent> &cursorComp,
+            const ECS::ComponentHandle<PositionComponent>   &position,
+            const ECS::ComponentHandle<RenderableComponent> &renderable) {
             updateCursorState(cursorComp, renderable, position, mousePosition, worldPos);
         });
-    world.each<TextInputComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
-                                                            ECS::ComponentHandle<TextInputComponent>  textinputComp,
-                                                            ECS::ComponentHandle<RenderableComponent> renderable) {
-        updateInputState(entity, textinputComp, renderable, worldPos);
-    });
+    world.each<TextInputComponent, RenderableComponent>(
+        [&]([[maybe_unused]] ECS::Entity *entity, const ECS::ComponentHandle<TextInputComponent> &textinputComp,
+            const ECS::ComponentHandle<RenderableComponent> &renderable) {
+            updateInputState(entity, textinputComp, renderable, worldPos);
+        });
 }
 
 void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
@@ -107,10 +102,10 @@ void UI::updateCheckBoxState(ECS::Entity *entity, ECS::ComponentHandle<Component
     }
 }
 
-void UI::updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
-                           ECS::ComponentHandle<Components::RenderableComponent> renderable,
-                           ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
-                           const sf::Vector2f &worldPos)
+void UI::updateCursorState(ECS::ComponentHandle<Components::CursorComponent>          cursorComp,
+                           ECS::ComponentHandle<Components::RenderableComponent>      renderable,
+                           const ECS::ComponentHandle<Components::PositionComponent> &position,
+                           sf::Vector2i mousePosition, const sf::Vector2f &worldPos)
 {
 
     sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
@@ -200,7 +195,7 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
 }
 
 void UI::handleTextInput(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
-                         [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                         [[maybe_unused]] const ECS::ComponentHandle<Components::RenderableComponent> &renderable)
 {
     using namespace Engine::Components;
 
@@ -221,7 +216,7 @@ void UI::handleTextInput(ECS::Entity *entity, ECS::ComponentHandle<Components::T
 }
 
 void UI::handleCheck(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
-                     ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                     const ECS::ComponentHandle<Components::RenderableComponent> &renderable)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (!checkboxComp->isClicked) {
@@ -240,7 +235,7 @@ void UI::handleCheck(ECS::Entity *entity, ECS::ComponentHandle<Components::Check
 
 void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
                       ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
-                      [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+                      [[maybe_unused]] const ECS::ComponentHandle<Components::RenderableComponent> &renderable)
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (position->x > 250 && position->x < 490) cursorComp->onChange();
@@ -248,11 +243,12 @@ void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursor
     }
 }
 
-void UI::checkboxChangeRenderable(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
-                                  [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+void UI::checkboxChangeRenderable(
+    ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
+    [[maybe_unused]] const ECS::ComponentHandle<Components::RenderableComponent> &renderable)
 {
 
-    if (checkboxComp->status == true) {
+    if (checkboxComp->status) {
         entity->removeComponent<Components::RenderableComponent>();
         entity->addComponent<Components::RenderableComponent>(new Components::RenderableComponent(
             "./assets/menu/button_check/check_on.png", 0, 0, 3, 0, {2, 2}, false, true));

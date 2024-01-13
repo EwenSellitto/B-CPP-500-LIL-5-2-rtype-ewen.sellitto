@@ -8,7 +8,6 @@
 #include "ECS/World.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Server/Network.hpp"
-#include "R-Type/GameWorld/Entities.hpp"
 
 using namespace Engine;
 using namespace ECS;
@@ -25,7 +24,6 @@ void ECS::Network::sendRemovedEntitiesToClients(std::vector<ECS::id_t> &removedE
     packet << nbEntities;
     for (const auto &id : removedEntities)
         packet << static_cast<sf::Uint64>(id);
-    std::cout << "SEND removed entites : " << std::endl;
     sendPacketToAllClients(packet, false);
 }
 

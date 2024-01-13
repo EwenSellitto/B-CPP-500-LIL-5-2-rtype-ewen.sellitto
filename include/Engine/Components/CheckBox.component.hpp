@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <string>
+#include <utility>
 
 #include "ECS/Components.hpp"
 
@@ -10,13 +11,14 @@ namespace Engine::Components
             std::string           text;
             std::function<void()> clickOn;
             std::function<void()> clickOff;
-            bool                  isActivated;
+            bool                  isActivated{};
             bool                  status    = false;
             bool                  isClicked = false;
 
-            CheckBoxComponent(const std::string &text, std::function<void()> clickOn, std::function<void()> clickOff,
+            CheckBoxComponent(std::string text, std::function<void()> clickOn, std::function<void()> clickOff,
                               bool isActivated = true)
-                : text(text), clickOn(clickOn), clickOff(clickOff), isActivated(isActivated)
+                : text(std::move(text)), clickOn(std::move(clickOn)), clickOff(std::move(clickOff)),
+                  isActivated(isActivated)
             {
             }
             CheckBoxComponent()           = default;
@@ -30,7 +32,8 @@ namespace Engine::Components
                 return {str.begin(), str.end()};
             }
 
-            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
+            ECS::BaseComponent *deserialize([[maybe_unused]] std::vector<char> vec,
+                                            ECS::BaseComponent                *component) override
             {
                 return component;
             }

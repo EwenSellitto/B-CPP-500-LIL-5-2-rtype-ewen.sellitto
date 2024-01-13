@@ -22,7 +22,7 @@ class DrawableComponent : public ECS::BaseComponent
             return {};
         }
 
-        ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
+        ECS::BaseComponent *deserialize([[maybe_unused]] std::vector<char> vec, ECS::BaseComponent *component) override
         {
             return component;
         }

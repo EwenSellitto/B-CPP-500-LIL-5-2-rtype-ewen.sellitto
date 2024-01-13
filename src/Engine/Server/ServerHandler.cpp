@@ -24,7 +24,6 @@ void ECS::Network::startClient(unsigned short port)
         std::cerr << "Erreur de liaison du port " << std::endl;
         return;
     }
-    std::cout << "Client démarré sur le port " << socket.getLocalPort() << std::endl;
     addPlayerToLobby("localhost", port, isServer);
     while (running) {
         receivePackets();
@@ -48,7 +47,6 @@ void ECS::Network::sendConnectionToServer(const sf::IpAddress &serverAddress, un
     packet << static_cast<int>(PacketType::HandshakeRequest);
     packet << false;
     serverHost = std::make_pair(serverAddress, port);
-    std::cout << "Demande de connexion au serveur " << serverAddress << ":" << port << std::endl;
     socket.setBlocking(false);
     if (socket.send(packet, serverAddress, port) != sf::Socket::Done) {
         std::cerr << "Erreur lors de l'envoi de la demande de connexion" << std::endl;

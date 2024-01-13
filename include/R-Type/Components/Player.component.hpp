@@ -9,14 +9,9 @@
 
 #include <iostream>
 #include <sstream>
-#include <tuple>
 #include <vector>
 
 #include "ECS/Components.hpp"
-#include "SFML/Graphics/RenderTexture.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
-#include "SFML/System/Vector2.hpp"
 
 namespace Engine::Components
 {

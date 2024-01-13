@@ -7,17 +7,12 @@
 
 #pragma once
 
-#include <functional>
 #include <iostream>
 #include <sstream>
 #include <tuple>
 #include <vector>
 
 #include "ECS/Components.hpp"
-#include "ECS/Entity.hpp"
-#include "SFML/Graphics/RenderTexture.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Vector2.hpp"
 
 namespace Engine::Components
@@ -38,7 +33,7 @@ namespace Engine::Components
             ~EnemyQueueComponent() override = default;
 
             // Sérialisation pour newEnemyQueueFactories
-            std::vector<char> serialize()
+            std::vector<char> serialize() override
             {
                 std::ostringstream oss(std::ios::binary);
                 size_t             size = newEnemyQueueFactories.size();

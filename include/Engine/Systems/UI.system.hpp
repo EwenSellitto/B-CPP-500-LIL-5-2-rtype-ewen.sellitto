@@ -50,9 +50,9 @@ namespace Engine::System
             void handleGoWaitingClient();
 
         private:
-            void updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
-                                   ECS::ComponentHandle<Components::RenderableComponent> renderable,
-                                   ECS::ComponentHandle<Components::PositionComponent>   position,
+            void updateCursorState(ECS::ComponentHandle<Components::CursorComponent>          cursorComp,
+                                   ECS::ComponentHandle<Components::RenderableComponent>      renderable,
+                                   const ECS::ComponentHandle<Components::PositionComponent> &position,
                                    sf::Vector2i mousePosition, const sf::Vector2f &worldPos);
             void updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                                    ECS::ComponentHandle<Components::RenderableComponent> renderable,
@@ -71,16 +71,16 @@ namespace Engine::System
             void handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                              ECS::ComponentHandle<Components::RenderableComponent> renderable);
             void handleCheck(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
-                             ECS::ComponentHandle<Components::RenderableComponent> renderable);
+                             const ECS::ComponentHandle<Components::RenderableComponent> &renderable);
             void handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
                               ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
-                              ECS::ComponentHandle<Components::RenderableComponent> renderable);
-            void handleTextInput(ECS::Entity                                          *entity,
-                                 ECS::ComponentHandle<Components::TextInputComponent>  textInputComp,
-                                 ECS::ComponentHandle<Components::RenderableComponent> renderable);
-            void checkboxChangeRenderable(ECS::Entity                                          *entity,
-                                          ECS::ComponentHandle<Components::CheckBoxComponent>   checkboxComp,
-                                          ECS::ComponentHandle<Components::RenderableComponent> renderable);
+                              const ECS::ComponentHandle<Components::RenderableComponent> &renderable);
+            void handleTextInput(ECS::Entity                                                 *entity,
+                                 ECS::ComponentHandle<Components::TextInputComponent>         textInputComp,
+                                 const ECS::ComponentHandle<Components::RenderableComponent> &renderable);
+            void checkboxChangeRenderable(ECS::Entity                                                 *entity,
+                                          ECS::ComponentHandle<Components::CheckBoxComponent>          checkboxComp,
+                                          const ECS::ComponentHandle<Components::RenderableComponent> &renderable);
             void handleKeyboard();
     };
 } // namespace Engine::System
