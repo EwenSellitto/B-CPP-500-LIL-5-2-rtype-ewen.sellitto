@@ -73,7 +73,8 @@ namespace Rtype::Subscriber
                 } else {
                     data.collidingEntity->removeAllComponents();
                 }
-                data.movingEntity->removeAllComponents();
+                if (!data.movingEntity->getComponent<BaseBulletComponent>()->toDelete)
+                    data.movingEntity->removeAllComponents();
             }
     };
 } // namespace Rtype::Subscriber

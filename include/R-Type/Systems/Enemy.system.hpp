@@ -32,8 +32,8 @@ namespace EnemyData
 
     const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
         {EnemyType::Weak, EnemyAttributes("./assets/klaed/Klaed-Scout-Base.png", 50)},
-        {EnemyType::Medium, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
-        {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
+        {EnemyType::Medium, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 200)},
+        {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 2000)}};
 
     // {EnemyType::Weak, EnemyAttributes(spriteInfoMap.at("Klaed-Scout-Base").filePath , 50)},
     // {EnemyType::Medium, EnemyAttributes(spriteInfoMap.at("Klaed-Battlecruiser-Base").filePath, 100)},

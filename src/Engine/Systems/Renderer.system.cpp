@@ -43,7 +43,7 @@ void Renderer::tick()
     ECS::World                                                                  &world = getWorld();
     std::map<int, std::vector<ECS::ComponentHandle<RenderableComponent>>>        components{};
     std::map<int, std::vector<ECS::ComponentHandle<LayeredRenderableComponent>>> layeredComponents{};
-    std::map<int, bool>                                                          keys1{};
+    std::map<int, bool>                                                          keys{};
     std::map<int, bool>                                                          keys2{};
     sf::RenderWindow                                                            *window = &WINDOW;
     std::unordered_map<ECS::Entity *, ECS::ComponentHandle<ViewComponent>>       ViewEntities;
@@ -68,7 +68,7 @@ void Renderer::tick()
                 updateSprite(renderableComp, positionComponent);
             }
             components[renderableComp->priority].push_back(renderableComp);
-            keys1[renderableComp->priority] = true;
+            keys[renderableComp->priority] = true;
         }
     });
 
@@ -90,8 +90,7 @@ void Renderer::tick()
 
     t1.join();
     t2.join();
-    keys1.merge(keys2);
-    auto keys = keys1;
+    keys.merge(keys2);
 
     window->clear(sf::Color::Black);
 
@@ -99,13 +98,13 @@ void Renderer::tick()
         int iter = key.first;
         if (components.find(iter) != components.end()) {
             for (auto &renderableComp : components[iter]) {
-                window->draw(renderableComp->sprite);
+                if (renderableComp->isDisplayed) window->draw(renderableComp->sprite);
             }
         }
         if (layeredComponents.find(iter) != layeredComponents.end()) {
             for (auto &renderableComp : layeredComponents[iter]) {
                 for (auto &renderable : renderableComp->renderable) {
-                    if (renderableComp->isDisplayed) window->draw(renderable->sprite);
+                    if (renderable->isDisplayed) window->draw(renderable->sprite);
                 }
             }
         }

@@ -109,6 +109,7 @@ add_executable(r-type
         include/R-Type/Components/Booster.component.hpp
         include/R-Type/Components/BoosterActive.component.hpp
         include/R-Type/Components/Booster.component.hpp
+        include/R-Type/Components/WeaponType.component.hpp
         include/R-Type/GameWorld/Subscribers.hpp
         include/R-Type/GameWorld/Entities.hpp
         include/R-Type/GameWorld/GameWorld.hpp

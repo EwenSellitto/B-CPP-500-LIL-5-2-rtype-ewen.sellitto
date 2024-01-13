@@ -25,18 +25,4 @@ namespace Rtype::Components
             ~isBoosterComponent() override = default;
     };
 
-    enum class WeaponType {
-        BASIC,
-        CANON,
-        LASER
-    };
-
-    struct WeaponBoosterComponent : ECS::BaseComponent {
-        public:
-            WeaponBoosterComponent(WeaponType type) : type(type){};
-            ~WeaponBoosterComponent() override = default;
-
-            WeaponType type;
-    };
-
 } // namespace Rtype::Components

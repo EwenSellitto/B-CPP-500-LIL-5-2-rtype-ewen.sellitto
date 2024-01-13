@@ -31,12 +31,14 @@
 #include "Engine/Systems/Options.system.hpp"
 #include "Engine/Systems/Sound.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
+#include "R-Type/Components/Booster.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"
 #include "R-Type/Components/EnemyAttack.component.hpp"
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
 #include "R-Type/Components/Health.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
+#include "R-Type/Components/WeaponType.component.hpp"
 
 namespace Entities
 {
@@ -53,16 +55,17 @@ namespace Entities
             new PlayerComponent(), new PositionComponent(100, 100),
             new RenderableComponent("./assets/MainShip/MainShip-Base-Fullhealth.png", 0, 0, 2, 90),
             new LayeredRenderableComponent(
-                1,
-                new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine-Powering.png", 0, 0, 1, 90,
-                                        {1, 1}, false),
+                1, new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine-Powering.png", 0, 0, 1, 90),
+                new RenderableComponent("./assets/MainShip/MainShip-Weapons-BigSpaceGun-Croped.png", 0, 0, 1, 90,
+                                        {1, 1}, false, false),
                 new RenderableComponent("./assets/MainShip/MainShip-Weapons-Rockets-Croped.png", 0, 0, 1, 90),
                 new RenderableComponent("./assets/MainShip/MainShip-Engines-BaseEngine.png", 0, 0, 1, 90)),
             new LayeredAnimationComponent(new AnimationComponent(0, 0, 48, 48, 48, 48, 100, 4)),
-            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150));
+            new CollisionComponent(9, 11, 30, 26), new TypeComponent(TypeComponent::player), new SpeedComponent(150),
+            new Rtype::Components::WeaponTypeComponent(Rtype::Components::WeaponType::BASIC));
     }
 
-    void createInputsEntities(ECS::World *world)
+    inline void createInputsEntities(ECS::World *world)
     {
         using namespace Engine::Components;
         sf::Font font;
@@ -88,7 +91,7 @@ namespace Entities
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
     }
 
-    void createOptionsEntities(ECS::World *world)
+    inline void createOptionsEntities(ECS::World *world)
     {
         using namespace Engine::Components;
         sf::Font font;

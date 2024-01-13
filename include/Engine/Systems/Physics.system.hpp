@@ -15,8 +15,6 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "SFML/Graphics/Rect.hpp"
 
-#define SHOW_HITBOX
-
 #ifndef SHOW_HITBOX
 #define NOT_SHOW_HITBOX
 #endif
