@@ -56,14 +56,15 @@ namespace Engine::Components
             }
 
             void reset(const std::string &texture_path, sf::Vector2<float> pos, int priority, float rotation = 0,
-                       sf::Vector2<float> scale = {1, 1}, bool setOrigin = false)
+                       sf::Vector2<float> scale = {1, 1}, bool setOrigin = false, bool isDisplayed = true)
             {
-                this->position  = pos;
-                this->priority  = priority;
-                this->rotation  = rotation;
-                this->scale     = scale;
-                this->path      = texture_path;
-                this->setOrigin = setOrigin;
+                this->position    = pos;
+                this->priority    = priority;
+                this->rotation    = rotation;
+                this->scale       = scale;
+                this->path        = texture_path;
+                this->setOrigin   = setOrigin;
+                this->isDisplayed = isDisplayed;
 
                 setTexture(texture_path);
             }

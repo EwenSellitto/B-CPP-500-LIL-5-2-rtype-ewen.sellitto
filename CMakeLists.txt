@@ -1,19 +1,15 @@
 cmake_minimum_required(VERSION 3.20.5)
 
-if (UNIX)
-    set(CMAKE_C_COMPILER clang)
-    set(CMAKE_CXX_COMPILER clang++)
-endif()
-
 project(R-TYPE)
 
 set(CMAKE_CXX_STANDARD 20)
 if(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W4")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
 else()
     set(CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -std=c++20 -g -Og")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++20 -O2")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++20 -O3")
 endif()
 
 include_directories(include)
@@ -46,6 +42,7 @@ add_executable(r-type
         ##==================##
 
         include/Engine/Components/Button.component.hpp
+        include/Engine/Components/CheckBox.component.hpp
         include/Engine/Components/ExcludeCollision.component.hpp
         include/Engine/Components/Moving.component.hpp
         include/Engine/Components/Parallax.component.hpp
@@ -66,6 +63,7 @@ add_executable(r-type
         include/Engine/Events/KeyReleased.event.hpp
         include/Engine/Systems/Animation.system.hpp
         include/Engine/Systems/Renderer.system.hpp
+        include/Engine/Systems/Inputs.system.hpp
         include/Engine/Systems/Parallax.system.hpp
         include/Engine/Systems/UI.system.hpp
         include/Engine/Systems/WorldMove.system.hpp
@@ -82,6 +80,7 @@ add_executable(r-type
         src/Engine/Systems/UI.system.cpp
         src/Engine/Systems/Sound.system.cpp
         src/Engine/Systems/Options.system.cpp
+        src/Engine/Systems/Inputs.system.cpp
         src/Engine/Systems/WorldMove.system.cpp
         src/Engine/Systems/Animation.system.cpp
         src/Engine/Systems/Physics.system.cpp
@@ -92,9 +91,12 @@ add_executable(r-type
         ##==================##
 
         include/R-Type/sprites.hpp
+        include/R-Type/Events/EnnemyDeath.event.hpp
+        include/R-Type/Subscribers/EnnemyDeath.subscriber.hpp
         include/R-Type/Subscribers/PlayerMove.subscriber.hpp
         include/R-Type/Subscribers/ShootPlayer.subscriber.hpp
         include/R-Type/Subscribers/Collision.subscriber.hpp
+        include/R-Type/Subscribers/Keyboard.subscriber.hpp
         include/R-Type/Components/BaseBullet.component.hpp
         include/R-Type/Components/Enemy.component.hpp
         include/R-Type/Components/EnemyAttack.component.hpp
@@ -104,6 +106,10 @@ add_executable(r-type
         include/R-Type/Components/DeathAnimation.component.hpp
         include/R-Type/Components/EnemyQueue.component.hpp
         include/R-Type/Components/Health.component.hpp
+        include/R-Type/Components/Booster.component.hpp
+        include/R-Type/Components/BoosterActive.component.hpp
+        include/R-Type/Components/Booster.component.hpp
+        include/R-Type/Components/WeaponType.component.hpp
         include/R-Type/GameWorld/Subscribers.hpp
         include/R-Type/GameWorld/Entities.hpp
         include/R-Type/GameWorld/GameWorld.hpp
@@ -113,6 +119,7 @@ add_executable(r-type
         include/R-Type/Systems/DeathAnimation.system.hpp
         include/R-Type/Systems/Enemy.system.hpp
         include/R-Type/Systems/Health.system.hpp
+        include/R-Type/Systems/Booster.system.hpp
 
         ##==================##
         ##  R-Type Sources  ##
@@ -123,14 +130,26 @@ add_executable(r-type
         src/R-Type/Systems/DeathAnimation.system.cpp
         src/R-Type/Systems/Enemy.system.cpp
         src/R-Type/Systems/Health.system.cpp
+        src/R-Type/Systems/Booster.system.cpp
 
         src/main.cpp
 )
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+        target_compile_definitions(r-type PRIVATE DEBUG_MODE)
+endif()
 
 target_link_libraries(r-type PRIVATE sfml-graphics sfml-window sfml-system sfml-network sfml-audio)
+# TODO: Fix network for windows
+# if (WIN32)
+#     target_link_libraries(r-type, PRIVATE ws2_32.lib)
+#     add_custom_command(TARGET r-type POST_BUILD
+#             COMMAND ${CMAKE_COMMAND} -E copy
+#             $<TARGET_RUNTIME_DLLS:r-type> $<TARGET_FILE_DIR:r-type> COMMAND_EXPAND_LISTS)
+#     set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}")
+# endif()
 
 if (UNIX)
-    set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib64")
+    set_target_properties(r-type PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
 endif()
 
 install(TARGETS r-type DESTINATION .)

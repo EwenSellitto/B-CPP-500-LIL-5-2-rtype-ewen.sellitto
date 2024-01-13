@@ -7,6 +7,7 @@
 #include "Engine/Systems/Renderer.system.hpp"
 #include "Engine/Systems/UI.system.hpp"
 #include "Engine/Systems/WorldMove.system.hpp"
+#include "R-Type/Systems/Booster.system.hpp"
 #include "R-Type/Systems/Bullets.system.hpp"
 #include "R-Type/Systems/DeathAnimation.system.hpp"
 #include "R-Type/Systems/Enemy.system.hpp"
@@ -45,6 +46,11 @@ namespace Systems
         world->addSystem<Engine::System::UI>("UISystem");
     }
 
+    inline void addInputsSystem(ECS::World *world)
+    {
+        world->addSystem<Engine::System::InputsSystem>("InputsSystem");
+    }
+
     inline void addBulletSystem(ECS::World *world)
     {
         world->addSystem<Engine::System::Bullets>("BulletsSystem");
@@ -68,5 +74,10 @@ namespace Systems
     inline void addHealthSystem(ECS::World *world)
     {
         world->addSystem<Rtype::Systems::HealthSystem>("HealthSystem");
+    }
+
+    inline void addBoosterSystem(ECS::World *world)
+    {
+        world->addSystem<Rtype::System::BoosterSystem>("BoosterSystem");
     }
 } // namespace Systems

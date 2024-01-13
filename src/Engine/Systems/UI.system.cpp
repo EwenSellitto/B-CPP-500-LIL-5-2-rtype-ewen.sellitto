@@ -39,11 +39,21 @@ void UI::tick()
                                                          ECS::ComponentHandle<RenderableComponent> renderable) {
         updateButtonState(buttonComp, renderable, worldPos);
     });
+    world.each<CheckBoxComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
+                                                           ECS::ComponentHandle<CheckBoxComponent>   checkboxComp,
+                                                           ECS::ComponentHandle<RenderableComponent> renderable) {
+        updateCheckBoxState(entity, checkboxComp, renderable, worldPos);
+    });
     world.each<CursorComponent, PositionComponent, RenderableComponent>(
         [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<CursorComponent> cursorComp,
             ECS::ComponentHandle<PositionComponent> position, ECS::ComponentHandle<RenderableComponent> renderable) {
             updateCursorState(cursorComp, renderable, position, mousePosition, worldPos);
         });
+    world.each<TextInputComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
+                                                            ECS::ComponentHandle<TextInputComponent>  textinputComp,
+                                                            ECS::ComponentHandle<RenderableComponent> renderable) {
+        updateInputState(entity, textinputComp, renderable, worldPos);
+    });
 }
 
 void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
@@ -62,6 +72,38 @@ void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>    
         buttonComp->isHovered = false;
         if (buttonComp->isClicked) {
             buttonComp->isClicked = false;
+        }
+    }
+}
+
+void UI::updateInputState(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
+                          ECS::ComponentHandle<Components::RenderableComponent> renderable,
+                          const sf::Vector2f                                   &worldPos)
+{
+
+    sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
+
+    if (buttonRect.contains(worldPos)) {
+        handleTextInput(entity, textInputComp, renderable);
+    } else {
+        if (textInputComp->isClicked) {
+            textInputComp->isClicked = false;
+        }
+    }
+}
+
+void UI::updateCheckBoxState(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
+                             ECS::ComponentHandle<Components::RenderableComponent> renderable,
+                             const sf::Vector2f                                   &worldPos)
+{
+    sf::FloatRect buttonRect(renderable->sprite.getGlobalBounds());
+
+    if (!checkboxComp->isActivated) return;
+    if (buttonRect.contains(worldPos)) {
+        handleCheck(entity, checkboxComp, renderable);
+    } else {
+        if (checkboxComp->isClicked) {
+            checkboxComp->isClicked = false;
         }
     }
 }
@@ -107,6 +149,12 @@ void UI::handleStartGame()
     engine.switchWorld("game");
 }
 
+void UI::handleGoMenu()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("menu");
+}
+
 void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {
@@ -122,6 +170,45 @@ void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     butto
     }
 }
 
+void UI::handleTextInput(ECS::Entity *entity, ECS::ComponentHandle<Components::TextInputComponent> textInputComp,
+                         [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+{
+    using namespace Engine::Components;
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (!textInputComp->isClicked) {
+            textInputComp->isClicked = true;
+        }
+    } else if (textInputComp->isClicked) {
+        textInputComp->onChange();
+        getWorld().each<TextInputComponent>(
+            [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<TextInputComponent> textinputComp) {
+                textinputComp->isFocused = false;
+            });
+        textInputComp->isFocused = true;
+        entity->getComponent<Components::TextComponent>()->changeText("");
+        textInputComp->isClicked = false;
+    }
+}
+
+void UI::handleCheck(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
+                     ECS::ComponentHandle<Components::RenderableComponent> renderable)
+{
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (!checkboxComp->isClicked) {
+            checkboxComp->isClicked = true;
+        }
+    } else if (checkboxComp->isClicked) {
+        checkboxComp->status = !checkboxComp->status;
+        checkboxChangeRenderable(entity, checkboxComp, renderable);
+        if (checkboxComp->status)
+            checkboxComp->clickOn();
+        else
+            checkboxComp->clickOff();
+        checkboxComp->isClicked = false;
+    }
+}
+
 void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursorComp,
                       ECS::ComponentHandle<Components::PositionComponent> position, sf::Vector2i mousePosition,
                       [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
@@ -131,3 +218,20 @@ void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursor
         position->x = mousePosition.x;
     }
 }
+
+void UI::checkboxChangeRenderable(ECS::Entity *entity, ECS::ComponentHandle<Components::CheckBoxComponent> checkboxComp,
+                                  [[maybe_unused]] ECS::ComponentHandle<Components::RenderableComponent> renderable)
+{
+
+    if (checkboxComp->status == true) {
+        entity->removeComponent<Components::RenderableComponent>();
+        entity->addComponent<Components::RenderableComponent>(new Components::RenderableComponent(
+            "./assets/menu/button_check/check_on.png", 0, 0, 3, 0, {2, 2}, false, true));
+    } else {
+        entity->removeComponent<Components::RenderableComponent>();
+        entity->addComponent<Components::RenderableComponent>(new Components::RenderableComponent(
+            "./assets/menu/button_check/check_off.png", 0, 0, 3, 0, {2, 2}, false, true));
+    }
+}
+
+void UI::handleKeyboard() {}

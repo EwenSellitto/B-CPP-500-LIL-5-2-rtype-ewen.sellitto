@@ -26,7 +26,14 @@ namespace Entities
 // Rest of the code
 
 static const std::map<std::string, std::vector<std::pair<size_t, sf::Vector2f>>> enemyPatternMovements = {
-    {"UpAndDown", {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}},
+    // Weak
+    {"WeakUpAndDown", {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}},
+    {"WeakLeft", {std::make_pair(800, sf::Vector2f(-100, 1))}},
+    {"WeakDiagBotToTop", {std::make_pair(800, sf::Vector2f(-80, 60))}},
+    {"WeakDiagTopToBot", {std::make_pair(800, sf::Vector2f(-80, -60))}},
+
+    // Medium
+    {"MediumUpAndDown", {std::make_pair(800, sf::Vector2f(-50, 50)), std::make_pair(800, sf::Vector2f(-50, -50))}},
 };
 
 // pos_x and pos_y are the position of the first enemy of the wave (top left corner or 1st enemy of the wave)

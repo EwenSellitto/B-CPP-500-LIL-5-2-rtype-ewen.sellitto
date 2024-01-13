@@ -22,6 +22,7 @@ namespace Engine::Components
                 : rect(off_x, off_y, size_x, size_y)
             {
             }
+            explicit CollisionComponent(sf::FloatRect rect) : rect(rect) {}
 
             explicit CollisionComponent(const std::string &spriteName) : name(spriteName)
             {

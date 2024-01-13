@@ -36,19 +36,21 @@ void Bullets::tick()
     }
 }
 
-void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time)
+void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time, int dmg)
 {
     using namespace Engine::Components;
 
-    getWorld().createEntity(
-        new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
-        new MovingComponent({posx, posy}, time * 10, destination),
-        new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-Rocket.png", posx, posy, 2, 90),
-        new CollisionComponent(0, 13, 5, 18), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
-        new BaseBulletComponent(fromEnemy), new MissileComponent());
+    RenderableComponent *rend =
+        new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-Rocket.png", posx, posy, 2, 90);
+
+    getWorld().createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+                            new MovingComponent({posx, posy}, time * 10, destination), rend,
+                            new CollisionComponent(0, 13, 5, 18), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
+                            new BaseBulletComponent(fromEnemy, dmg), new MissileComponent());
 }
 
-void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time, float rotation)
+void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time, float rotation,
+                          int dmg)
 {
     using namespace Engine::Components;
 
@@ -57,5 +59,19 @@ void Bullets::spawnBullet(bool fromEnemy, float posx, float posy, sf::Vector2f d
         new MovingComponent({posx, posy}, time * 10, destination),
         new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-Rocket.png", 0, 0, 2, rotation),
         new CollisionComponent(0, 13, 5, 18), new AnimationComponent(13, 10, 5, 18, 32, 32, 50, 3),
-        new BaseBulletComponent(fromEnemy), new MissileComponent());
+        new BaseBulletComponent(fromEnemy, dmg), new MissileComponent());
+}
+
+void Bullets::spawnBigBullet(bool fromEnemy, float posx, float posy, sf::Vector2f destination, size_t time,
+                             float rotation, int dmg)
+{
+    using namespace Engine::Components;
+
+    getWorld().createEntity(
+        new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+        new MovingComponent({posx, posy}, time * 20, destination),
+        new RenderableComponent("./assets/MainShipWeapons/Mainshipweapon-Projectile-BigSpaceGun.png", 0, 0, 2,
+                                rotation),
+        new CollisionComponent(4, 4, 24, 24), new AnimationComponent(0, 0, 32, 32, 32, 32, 75, 10),
+        new BaseBulletComponent(fromEnemy, dmg), new MissileComponent());
 }
