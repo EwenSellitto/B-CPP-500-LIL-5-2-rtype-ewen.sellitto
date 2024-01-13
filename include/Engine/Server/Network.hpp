@@ -111,6 +111,18 @@ namespace ECS
             // ======================= GETTERS =========================
             // =========================================================
 
+            sf::UdpSocket &getSocket()
+            {
+                return socket;
+            }
+            sf::IpAddress getIP() const
+            {
+                return serverAddress;
+            }
+            int getPort() const
+            {
+                return _port;
+            }
             std::vector<sf::Event> getEvents() const
             {
                 return clientEvents;
@@ -150,6 +162,14 @@ namespace ECS
             // ======================= SETTERS =========================
             // =========================================================
 
+            void setIP(const sf::IpAddress &ip)
+            {
+                serverAddress = ip;
+            }
+            void setPort(int port)
+            {
+                _port = port;
+            }
             // =========================================================
             // =================== EVENTS HANDLING =====================
             // =========================================================
@@ -205,7 +225,9 @@ namespace ECS
 
             WaitingRoom                                      waitingRoom;
             sf::UdpSocket                                    socket;
+            sf::IpAddress                                    serverAddress = sf::IpAddress::None;
             std::thread                                      thread;
+            int                                              _port          = 0;
             bool                                             running        = true;
             bool                                             isServer       = false;
             bool                                             gameHasStarted = false;
