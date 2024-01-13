@@ -32,12 +32,17 @@ static void enemyDeath(ECS::Entity *entity)
 
     switch (enemyComponent->enemyType) {
         case EnemyData::EnemyType::Weak:
-            entity->addComponent(new DeathAnimationComponent("./assets/klaed/Klaed-Fighter-Destruction.png", 0, 0, 64,
-                                                             64, 64, 64, 100, 9));
+            entity->addComponent(new DeathAnimationComponent("./assets/klaed/Klaed-Scout-Destruction.png", 0, 0, 64, 64,
+                                                             64, 64, 100, 10));
             break;
         case EnemyData::EnemyType::Medium:
+            entity->addComponent(new DeathAnimationComponent("./assets/klaed/Klaed-Battlecruiser-Destruction.png", 0, 0,
+                                                             128, 128, 128, 128, 100, 14));
+            break;
         case EnemyData::EnemyType::Strong:
-            entity->removeAllComponents();
+            entity->addComponent(new DeathAnimationComponent("./assets/klaed/Klaed-Dreadnought-Destruction.png", 0, 0,
+                                                             128, 128, 128, 128, 150, 12));
+            break;
     }
 }
 

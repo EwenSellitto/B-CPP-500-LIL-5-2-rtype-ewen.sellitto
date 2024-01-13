@@ -46,7 +46,7 @@ namespace Engine::Components
 
             RenderableComponent(const std::string &spriteName, int priority = 0, sf::Vector2<float> scale = {1, 1},
                                 int rotation = 270)
-                : name(spriteName), priority(priority), scale(scale), isDisplayed(true), rotation(rotation)
+                : priority(priority), rotation(rotation), scale(scale), isDisplayed(true), name(spriteName)
             {
                 auto it = spriteInfoMap.find(spriteName);
                 if (it == spriteInfoMap.end()) throw std::runtime_error("Cannot find sprite " + spriteName);
@@ -93,7 +93,7 @@ namespace Engine::Components
                 sprite.setPosition(position.x, position.y);
                 sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
-                if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
+                if (setOrigin) sprite.setOrigin(static_cast<float>(size.x) / 2, static_cast<float>(size.y) / 2);
             }
     };
 } // namespace Engine::Components

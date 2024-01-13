@@ -7,16 +7,9 @@
 
 #pragma once
 
-#ifndef WAVES_HPP_
-#define WAVES_HPP_
-
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
-
-#include "R-Type/Components/EnemyMovements.component.hpp"
-#include "R-Type/Components/EnemyQueue.component.hpp"
-#include "R-Type/GameWorld/Entities.hpp"
 
 namespace Entities
 {
@@ -61,5 +54,3 @@ static const std::map<std::string, std::vector<std::pair<size_t, sf::Vector2f>>>
 //     std::make_pair(false, std::make_pair(std::make_tuple(220, 410, false), Entities::basicEnemyMaker)),
 //     };
 // };
-
-#endif // WAVES_HPP_

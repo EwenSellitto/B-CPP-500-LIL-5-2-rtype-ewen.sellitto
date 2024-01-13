@@ -22,7 +22,7 @@ namespace Rtype::Components
     static const std::array<int, 2>  chargeTimeLst = {0, 2000};
     static const std::array<int, 2>  damageLst     = {1, 2};
     static const std::array<int, 2>  durationLst   = {0, 5000};
-    static const std::array<int, 2>  rateOfFireLst = {200, 1000};
+    static const std::array<int, 2>  rateOfFireLst = {200, 1500};
 
     struct WeaponTypeComponent : ECS::BaseComponent {
             explicit WeaponTypeComponent(WeaponType type)
