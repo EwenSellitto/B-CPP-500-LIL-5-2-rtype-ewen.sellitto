@@ -22,7 +22,6 @@ void ECS::Network::receivePackets()
         if (!isServer && gameHasStarted) {
             sendEventsToServer();
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Un petit délai pour ne pas surcharger le CPU
     }
 }
 

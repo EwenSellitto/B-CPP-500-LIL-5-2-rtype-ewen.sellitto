@@ -62,6 +62,7 @@ void ECS::Network::addSerializedComponentToPacket(sf::Packet &packet, ECS::BaseC
             packet << static_cast<sf::Uint8>(byte);
         }
     }
+    component->setHasChanged(false);
 }
 
 void ECS::Network::addSerializedEntityToPacket(sf::Packet                                                     &packet,
@@ -82,10 +83,8 @@ void ECS::Network::addSerializedEntityToPacket(sf::Packet                       
     packet << nbChangedComponents;
     for (const auto &component : pair.second->getComponents()) {
         if (component.second->hasChanged()) {
-            std::cout << "Component " << static_cast<int>(component.second->getType()) << " has changed" << std::endl;
             if (component.second->getType() == ComponentType::NoneComponent) continue;
             addSerializedComponentToPacket(packet, component.second.get());
-            component.second->setHasChanged(false);
         }
     }
 }
@@ -106,7 +105,6 @@ void ECS::Network::addSerializedDeletedEntityToPacket(
                                                                  pair.second->getComponentsToDelete().end(),
                                                                  component.second->getType()));
         }
-        component.second->setHasChanged(false);
     }
     if (nbCompsToDelete <= 0) {
         pair.second->getComponentsToDelete().clear();

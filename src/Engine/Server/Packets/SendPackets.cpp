@@ -13,6 +13,22 @@
 using namespace Engine;
 using namespace ECS;
 
+void ECS::Network::sendRemovedEntitiesToClients(std::vector<ECS::id_t> &removedEntities)
+{
+    sf::Packet packet;
+    int        nbEntities = 0;
+    packet << static_cast<int>(PacketType::ClientUpdate);
+    packet << static_cast<int>(UpdateType::RemoveEntity);
+
+    nbEntities = removedEntities.size();
+    if (nbEntities == 0) return;
+    packet << nbEntities;
+    for (const auto &id : removedEntities)
+        packet << static_cast<sf::Uint64>(id);
+    std::cout << "SEND removed entites : " << std::endl;
+    sendPacketToAllClients(packet, false);
+}
+
 void ECS::Network::sendUpdatedEntitiesToClients()
 {
     sf::Packet packet;

@@ -126,6 +126,13 @@ namespace Engine
             void handleEvents();
             void processClientsEvents();
 
+            /*==================//
+            // Network Handling //
+            //==================*/
+
+            void componentsUpdater(std::tuple<ECS::id_t, std::vector<ComponentType>,
+                                              std::vector<std::pair<ECS::BaseComponent *, ComponentType>>> &tuple);
+
             /*=====================//
             //  Public Attributes  //
             //=====================*/

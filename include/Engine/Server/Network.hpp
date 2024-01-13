@@ -45,7 +45,8 @@ enum class PacketType {
 
 enum class UpdateType {
     AddComponents,
-    RemoveComponents
+    RemoveComponents,
+    RemoveEntity
 };
 
 struct IpAddressHash {
@@ -79,6 +80,7 @@ namespace ECS
 
             void sendUpdatedEntitiesToClients();
             void sendRemovedComponentsToClients();
+            void sendRemovedEntitiesToClients(std::vector<ECS::id_t> &removedEntities);
             void sendEventsToServer();
 
             int getNbEntitiesModified();
@@ -104,6 +106,7 @@ namespace ECS
             void      receivePackets();
             void      handleReceivedPacket(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
             void      deserializeEntityAndApply(sf::Packet &packet);
+            void      deserializeRemoveEntitiesAndRemove(sf::Packet &packet);
             void      deserializeRemovedComponentsAndApply(sf::Packet &packet);
             sf::Event deserializeEvent(sf::Packet &packet);
 
@@ -136,9 +139,11 @@ namespace ECS
                 return waitingRoom;
             }
 
-            std::vector<std::pair<ECS::id_t, ComponentType>> &getComponentsToRemove()
+            std::vector<std::tuple<ECS::id_t, std::vector<ComponentType>,
+                                   std::vector<std::pair<BaseComponent *, ComponentType>>>> &
+            getComponentsToUpdate()
             {
-                return componentsToRemove;
+                return componentsToUpdate;
             }
 
             ComponentsConvertor &getComponentsConvertor()
@@ -203,16 +208,18 @@ namespace ECS
 
             // ================== ATTRIBUTS ==================
 
-            WaitingRoom                                      waitingRoom;
-            sf::UdpSocket                                    socket;
-            std::thread                                      thread;
-            bool                                             running        = true;
-            bool                                             isServer       = false;
-            bool                                             gameHasStarted = false;
-            ComponentsConvertor                              componentsConvertor;
-            std::vector<sf::Event>                           clientEvents;
-            std::map<int, std::vector<sf::Event>>            serverEvents;
-            std::pair<sf::IpAddress, unsigned short>         serverHost;
-            std::vector<std::pair<ECS::id_t, ComponentType>> componentsToRemove;
+            WaitingRoom                              waitingRoom;
+            sf::UdpSocket                            socket;
+            std::thread                              thread;
+            bool                                     running        = false;
+            bool                                     isServer       = false;
+            bool                                     gameHasStarted = false;
+            ComponentsConvertor                      componentsConvertor;
+            std::vector<sf::Event>                   clientEvents;
+            std::map<int, std::vector<sf::Event>>    serverEvents;
+            std::pair<sf::IpAddress, unsigned short> serverHost;
+            std::vector<std::tuple<ECS::id_t, std::vector<ComponentType>,
+                                   std::vector<std::pair<BaseComponent *, ComponentType>>>>
+                componentsToUpdate;
     };
 } // namespace ECS

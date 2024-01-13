@@ -9,9 +9,10 @@
 
 void ECS::Network::startServer(unsigned short port)
 {
-    running  = true;
-    isServer = true;
+    if (running) return;
     thread   = std::thread(&Network::startClient, this, port);
+    isServer = true;
+    running  = true;
 }
 
 void ECS::Network::startClient(unsigned short port)
@@ -31,8 +32,10 @@ void ECS::Network::startClient(unsigned short port)
 
 void ECS::Network::connectToServer(const sf::IpAddress &serverAddress, unsigned short port)
 {
+    if (running) return;
     thread   = std::thread(&Network::sendConnectionToServer, this, serverAddress, port);
     isServer = false;
+    running  = true;
 }
 
 void ECS::Network::sendConnectionToServer(const sf::IpAddress &serverAddress, unsigned short port)

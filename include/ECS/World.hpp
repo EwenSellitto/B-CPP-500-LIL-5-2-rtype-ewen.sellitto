@@ -157,11 +157,7 @@ namespace ECS
              */
             void removeEntity(id_t id)
             {
-                Events::OnEntityDestroyed event{_entities.at(id).get()};
-
-                _entities.erase(id);
-                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
-                    broadcastEvent<Events::OnEntityDestroyed>(event);
+                _entitiesToDelete.push_back(id);
             }
 
             /**
@@ -172,11 +168,8 @@ namespace ECS
              */
             void removeEntity(ECS::Entity *entity)
             {
-                id_t                      id = entity->getId();
-                Events::OnEntityDestroyed event{entity};
-                _entities.erase(id);
-                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
-                    broadcastEvent<Events::OnEntityDestroyed>(event);
+                id_t id = entity->getId();
+                _entitiesToDelete.push_back(id);
             }
 
             /**
@@ -477,6 +470,26 @@ namespace ECS
                 return _entities;
             }
 
+            /**
+             * @brief Get the entities to delete of the world.
+             *
+             * @return std::vector<ECS::id_t> &
+             */
+            std::vector<ECS::id_t> &getEntitesToDelete()
+            {
+                return _entitiesToDelete;
+            }
+
+            /**
+             * @brief Get the subscribers of the world.
+             *
+             * @return std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> &
+             */
+            std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> &getSubscribers()
+            {
+                return _subscribers;
+            }
+
         private:
             /*====================//
             //  Helper Functions  //
@@ -521,5 +534,6 @@ namespace ECS
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>>                _systems;
             Clock                                                                       _clock;
             Engine::EngineClass                                                        &_engine;
+            std::vector<ECS::id_t>                                                      _entitiesToDelete;
     };
 } // namespace ECS

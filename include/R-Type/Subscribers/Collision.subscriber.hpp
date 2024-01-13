@@ -30,13 +30,13 @@ namespace Rtype::Subscriber
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     std::cout << "YOU LOSE" << std::endl;
-                    data.movingEntity->removeAllComponents();
+                    WORLD.removeEntity(data.movingEntity->getId());
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                         data.collidingEntity->has<PlayerComponent>()) {
                         std::cout << "YOU LOSE" << std::endl;
-                        data.movingEntity->removeAllComponents();
-                        data.collidingEntity->removeAllComponents();
+                        WORLD.removeEntity(data.movingEntity->getId());
+                        WORLD.removeEntity(data.collidingEntity->getId());
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
                         enemyCollision(data);
@@ -59,8 +59,9 @@ namespace Rtype::Subscriber
 
                     health->health -= damage;
                 } else {
-                    data.collidingEntity->removeAllComponents();
+                    WORLD.removeEntity(data.collidingEntity->getId());
                 }
+                WORLD.removeEntity(data.collidingEntity->getId());
                 data.movingEntity->removeAllComponents();
             }
     };

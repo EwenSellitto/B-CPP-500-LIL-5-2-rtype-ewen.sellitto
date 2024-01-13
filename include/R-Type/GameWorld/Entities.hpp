@@ -210,16 +210,22 @@ namespace Entities
 
         world->createEntity(new ButtonComponent("Start Waiting Room",
                                                 []() {
-                                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-                                                    engine.switchWorld("createRoom");
+                                                    //                                                    Engine::EngineClass
+                                                    //                                                    &engine =
+                                                    //                                                    Engine::EngineClass::getEngine();
+                                                    //                                                    engine.switchWorld("createRoom");
+                                                    NETWORK.startServer(5555);
                                                 }),
                             new PositionComponent(200, 200),
                             new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));
 
         world->createEntity(new ButtonComponent("Join Waiting Room",
                                                 []() {
-                                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-                                                    engine.switchWorld("joinRoom");
+                                                    //                                                    Engine::EngineClass
+                                                    //                                                    &engine =
+                                                    //                                                    Engine::EngineClass::getEngine();
+                                                    //                                                    engine.switchWorld("joinRoom");
+                                                    NETWORK.connectToServer("localhost", 5555);
                                                 }),
                             new PositionComponent(200, 300),
                             new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));

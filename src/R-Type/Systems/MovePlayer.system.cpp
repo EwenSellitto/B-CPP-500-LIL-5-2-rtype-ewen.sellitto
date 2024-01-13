@@ -128,6 +128,8 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
         }
     }
 
+    if (!player) return;
+
     if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) return;
     ECS::ComponentHandle<SpeedComponent> speedComponent = player->getComponent<SpeedComponent>();
     float                                speed          = speedComponent->speed;

@@ -288,17 +288,62 @@ void EngineClass::run()
         processClientsEvents();
         handleEvents();
         world().tick();
+
+        for (auto &id : WORLD.getEntitesToDelete()) {
+            if (!WORLD.entityExists(id)) continue;
+
+            WORLD.getEntities().erase(id);
+        }
+        if (!NETWORK.getIsServer() && !NETWORK.getComponentsToUpdate().empty()) {
+            for (auto &tuple : NETWORK.getComponentsToUpdate())
+                componentsUpdater(tuple);
+            NETWORK.getComponentsToUpdate().clear();
+        }
         if (NETWORK.getGameHasStarted() && NETWORK.getIsServer()) {
             NETWORK.sendUpdatedEntitiesToClients();
             NETWORK.sendRemovedComponentsToClients();
+
+            NETWORK.sendRemovedEntitiesToClients(WORLD.getEntitesToDelete());
         }
-        if (!NETWORK.getComponentsToRemove().empty()) {
-            for (auto &pair : NETWORK.getComponentsToRemove()) {
-                if (!WORLD.entityExists(pair.first)) continue;
-                ECS::Entity &entity = WORLD.getMutEntity(pair.first);
-                NETWORK.getComponentsConvertor().destroyers[static_cast<ComponentType>(pair.second)](entity);
+        WORLD.getEntitesToDelete().clear();
+    }
+}
+
+/*==================//
+// Network Handling //
+//==================*/
+
+void EngineClass::componentsUpdater(std::tuple<ECS::id_t, std::vector<ComponentType>,
+                                               std::vector<std::pair<ECS::BaseComponent *, ComponentType>>> &tuple)
+{
+    if (!WORLD.entityExists(std::get<0>(tuple))) {
+        if (std::get<1>(tuple).empty() && std::get<2>(tuple).empty()) return;
+        if (!std::get<2>(tuple).empty()) WORLD.addEntity(std::get<0>(tuple));
+        for (auto &comp : std::get<2>(tuple)) {
+            NETWORK.getComponentsConvertor().adders[comp.second](
+                Engine::EngineClass::getEngine().world().getMutEntity(std::get<0>(tuple)), comp.first);
+            if (comp.second == ComponentType::RenderableComponent)
+                dynamic_cast<Components::RenderableComponent *>(comp.first)->setTexture();
+        }
+    } else {
+        if (std::get<1>(tuple).empty() && std::get<2>(tuple).empty()) {
+            if (!WORLD.entityExists(std::get<0>(tuple))) return;
+
+            WORLD.getEntities().erase(std::get<0>(tuple));
+        }
+        if (!std::get<1>(tuple).empty()) {
+            for (auto &comp : std::get<1>(tuple)) {
+                NETWORK.getComponentsConvertor().destroyers[comp](
+                    Engine::EngineClass::getEngine().world().getMutEntity(std::get<0>(tuple)));
             }
-            NETWORK.getComponentsToRemove().clear();
+        }
+        if (!std::get<2>(tuple).empty()) {
+            for (auto &comp : std::get<2>(tuple)) {
+                NETWORK.getComponentsConvertor().adders[comp.second](
+                    Engine::EngineClass::getEngine().world().getMutEntity(std::get<0>(tuple)), comp.first);
+                if (comp.second == ComponentType::RenderableComponent)
+                    dynamic_cast<Components::RenderableComponent *>(comp.first)->setTexture();
+            }
         }
     }
 }

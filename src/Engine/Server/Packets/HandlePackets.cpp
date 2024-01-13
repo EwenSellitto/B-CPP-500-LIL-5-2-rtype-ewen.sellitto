@@ -168,6 +168,8 @@ void ECS::Network::handleClientUpdate(sf::Packet &packet, const sf::IpAddress &s
             deserializeEntityAndApply(packet);
         } else if (updateType == static_cast<int>(UpdateType::RemoveComponents)) {
             deserializeRemovedComponentsAndApply(packet);
+        } else if (updateType == static_cast<int>(UpdateType::RemoveEntity)) {
+            deserializeRemoveEntitiesAndRemove(packet);
         }
     }
 }
