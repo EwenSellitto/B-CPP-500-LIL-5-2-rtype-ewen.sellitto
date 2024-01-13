@@ -33,7 +33,6 @@ void UI::tick()
     sf::Vector2f      worldPos      = window->mapPixelToCoords(mousePosition);
 
     auto &world = getWorld();
-    // std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
     world.each<ButtonComponent, RenderableComponent>([&]([[maybe_unused]] ECS::Entity             *entity,
                                                          ECS::ComponentHandle<ButtonComponent>     buttonComp,
                                                          ECS::ComponentHandle<RenderableComponent> renderable) {

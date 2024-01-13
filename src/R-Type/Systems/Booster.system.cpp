@@ -27,6 +27,13 @@ void BoosterSystem::takeBooster(ECS::Entity *player, ECS::Entity *booster)
     ECS::ComponentHandle<BoosterComponent>                      boosterComponent;
     ECS::ComponentHandle<Engine::Components::PositionComponent> playerPosition;
 
+    if (player->has<BoosterActiveComponent>()) {
+        auto boosterActive       = player->getComponent<BoosterActiveComponent>();
+        boosterActive->hitpoints = 3;
+        boosterActive->clock.restart();
+        WORLD.removeEntity(booster);
+        return;
+    }
     if (booster->has<BoosterComponent>()) boosterComponent = booster->getComponent<BoosterComponent>();
     if (player->has<Engine::Components::PositionComponent>())
         playerPosition = player->getComponent<Engine::Components::PositionComponent>();

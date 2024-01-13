@@ -8,7 +8,6 @@
 #pragma once
 
 #include <SFML/Audio.hpp>
-#include <iostream>
 
 #include "ECS/Components.hpp"
 
@@ -21,7 +20,6 @@ namespace Engine::Components
                 music.openFromFile(path);
                 music.setVolume(_volume);
                 music.setLoop(true);
-                std::cout << "Music component created" << std::endl;
                 music.play();
             }
 

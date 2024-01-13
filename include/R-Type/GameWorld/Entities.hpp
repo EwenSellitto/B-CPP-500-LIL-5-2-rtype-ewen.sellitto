@@ -80,7 +80,7 @@ namespace Entities
         world->createEntity(
             new PositionComponent(400, 300), new TextComponent("IP", font, 30, {310, 280}, false, true),
             new OptionsComponent(), new TextInputComponent("IP", []() {}),
-            new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
+            new RenderableComponent("../assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(400, 410),
                             new TextComponent("Send", font, 40, {400, 385}, true, true), new OptionsComponent(),
                             new ButtonComponent("send",
