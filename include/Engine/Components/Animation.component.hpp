@@ -11,6 +11,7 @@
 #include <SFML/System/Clock.hpp>
 
 #include "ECS/Components.hpp"
+#include "R-Type/sprites.hpp"
 
 namespace Engine::Components
 {
@@ -42,6 +43,7 @@ namespace Engine::Components
             int           frame{0};
             int           animationSpeed{0};
             int           frameCount{0};
+            std::string   name;
             sf::Clock     clock{};
             bool          doAnimation = true;
     };

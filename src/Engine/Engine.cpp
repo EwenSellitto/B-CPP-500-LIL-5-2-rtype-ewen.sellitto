@@ -8,6 +8,7 @@
 #include "Engine/Engine.hpp"
 
 #include <SFML/Window/Event.hpp>
+#include <functional>
 #include <vector>
 
 #include "ECS/Entity.hpp"
@@ -23,12 +24,23 @@ using namespace Engine;
 //  Singleton Logic  //
 //===================*/
 
+/**
+ * @brief Get the Engine object
+ * @return EngineClass& the engine unique instance
+ */
 EngineClass &EngineClass::getEngine()
 {
     static EngineClass engine = EngineClass();
     return engine;
 }
 
+/**
+ * @brief Get the Engine object
+ * @param x The width of the window
+ * @param y The height of the window
+ * @param name The name of the window
+ * @return EngineClass& the engine unique instance
+ */
 EngineClass &EngineClass::getEngine(std::size_t x, std::size_t y, std::string name)
 {
     static EngineClass engine = EngineClass(x, y, name);
@@ -39,6 +51,13 @@ EngineClass &EngineClass::getEngine(std::size_t x, std::size_t y, std::string na
 //  Constructor / Destructor  //
 //============================*/
 
+/**
+ * @brief Construct a new Engine Class:: Engine Class object
+ * @param window_size_x The width of the window
+ * @param window_size_y The height of the window
+ * @param window_name The name of the window
+ * @param start_world The name of the world to start with
+ */
 EngineClass::EngineClass(const std::size_t window_size_x, const std::size_t window_size_y,
                          const std::string window_name, std::string start_world)
     : window(sf::RenderWindow(sf::VideoMode(window_size_x, window_size_y), window_name,
@@ -111,6 +130,15 @@ void EngineClass::addWorldFactory(std::string name, std::function<ECS::World *()
 }
 
 /**
+ * @brief Sets the fallback world factory
+ * @param factory The factory function
+ * @return void
+ * @note The factory function must return a shared_ptr to a world
+ * @note this factory is called if the run function catch an error
+ */
+void setFallBackWorld(std::function<ECS::World *()>) {}
+
+/**
  * @brief Switches the current world to the one with the given name
  * @param name The name of the world to switch to
  * @throw std::runtime_error if the world doesn't exist
@@ -132,6 +160,10 @@ void EngineClass::switchWorld(const std::string name)
     _pending_destroy.push_back(c);
 }
 
+/**
+ * @brief Get the current world name
+ * @return std::string
+ */
 std::vector<std::string> EngineClass::getWorldsNames()
 {
     std::vector<std::string> names;
@@ -140,6 +172,10 @@ std::vector<std::string> EngineClass::getWorldsNames()
     return names;
 }
 
+/**
+ * @brief Get the current world
+ * @return ECS::World&
+ */
 ECS::World &EngineClass::world()
 {
     return *_currentWorld.second;
@@ -149,9 +185,15 @@ ECS::World &EngineClass::world()
 //  Events handling  //
 //===================*/
 
+/**
+ * @brief Handle all the events of the window
+ * @return void
+ * @note This function will call the broadcastEvent function of the world
+ */
 void EngineClass::handleEvents()
 {
     sf::Event event;
+
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::Closed:
@@ -212,6 +254,11 @@ void EngineClass::handleEvents()
 //  General Logic  //
 //=================*/
 
+/**
+ * @brief Run the engine
+ * @return void
+ * @note This function will call the tick function of the world and the render function of the renderer system
+ */
 void EngineClass::run()
 {
     if (_worldsFactories.empty())
@@ -226,6 +273,11 @@ void EngineClass::run()
     }
 }
 
+/**
+ * @brief Toggle the fullscreen mode of the window
+ * @return void
+ * @note This function will call the broadcastEvent function of the world
+ */
 void EngineClass::toggleFullscreen()
 {
     _fullscreen       = !_fullscreen;
@@ -247,6 +299,11 @@ void EngineClass::toggleFullscreen()
 //  Private Methods  //
 //===================*/
 
+/**
+ * @brief Destroy all the pending worlds
+ * @return void
+ * @note This function will be called at the end of the run function
+ */
 void EngineClass::destroyPendingWorlds()
 {
     if (_pending_destroy.empty()) return;

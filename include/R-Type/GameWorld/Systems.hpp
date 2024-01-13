@@ -1,5 +1,12 @@
-// Systems.hpp
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Systems.hpp
+*/
+
 #pragma once
+
 #include "ECS/World.hpp"
 #include "Engine/Systems/Animation.system.hpp"
 #include "Engine/Systems/Parallax.system.hpp"

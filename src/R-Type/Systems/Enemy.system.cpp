@@ -42,12 +42,13 @@ void EnemySystem::trySpawnEnemies()
     ECS::Entity *worldProgress = world.getEntityWithComponents<WorldMoveProgressComponent>();
 
     if (!enemyQueue || !worldProgress) return;
-    for (auto &element : enemyQueue->getComponent<EnemyQueueComponent>()->enemyQueueFactories) {
+    for (auto &element : enemyQueue->getComponent<EnemyQueueComponent>()->newEnemyQueueFactories) {
         if (element.first) continue;
         if (std::get<0>(element.second.first) > worldProgress->getComponent<WorldMoveProgressComponent>()->progress)
             continue;
         element.first  = true;
-        size_t enemyId = element.second.second(std::get<1>(element.second.first), std::get<2>(element.second.first));
+        size_t enemyId = element.second.second(std::get<1>(element.second.first), std::get<2>(element.second.first),
+                                               std::get<3>(element.second.first));
         ECS::Entity &currentEnemy = world.getMutEntity(enemyId);
         if (!currentEnemy.has<PositionComponent>() || !currentEnemy.has<EnemyMovementsComponent>()) return;
         currentEnemy.addComponent<MovingComponent>(
@@ -193,10 +194,10 @@ size_t EnemySystem::spawnEnemy(float posx, float posy)
     EnemyData::EnemyType type       = getRandomEnemyType();
     auto                 attributes = EnemyData::enemyTypeAttributes.at(type);
 
-    size_t entityId = WORLD.createEntity(
-        new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
-        new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(attributes.health, type),
-        new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
+    size_t entityId =
+        WORLD.createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+                           new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(type),
+                           new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
     WORLD.getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
         sf::Vector2f{static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->x),
                      static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->y)},

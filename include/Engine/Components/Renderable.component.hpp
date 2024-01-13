@@ -11,6 +11,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "ECS/Components.hpp"
+#include "R-Type/sprites.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
 
@@ -43,6 +44,17 @@ namespace Engine::Components
                 setTexture(texture_path);
             }
 
+            RenderableComponent(const std::string &spriteName, int priority = 0, sf::Vector2<float> scale = {1, 1},
+                                int rotation = 270)
+                : priority(priority), rotation(rotation), scale(scale), isDisplayed(true), name(spriteName)
+            {
+                auto it = spriteInfoMap.find(spriteName);
+                if (it == spriteInfoMap.end()) throw std::runtime_error("Cannot find sprite " + spriteName);
+                const SpriteInfo &info = it->second;
+                setTexture(info.filePath);
+                rotation = 270;
+            }
+
             void reset(const std::string &texture_path, sf::Vector2<float> pos, int priority, float rotation = 0,
                        sf::Vector2<float> scale = {1, 1}, bool setOrigin = false, bool isDisplayed = true)
             {
@@ -70,6 +82,7 @@ namespace Engine::Components
             bool                     isDisplayed;
             std::string              path;
             bool                     setOrigin = false;
+            std::string              name;
 
         private:
             void setTexture(const std::string &texture_path)
@@ -80,7 +93,7 @@ namespace Engine::Components
                 sprite.setPosition(position.x, position.y);
                 sprite.setRotation(rotation);
                 size = {texture.getSize().x, texture.getSize().y};
-                if (setOrigin) sprite.setOrigin(size.x / 2, size.y / 2);
+                if (setOrigin) sprite.setOrigin(static_cast<float>(size.x) / 2, static_cast<float>(size.y) / 2);
             }
     };
 } // namespace Engine::Components

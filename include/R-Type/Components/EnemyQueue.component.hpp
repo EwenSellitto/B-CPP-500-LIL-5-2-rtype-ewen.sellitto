@@ -25,6 +25,15 @@ namespace Engine::Components
             {
             }
 
+            EnemyQueueComponent(
+                std::vector<std::pair<
+                    bool, std::pair<std::tuple<size_t, float, bool, std::vector<std::pair<size_t, sf::Vector2f>>>,
+                                    std::function<size_t(float, bool, std::vector<std::pair<size_t, sf::Vector2f>>)>>>>
+                    newEnemyQueueFactories)
+                : newEnemyQueueFactories(newEnemyQueueFactories)
+            {
+            }
+
             ~EnemyQueueComponent() override = default;
 
             // the pair consists of a bool, and data about the enemy to spawn
@@ -35,8 +44,14 @@ namespace Engine::Components
             // bool is 'isAttacking' because not every enemy attacks.
             // ==> but they will all attack the same. (within definition in the function.)
             // then you need to call the std::function with the two floats and the bool.
+
             std::vector<std::pair<bool, std::pair<std::tuple<size_t, float, bool>, std::function<size_t(float, bool)>>>>
                 enemyQueueFactories;
+
+            std::vector<std::pair<
+                bool, std::pair<std::tuple<size_t, float, bool, std::vector<std::pair<size_t, sf::Vector2f>>>,
+                                std::function<size_t(float, bool, std::vector<std::pair<size_t, sf::Vector2f>>)>>>>
+                newEnemyQueueFactories;
 
         private:
     };

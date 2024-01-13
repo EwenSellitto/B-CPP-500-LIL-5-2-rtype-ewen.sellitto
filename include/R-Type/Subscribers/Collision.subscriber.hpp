@@ -78,7 +78,7 @@ namespace Rtype::Subscriber
                 } else {
                     data.collidingEntity->removeAllComponents();
                 }
-                if (!data.movingEntity->getComponent<BaseBulletComponent>()->toDelete)
+                if (data.movingEntity->getComponent<BaseBulletComponent>()->toDelete)
                     data.movingEntity->removeAllComponents();
             }
     };
