@@ -197,6 +197,19 @@ namespace ECS
                 sendPacketToAllClients(packet);
             }
 
+            void resetServer()
+            {
+                isServer       = false;
+                gameHasStarted = false;
+                isReadyToStart = false;
+                serverAddress  = sf::IpAddress::None;
+                serverHost     = std::make_pair(sf::IpAddress::None, 0);
+                serverEvents.clear();
+                componentsToUpdate.clear();
+                waitingRoom.clear();
+                stop();
+            }
+
             bool getIsReadyToStart() const
             {
                 return isReadyToStart;

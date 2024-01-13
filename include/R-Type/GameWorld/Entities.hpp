@@ -107,6 +107,7 @@ namespace Entities
                                 [world]() {
                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
                                     uiSystem.handleGoMenu();
+                                    NETWORK.resetServer();
                                 }),
             new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
@@ -203,6 +204,7 @@ namespace Entities
                                 [world]() {
                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
                                     uiSystem.handleGoMenu();
+                                    NETWORK.resetServer();
                                 }),
             new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
@@ -230,6 +232,7 @@ namespace Entities
                                                 [world]() {
                                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
                                                     uiSystem.handleGoMenu();
+                                                    NETWORK.resetServer();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
     }
@@ -423,6 +426,7 @@ namespace Entities
                                                 [world]() {
                                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
                                                     uiSystem.handleGoMenu();
+                                                    NETWORK.resetServer();
                                                 }),
                             new RenderableComponent(texturePath, 0, 0, 3, 0, {2, 2}, true, false));
     }

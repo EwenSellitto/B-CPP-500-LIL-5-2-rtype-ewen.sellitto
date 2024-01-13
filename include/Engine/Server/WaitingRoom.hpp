@@ -11,6 +11,12 @@ struct WaitingRoom {
             players.push_back(new ClientInfo(player, port, ClientState::InLobby, isServer));
         }
 
+        void clear()
+        {
+            players.clear();
+            isStarted = false;
+        }
+
         std::vector<ClientInfo *> getPlayers() const
         {
             return players;
