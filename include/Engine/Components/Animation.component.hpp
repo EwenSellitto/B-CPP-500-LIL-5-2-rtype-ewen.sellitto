@@ -27,22 +27,10 @@ namespace Engine::Components
              * @param animationSpeed in ms.
              * @param frameCount = number of frame in the animation.
              */
-            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount)
+            AnimationComponent(int x, int y, int width, int height, int tx, int ty, int animationSpeed, int frameCount,
+                               bool doAnimation = true)
                 : textureRect(x, y, width, height), tileSize(tx, ty), animationSpeed(animationSpeed),
-                  frameCount(frameCount){};
-            // AnimationComponent(const std::string &spriteName): name(spriteName) {
-            //     auto it = spriteInfoMap.find(spriteName);
-            //     if (it != spriteInfoMap.end()) {
-            //         const SpriteInfo& info = it->second;
-            //         textureRect = sf::Rect<int>(info.offsetX, info.offsetY, info.width, info.height);
-            //         tileSize = sf::Vector2i(info.oneframeX, info.oneframeY);
-            //         animationSpeed = info.animationSpeed;
-            //         frameCount = info.nbFrames;
-            //     } else {
-            //         // Handle error if spriteName is not found in spriteInfoMap
-            //     }
-            // }
-
+                  frameCount(frameCount), doAnimation(doAnimation){};
             ~AnimationComponent() = default;
 
             // x, y = offset from topLeft; ex: 32x32 texture which contains a maximum size of 5x18 in the middle,
@@ -57,5 +45,6 @@ namespace Engine::Components
             int           frameCount{0};
             std::string   name;
             sf::Clock     clock{};
+            bool          doAnimation = true;
     };
 } // namespace Engine::Components

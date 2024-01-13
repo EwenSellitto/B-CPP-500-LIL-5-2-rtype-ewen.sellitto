@@ -1,6 +1,13 @@
+/*
+** EPITECH PROJECT, 2024
+** B-CPP-500-LIL-5-2-rtype-ewen.sellitto
+** File description:
+** Text.component.hpp
+*/
+
 #pragma once
+
 #include <SFML/System/Vector2.hpp>
-#include <functional>
 #include <string>
 
 #include "ECS/Components.hpp"
@@ -16,7 +23,8 @@ namespace Engine::Components
 
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
                           bool centered = false, bool isDisplay = true)
-                : isDisplay(isDisplay)
+                : isDisplay(isDisplay), centered(centered)
+
             {
                 font = newFont;
                 text.setString(str);
@@ -27,7 +35,7 @@ namespace Engine::Components
             }
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
                           const sf::Color &fillColor, bool centered = false, bool isDisplay = true)
-                : isDisplay(isDisplay)
+                : isDisplay(isDisplay), centered(false)
             {
                 font = newFont;
                 if (centered) {
@@ -39,5 +47,7 @@ namespace Engine::Components
                 text.setPosition(pos);
                 text.setFillColor(fillColor);
             }
+
+            bool centered;
     };
 } // namespace Engine::Components

@@ -21,8 +21,6 @@ namespace ECS
     class World;
 }
 
-#define SHOW_HITBOX
-
 #ifndef DEFAULT_WINDOW_SIZE_X
 #define DEFAULT_WINDOW_SIZE_X 800
 #endif

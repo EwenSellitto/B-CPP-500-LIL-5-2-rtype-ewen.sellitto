@@ -41,7 +41,7 @@ namespace ECS
              * @warning Only create an Entity with a World.
              */
             explicit Entity() : _components(), _clock(), _id(){};
-            explicit Entity(ECS::id_t id) : _components(), _clock(), _id(){};
+            explicit Entity(ECS::id_t id) : _components(), _clock(), _id(id){};
 
             /**
              * @brief Destroy the Entity object.

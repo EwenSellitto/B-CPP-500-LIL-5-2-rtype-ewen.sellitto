@@ -9,8 +9,6 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <map>
-#include <string>
 
 #include "ECS/Components.hpp"
 #include "R-Type/sprites.hpp"
