@@ -151,8 +151,8 @@ namespace Entities
             return;
         }
         Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-        std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
-        world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
+        // std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
+        // world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
         std::string strServer = "Server IP : " + engine.network().getIP().toString();
         world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
         std::string strPort = "Port : " + std::to_string(engine.network().getPort());
