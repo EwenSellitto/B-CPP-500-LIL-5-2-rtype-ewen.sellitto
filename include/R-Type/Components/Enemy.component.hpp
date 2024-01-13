@@ -14,8 +14,7 @@ namespace Engine::Components
 {
     struct EnemyComponent : ECS::BaseComponent {
         public:
-            EnemyComponent(int health, EnemyData::EnemyType enemyType) : health(health), enemyType(enemyType) {}
-            int                  health;
+            EnemyComponent(EnemyData::EnemyType enemyType) : enemyType(enemyType) {}
             EnemyData::EnemyType enemyType;
     };
 } // namespace Engine::Components

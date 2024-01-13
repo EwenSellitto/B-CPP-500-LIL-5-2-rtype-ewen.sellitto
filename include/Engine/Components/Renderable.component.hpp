@@ -11,6 +11,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "ECS/Components.hpp"
+#include "R-Type/sprites.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
 
@@ -43,6 +44,17 @@ namespace Engine::Components
                 setTexture(texture_path);
             }
 
+            RenderableComponent(const std::string &spriteName, int priority = 0, sf::Vector2<float> scale = {1, 1},
+                                int rotation = 270)
+                : name(spriteName), priority(priority), scale(scale), isDisplayed(true), rotation(rotation)
+            {
+                auto it = spriteInfoMap.find(spriteName);
+                if (it == spriteInfoMap.end()) throw std::runtime_error("Cannot find sprite " + spriteName);
+                const SpriteInfo &info = it->second;
+                setTexture(info.filePath);
+                rotation = 270;
+            }
+
             void reset(const std::string &texture_path, sf::Vector2<float> pos, int priority, float rotation = 0,
                        sf::Vector2<float> scale = {1, 1}, bool setOrigin = false, bool isDisplayed = true)
             {
@@ -70,6 +82,7 @@ namespace Engine::Components
             bool                     isDisplayed;
             std::string              path;
             bool                     setOrigin = false;
+            std::string              name;
 
         private:
             void setTexture(const std::string &texture_path)
