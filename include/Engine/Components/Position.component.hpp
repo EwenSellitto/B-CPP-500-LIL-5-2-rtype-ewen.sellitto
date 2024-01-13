@@ -7,26 +7,51 @@
 
 #pragma once
 
+#include <iostream>
+#include <sstream>
+#include <vector>
+
 #include "ECS/Components.hpp"
+#include "public/ComponentsType.hpp"
 
 namespace Engine::Components
 {
-    typedef std::pair<long int, long int> PositionComponent_serialized_t;
-
     struct PositionComponent : public ECS::BaseComponent {
         public:
             PositionComponent() : x(0), y(0){};
             explicit PositionComponent(int x, int y) : x(x), y(y){};
             ~PositionComponent() override = default;
 
-            static PositionComponent_serialized_t serialize(PositionComponent &data)
+            std::vector<char> serialize() override
             {
-                return std::make_pair(data.x, data.y);
+                std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char *>(&x), sizeof(x));
+                oss.write(reinterpret_cast<const char *>(&y), sizeof(y));
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
             }
 
-            static PositionComponent deserialize(PositionComponent_serialized_t data)
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
             {
-                return PositionComponent(data.first, data.second);
+                PositionComponent *positionComponent;
+                if (component == nullptr) {
+                    positionComponent = new PositionComponent();
+                } else {
+                    positionComponent = dynamic_cast<PositionComponent *>(component);
+                    if (positionComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char *>(&positionComponent->x), sizeof(positionComponent->x));
+                iss.read(reinterpret_cast<char *>(&positionComponent->y), sizeof(positionComponent->y));
+
+                return positionComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::PositionComponent;
             }
 
             int x;

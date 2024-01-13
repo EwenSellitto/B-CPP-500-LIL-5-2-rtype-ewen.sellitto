@@ -11,6 +11,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <tuple>
+#include <vector>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Sprite.hpp"
@@ -20,11 +21,44 @@ namespace Engine::Components
 {
     struct ScoreComponent : public ECS::BaseComponent {
         public:
+            ScoreComponent() = default;
             ScoreComponent(int score) : score(score) {}
 
             ~ScoreComponent() override = default;
 
-            int score;
+            std::vector<char> serialize() override
+            {
+                std::ostringstream oss(std::ios::binary);
+
+                oss.write(reinterpret_cast<const char *>(&score), sizeof(score));
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                ScoreComponent *scoreComponent;
+                if (component == nullptr) {
+                    scoreComponent = new ScoreComponent(0);
+                } else {
+                    scoreComponent = dynamic_cast<ScoreComponent *>(component);
+                    if (scoreComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                iss.read(reinterpret_cast<char *>(&scoreComponent->score), sizeof(scoreComponent->score));
+
+                return scoreComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::ScoreComponent;
+            }
+
+            int score = 0;
 
         private:
     };

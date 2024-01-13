@@ -489,50 +489,6 @@ The **`SpeedComponent`** belongs to the **`Engine::Components`** namespace and s
 
 This component is focused on encapsulating and storing the speed attribute for entities within the game. It allows for the management and manipulation of speed-related functionalities for specific entities.
 
-# Type.component.hpp
-```cpp
-#pragma once
-
-#include "ECS/Components.hpp"
-
-namespace Engine::Components
-{
-    struct TypeComponent : public ECS::BaseComponent {
-        public:
-            typedef enum entityType {
-                player,
-                wall,
-                missile,
-                enemy
-            } entityType_t;
-
-            explicit TypeComponent(entityType_t type) : type(type){};
-            ~TypeComponent() override = default;
-
-            entityType_t type;
-    };
-} // namespace Engine::Components
-```
-The **`TypeComponent`** belongs to the **`Engine::Components`** namespace and serves as a component responsible for representing the type or category of entities in the game.
-
-### Enum **`entityType_t`**:
-
-- **`enum class entityType`**: Defines different entity types in the game:
-    - **`player`**: Represents entities associated with players.
-    - **`wall`**: Represents entities that are walls or barriers.
-    - **`missile`**: Represents entities that are missiles or projectiles.
-    - **`enemy`**: Represents entities that are enemies.
-
-### Member Variables:
-
-- **`entityType_t type`**: Represents the type of entity this component is associated with.
-
-### Constructors:
-
-- **`explicit TypeComponent(entityType_t type)`**: Initializes the **`type`** attribute with the provided value.
-
-This component is designed to encapsulate and store the entity's type within the game. It allows for easy identification and classification of entities based on their specific category or role.
-
 # View.component.hpp
 ```cpp
 #pragma once

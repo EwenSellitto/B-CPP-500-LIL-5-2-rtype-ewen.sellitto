@@ -41,6 +41,14 @@ namespace Engine::System
 
             void handleGameOver();
 
+            void handleGoJoin();
+
+            void handleGoCreate();
+
+            void handleGoWaitingHost();
+
+            void handleGoWaitingClient();
+
         private:
             void updateCursorState(ECS::ComponentHandle<Components::CursorComponent>     cursorComp,
                                    ECS::ComponentHandle<Components::RenderableComponent> renderable,

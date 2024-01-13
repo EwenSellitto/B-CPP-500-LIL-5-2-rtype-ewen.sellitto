@@ -12,7 +12,6 @@
 #include "Engine/Components/Renderable.component.hpp"
 #include "Engine/Components/Speed.component.hpp"
 #include "Engine/Components/Score.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/View.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "R-Type/Components/Enemy.component.hpp"

@@ -11,13 +11,6 @@
 #include <map>
 #include <string>
 
-namespace Entities
-{
-    size_t basicEnemyMaker(float y, bool isAttacking, std::vector<std::pair<size_t, sf::Vector2f>> PatternMovements);
-}
-
-// Rest of the code
-
 static const std::map<std::string, std::vector<std::pair<size_t, sf::Vector2f>>> enemyPatternMovements = {
     // Weak
     {"WeakUpAndDown", {std::make_pair(800, sf::Vector2f(-100, 100)), std::make_pair(800, sf::Vector2f(-100, -100))}},

@@ -11,15 +11,15 @@
 #include <SFML/Window/WindowStyle.hpp>
 #include <cstddef>
 #include <functional>
-#include <memory>
 #include <unordered_map>
 
 #include "ECS/Entity.hpp"
+#include "Server/Network.hpp"
 
 namespace ECS
 {
     class World;
-}
+} // namespace ECS
 
 #ifndef DEFAULT_WINDOW_SIZE_X
 #define DEFAULT_WINDOW_SIZE_X 800
@@ -47,6 +47,7 @@ namespace ECS
 
 #define WINDOW Engine::EngineClass::getEngine().window
 #define WORLD Engine::EngineClass::getEngine().world()
+#define NETWORK Engine::EngineClass::getEngine().network()
 
 namespace Engine
 {
@@ -82,9 +83,18 @@ namespace Engine
             //===================*/
 
             void setStartWorld(const std::string &name);
+            int  getNetwork();
 
             std::size_t getWindowSizeX();
             std::size_t getWindowSizeY();
+
+            void setCurrentPlayer(int);
+            void setPlayersAmount(int);
+            void setOwnPlayer(int);
+
+            int getCurrentPlayer();
+            int getPlayersAmount();
+            int getOwnPlayer();
 
             /*===================//
             //  Worlds Handling  //
@@ -98,7 +108,8 @@ namespace Engine
 
             std::vector<std::string> getWorldsNames();
 
-            ECS::World &world();
+            ECS::World   &world();
+            ECS::Network &network();
 
             /*=================//
             //  General Logic  //
@@ -112,7 +123,16 @@ namespace Engine
             //  Event Handling  //
             //==================*/
 
+            void processSwitchEvent(sf::Event event);
             void handleEvents();
+            void processClientsEvents();
+
+            /*==================//
+            // Network Handling //
+            //==================*/
+
+            void componentsUpdater(std::tuple<ECS::id_t, std::vector<ComponentType>,
+                                              std::vector<std::pair<ECS::BaseComponent *, ComponentType>>> &tuple);
 
             /*=====================//
             //  Public Attributes  //
@@ -152,6 +172,10 @@ namespace Engine
             std::string                                                       _startWorld;
             std::size_t                                                       _windowSizeX;
             std::size_t                                                       _windowSizeY;
+            ECS::Network                                                      _network;
+            int                                                               _playersAmount;
+            int                                                               _currentPlayer;
+            int                                                               _ownPlayer;
             std::unordered_map<ECS::id_t, std::unique_ptr<ECS::GlobalEntity>> _global_entities;
 
             /*===================//

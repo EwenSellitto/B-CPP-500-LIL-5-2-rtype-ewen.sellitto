@@ -169,7 +169,7 @@ void Physics::moveTime(ECS::Entity *entity, ECS::ComponentHandle<Components::Mov
     componentPos->y = static_cast<int>(newPosition.y);
     renderableComponent->sprite.setPosition(newPosition);
 
-    if (endedMoveCounter == 2) entity->removeComponent<MovingComponent>();
+    if (endedMoveCounter == 2) entity->removeComponent<MovingComponent>(true);
 }
 
 void Physics::tick()

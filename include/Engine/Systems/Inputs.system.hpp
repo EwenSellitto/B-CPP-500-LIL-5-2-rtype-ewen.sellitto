@@ -22,5 +22,9 @@ namespace Engine::System
             void removeText();
 
             void handleSend(std::vector<std::string> args);
+
+        private:
+            int         port      = 0;
+            std::string ipAddress = "127.0.0.1";
     };
 } // namespace Engine::System

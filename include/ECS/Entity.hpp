@@ -40,8 +40,8 @@ namespace ECS
              * @note The Entity will be destroyed when the World is destroyed.
              * @warning Only create an Entity with a World.
              */
-            explicit Entity() : _components(), _clock(), _id(){};
-            explicit Entity(ECS::id_t id) : _components(), _clock(), _id(id){};
+            explicit Entity() : _components(), _componentsToDelete(), _clock(), _id(0){};
+            explicit Entity(ECS::id_t id) : _components(), _componentsToDelete(), _clock(), _id(id){};
 
             /**
              * @brief Destroy the Entity object.
@@ -93,11 +93,12 @@ namespace ECS
              * @throw std::out_of_range if the component does not exist.
              * @note This function will destroy the component.
              */
-            template <typename T> void removeComponent()
+            template <typename T> void removeComponent(bool needToDelete = false)
             {
                 auto index = ECS_TYPEID(T);
                 auto it    = _components.find(index);
                 if (it != _components.end()) {
+                    if (needToDelete) _componentsToDelete.push_back(it->second->getType());
                     _components.erase(it);
                 }
             }
@@ -119,11 +120,39 @@ namespace ECS
              * @throw std::out_of_range if the component does not exist.
              * @note You should not destroy the component.
              */
-            template <typename T> ComponentHandle<T> getComponent() const
+            template <typename T> ComponentHandle<T> getComponent(bool modifiedComponent = false)
             {
-                auto               baseComponentPtr     = _components.at(ECS_TYPEID(T));
+                auto baseComponentPtr = _components.at(ECS_TYPEID(T));
+
+                if (modifiedComponent) baseComponentPtr->setHasChanged(true);
                 std::shared_ptr<T> specificComponentPtr = std::dynamic_pointer_cast<T>(baseComponentPtr);
                 return ComponentHandle<T>(specificComponentPtr);
+            }
+
+            /**
+             * @brief Get a list of components.
+             * @return std::unordered_map<id_t, std::shared_ptr<BaseComponent>>
+             * @throw std::out_of_range if a component does not exist.
+             * @note You should not destroy the components.
+             */
+            std::unordered_map<id_t, std::shared_ptr<BaseComponent>> &getComponents(bool modifiedComponent = false)
+            {
+                if (!modifiedComponent) return _components;
+
+                for (auto &component : _components)
+                    component.second->setHasChanged(true);
+                return _components;
+            }
+
+            /**
+             * @brief Get components to delete
+             * @return
+             * @throw
+             * @note
+             */
+            std::vector<ComponentType> &getComponentsToDelete()
+            {
+                return _componentsToDelete;
             }
 
             /**
@@ -160,6 +189,7 @@ namespace ECS
 
         private:
             std::unordered_map<id_t, std::shared_ptr<BaseComponent>> _components;
+            std::vector<ComponentType>                               _componentsToDelete;
             Clock                                                    _clock;
             ECS::id_t                                                _id;
     };

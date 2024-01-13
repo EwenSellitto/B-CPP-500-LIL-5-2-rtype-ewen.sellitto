@@ -27,16 +27,25 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    ECS::Entity *player = EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+    std::vector<ECS::Entity *> players = EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+    ECS::Entity               *player  = nullptr;
+
+    for (auto &p : players) {
+        if (p->getComponent<PlayerComponent>()->playerNb == EngineClass::getEngine().getCurrentPlayer()) {
+            player = p;
+            break;
+        }
+    }
+
     if (!player) {
-        std::cerr << "PlayerMissing: entity with typeComponent 'player' must be declared in world before movePlayer "
+        std::cerr << "PlayerMissing: entity with PlayerComponent must be declared in world before movePlayer "
                      "system creation, it must have a speedComponent"
                   << std::endl;
         return;
     }
 
     if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) {
-        std::cerr << "SpeedComponent or PositionComponent missing: entity with typeComponent 'player' must be declared "
+        std::cerr << "SpeedComponent or PositionComponent missing: entity with PlayerComponent must be declared "
                      "in world before movePlayer system creation, it must have a speedComponent"
                   << std::endl;
         return;
@@ -49,7 +58,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
-            player->getComponent<Components::MovingComponent>());
+            player->getComponent<Components::MovingComponent>(true));
 
         if ((movingComponent->moveAmount.y == moves_zdqs[0].y || movingComponent->moveAmount.y == moves_zdqs[3].y) &&
             (key.code == sf::Keyboard::Z || key.code == sf::Keyboard::S))
@@ -59,7 +68,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
             return;
 
         sf::Vector2f movingValuesSave = movingComponent->moveAmount;
-        player->removeComponent<MovingComponent>();
+        player->removeComponent<MovingComponent>(true);
 
         switch (key.code) {
             case sf::Keyboard::Z:
@@ -108,7 +117,17 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    ECS::Entity *player = EngineClass::getEngine().world().getEntityWithComponents<PlayerComponent>();
+    std::vector<ECS::Entity *> players =
+        Engine::EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+    ECS::Entity *player = nullptr;
+
+    for (auto &p : players) {
+        if (p->getComponent<PlayerComponent>()->playerNb == Engine::EngineClass::getEngine().getCurrentPlayer()) {
+            player = p;
+            break;
+        }
+    }
+
     if (!player) return;
 
     if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) return;
@@ -120,10 +139,10 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(
-            player->getComponent<Components::MovingComponent>());
+            player->getComponent<Components::MovingComponent>(true));
 
         sf::Vector2f movingValuesSave = playerMovingComp->moveAmount;
-        player->removeComponent<MovingComponent>();
+        player->removeComponent<MovingComponent>(true);
 
         if (key.code == sf::Keyboard::Z || key.code == sf::Keyboard::S) movingValuesSave.y = 0;
         if (key.code == sf::Keyboard::D || key.code == sf::Keyboard::Q) movingValuesSave.x = 0;

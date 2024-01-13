@@ -62,6 +62,22 @@ namespace ECS
             //  Entity Handling  //
             //===================*/
 
+            /*
+             * @brief check if an entity exists.
+             *
+             * @param id the id of the entity
+             * @return bool if it exists true
+             */
+            bool entityExists(id_t entityId)
+            {
+                for (const auto &paire : _entities) {
+                    if (paire.first == entityId) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             /**
              * @brief Add an entity to the world.
              *
@@ -73,6 +89,27 @@ namespace ECS
             id_t addEntity(std::unique_ptr<Entity> entity)
             {
                 type_t                  id = Utils::getNewId<Entity>();
+                Events::OnEntityCreated event{entity.get()};
+
+                entity->setId(id);
+                _entities.emplace(id, std::move(entity));
+                if (_subscribers.find(ECS_TYPEID(Events::OnEntityCreated)) != _subscribers.end())
+                    broadcastEvent<Events::OnEntityCreated>(event);
+                return id;
+            }
+
+            /**
+             * @brief Create an empty entity with an id.
+             *
+             * @param id The unique identifier for the created entity.
+             * @return id_t The unique identifier for the created entity.
+             * @note if the id is already an entity id, it will return the id
+             */
+            id_t addEntity(id_t id)
+            {
+                if (entityExists(id)) return id;
+                Utils::getNewId<Entity>(id);
+                std::unique_ptr<Entity> entity = std::make_unique<Entity>();
                 Events::OnEntityCreated event{entity.get()};
 
                 entity->setId(id);
@@ -120,11 +157,7 @@ namespace ECS
              */
             void removeEntity(id_t id)
             {
-                Events::OnEntityDestroyed event{_entities.at(id).get()};
-
-                _entities.erase(id);
-                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
-                    broadcastEvent<Events::OnEntityDestroyed>(event);
+                _entitiesToDelete.push_back(id);
             }
 
             /**
@@ -135,11 +168,8 @@ namespace ECS
              */
             void removeEntity(ECS::Entity *entity)
             {
-                id_t                      id = entity->getId();
-                Events::OnEntityDestroyed event{entity};
-                _entities.erase(id);
-                if (_subscribers.find(ECS_TYPEID(Events::OnEntityDestroyed)) != _subscribers.end())
-                    broadcastEvent<Events::OnEntityDestroyed>(event);
+                id_t id = entity->getId();
+                _entitiesToDelete.push_back(id);
             }
 
             /**
@@ -400,16 +430,18 @@ namespace ECS
             {
                 BaseSystem *renderer = nullptr;
 
-                for (auto &system : _systems) {
-                    if (system.first == "Renderer") {
-                        renderer = system.second.get();
-                        continue;
+                for (int i = 0; i < Engine::EngineClass::getEngine().getPlayersAmount(); i++) {
+                    Engine::EngineClass::getEngine().setCurrentPlayer(i);
+                    for (auto &system : _systems) {
+                        if (system.first == "Renderer") {
+                            renderer = system.second.get();
+                            continue;
+                        }
+                        system.second->tick();
                     }
-                    system.second->tick();
                 }
-                if (!renderer) throw std::runtime_error("No renderer found");
-
-                renderer->tick();
+                Engine::EngineClass::getEngine().setCurrentPlayer(Engine::EngineClass::getEngine().getOwnPlayer());
+                if (renderer != nullptr) renderer->tick();
             }
 
             /*===================//
@@ -436,6 +468,26 @@ namespace ECS
             std::unordered_map<id_t, std::unique_ptr<Entity>> &getEntities()
             {
                 return _entities;
+            }
+
+            /**
+             * @brief Get the entities to delete of the world.
+             *
+             * @return std::vector<ECS::id_t> &
+             */
+            std::vector<ECS::id_t> &getEntitesToDelete()
+            {
+                return _entitiesToDelete;
+            }
+
+            /**
+             * @brief Get the subscribers of the world.
+             *
+             * @return std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> &
+             */
+            std::unordered_map<type_t, std::unordered_map<id_t, BaseEventSubscriber *>> &getSubscribers()
+            {
+                return _subscribers;
             }
 
         private:
@@ -482,5 +534,6 @@ namespace ECS
             std::unordered_map<std::string, std::unique_ptr<BaseSystem>>                _systems;
             Clock                                                                       _clock;
             Engine::EngineClass                                                        &_engine;
+            std::vector<ECS::id_t>                                                      _entitiesToDelete;
     };
 } // namespace ECS

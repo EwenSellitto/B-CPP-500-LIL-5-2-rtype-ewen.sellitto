@@ -160,6 +160,30 @@ void UI::handleGameOver()
     engine.switchWorld("GameOver");
 }
 
+void UI::handleGoJoin()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("joinRoom");
+}
+
+void UI::handleGoCreate()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("createRoom");
+}
+
+void UI::handleGoWaitingHost()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("waitingHost");
+}
+
+void UI::handleGoWaitingClient()
+{
+    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+    engine.switchWorld("waitingClient");
+}
+
 void UI::handleClick(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,
                      ECS::ComponentHandle<Components::RenderableComponent> renderable)
 {

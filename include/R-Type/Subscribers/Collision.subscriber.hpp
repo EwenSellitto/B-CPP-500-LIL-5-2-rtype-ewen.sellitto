@@ -9,8 +9,10 @@
 
 #include "ECS/Components.hpp"
 #include "ECS/EventSubscriber.hpp"
+#include "Engine/Components/Moving.component.hpp"
 #include "Engine/Events/Collision.event.hpp"
 #include "Engine/Systems/Score.system.hpp"
+#include "Engine/Systems/UI.system.hpp"
 #include "R-Type/Components/BaseBullet.component.hpp"
 #include "R-Type/Components/Booster.component.hpp"
 #include "R-Type/Components/BoosterActive.component.hpp"
@@ -38,7 +40,8 @@ namespace Rtype::Subscriber
                     dynamic_cast<Engine::System::ScoreSystem *>(WORLD.getSystems()["ScoreSystem"].get());
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
-                    data.movingEntity->removeAllComponents();
+                    std::cout << "YOU LOSE" << std::endl;
+                    WORLD.removeEntity(data.movingEntity->getId());
                     ui->handleGameOver();
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.collidingEntity->has<PlayerComponent, BoosterActiveComponent>()) {
@@ -47,9 +50,10 @@ namespace Rtype::Subscriber
                         world.removeEntity(data.movingEntity);
                     } else if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<PlayerComponent>()) {
+                        std::cout << "YOU LOSE" << std::endl;
                         ui->handleGameOver();
-                        world.removeEntity(data.movingEntity);
-                        world.removeEntity(data.collidingEntity);
+                        WORLD.removeEntity(data.movingEntity->getId());
+                        WORLD.removeEntity(data.collidingEntity->getId());
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
                         score->incrementScore();
@@ -76,10 +80,10 @@ namespace Rtype::Subscriber
 
                     health->health -= damage;
                 } else {
-                    data.collidingEntity->removeAllComponents();
+                    WORLD.removeEntity(data.collidingEntity->getId());
                 }
                 if (data.movingEntity->getComponent<BaseBulletComponent>()->toDelete)
-                    data.movingEntity->removeAllComponents();
+                    WORLD.removeEntity(data.movingEntity->getId());
             }
     };
 } // namespace Rtype::Subscriber

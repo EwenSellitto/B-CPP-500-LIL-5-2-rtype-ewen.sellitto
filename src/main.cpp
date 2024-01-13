@@ -6,6 +6,7 @@
 */
 
 #include <SFML/Window/Event.hpp>
+#include <thread>
 
 #include "Engine/Engine.hpp"
 #include "R-Type/GameWorld/GameWorld.hpp"
@@ -19,9 +20,12 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
 #endif
         engine.setStartWorld("menu");
         engine.addWorldFactory("menu", GameWorld::createMenuWorld);
+        engine.addWorldFactory("createRoom", GameWorld::createRoomWorld);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
-        engine.addWorldFactory("chooseIP", GameWorld::createChooseIP);
         engine.addWorldFactory("GameOver", GameWorld::createGameOver);
+        engine.addWorldFactory("joinRoom", GameWorld::joinRoomWorld);
+        engine.addWorldFactory("waitingHost", GameWorld::createWaitingHost);
+        engine.addWorldFactory("waitingClient", GameWorld::createWaitingClient);
 
         engine.run();
 #ifndef DEBUG_MODE
@@ -30,6 +34,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         return 84;
     }
 #endif
+
+    engine.network().stop();
 
     return 0;
 }

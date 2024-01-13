@@ -49,7 +49,6 @@ add_executable(r-type
         include/Engine/Components/Position.component.hpp
         include/Engine/Components/Speed.component.hpp
         include/Engine/Components/Score.component.hpp
-        include/Engine/Components/Type.component.hpp
         include/Engine/Components/View.component.hpp
         include/Engine/Components/WorldMoveProgress.component.hpp
         include/Engine/Components/Collision.component.hpp
@@ -123,17 +122,39 @@ add_executable(r-type
         include/R-Type/Systems/Enemy.system.hpp
         include/R-Type/Systems/Health.system.hpp
         include/R-Type/Systems/Booster.system.hpp
+        include/R-Type/gameData/EnemyData.hpp
 
         ##==================##
         ##  R-Type Sources  ##
         ##==================##
 
+        src/R-Type/EnemyMakers.cpp
         src/R-Type/Systems/Bullets.system.cpp
         src/R-Type/Systems/MovePlayer.system.cpp
         src/R-Type/Systems/DeathAnimation.system.cpp
         src/R-Type/Systems/Enemy.system.cpp
         src/R-Type/Systems/Health.system.cpp
         src/R-Type/Systems/Booster.system.cpp
+
+        ##==================##
+        ##  Server Headers  ##
+        ##==================##
+
+        include/Engine/Server/Network.hpp
+        include/public/AvailableComponents.hpp
+        include/public/ComponentsType.hpp
+
+        ##==================##
+        ##  Server Sources  ##
+        ##==================##
+        src/Engine/Server/Network.cpp
+        src/Engine/Server/Packets/HandlePackets.cpp
+        src/Engine/Server/Packets/ReceivePackets.cpp
+        src/Engine/Server/Packets/SendPackets.cpp
+        src/Engine/Server/Packets/Serialization/Serialize.cpp
+        src/Engine/Server/Packets/Serialization/Deserialize.cpp
+        src/Engine/Server/ServerHandler.cpp
+
 
         src/main.cpp
 )

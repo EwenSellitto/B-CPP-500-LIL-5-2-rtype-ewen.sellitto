@@ -15,13 +15,15 @@ namespace GameWorld
         // Setup view and create entities
         Entities::createViewEntity(world);
         Entities::createParallax(world);
-        Entities::createPlayerEntities(world);
+        // Entities::createPlayerEntities(world);
+        // Entities::createEnemyQueue(world);
+        // Entities::createWorldMoveProgress(world);
         Entities::createOptionsEntities(world);
         Entities::createScoreEntities(world);
-        Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {500, 200},
-                                          {2, 2}, 4);
-        Entities::createEnemyQueue(world);
-        Entities::createWorldMoveProgress(world);
+        // Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {150, 150},
+        //                                   {2, 2}, 4);
+        // Entities::createEnemyQueue(world);
+        // Entities::createWorldMoveProgress(world);
 
         // Add systems
         Systems::addPhysics(world);
@@ -41,6 +43,15 @@ namespace GameWorld
         Subscribers::subscribeToEvents(world);
 
         return world;
+    }
+
+    inline void addToGameWorldServerSide(ECS::World *world, int players)
+    {
+        // Setup view and create entities
+        for (int i = 0; i < players; i++)
+            Entities::createPlayerEntities(world, i);
+        Entities::createEnemyQueue(world);
+        Entities::createWorldMoveProgress(world);
     }
 
     // inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)
@@ -64,12 +75,12 @@ namespace GameWorld
         return world;
     }
 
-    inline ECS::World *createChooseIP()
+    inline ECS::World *joinRoomWorld()
     {
         auto world = new ECS::World();
 
         Entities::createViewEntity(world);
-        Entities::createInputsEntities(world);
+        Entities::createInputsEntitiesForJoin(world);
         Entities::createParallax(world);
 
         Systems::addUISystem(world);
@@ -77,6 +88,49 @@ namespace GameWorld
         Systems::addParallaxSystem(world);
 
         Subscribers::subscribeToEventsInputs(world);
+        return world;
+    }
+
+    inline ECS::World *createRoomWorld()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createInputsEntitiesForCreate(world);
+        Entities::createParallax(world);
+
+        Systems::addUISystem(world);
+        Systems::addInputsSystem(world);
+        Systems::addParallaxSystem(world);
+
+        Subscribers::subscribeToEventsInputs(world);
+        return world;
+    }
+    inline ECS::World *createWaitingHost()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createParallax(world);
+        Entities::createWaitingHostEntities(world);
+
+        Systems::addUISystem(world);
+        Systems::addParallaxSystem(world);
+
+        return world;
+    }
+
+    inline ECS::World *createWaitingClient()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createParallax(world);
+        Entities::createWaitingClientEntities(world);
+
+        Systems::addUISystem(world);
+        Systems::addParallaxSystem(world);
+
         return world;
     }
 
@@ -93,5 +147,4 @@ namespace GameWorld
 
         return world;
     }
-
 } // namespace GameWorld

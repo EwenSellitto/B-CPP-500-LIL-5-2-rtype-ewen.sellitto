@@ -15,7 +15,6 @@
 #include "Engine/Components/Moving.component.hpp"
 #include "Engine/Components/Position.component.hpp"
 #include "Engine/Components/Renderable.component.hpp"
-#include "Engine/Components/Type.component.hpp"
 #include "Engine/Components/WorldMoveProgress.component.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Utils/Math.hpp"
@@ -24,6 +23,7 @@
 #include "R-Type/Components/EnemyMovements.component.hpp"
 #include "R-Type/Components/EnemyQueue.component.hpp"
 #include "R-Type/Components/Player.component.hpp"
+#include "R-Type/GameWorld/EnemyMakers.hpp"
 #include "R-Type/Systems/Bullets.system.hpp"
 #include "SFML/System/Vector2.hpp"
 
@@ -47,8 +47,8 @@ void EnemySystem::trySpawnEnemies()
         if (std::get<0>(element.second.first) > worldProgress->getComponent<WorldMoveProgressComponent>()->progress)
             continue;
         element.first  = true;
-        size_t enemyId = element.second.second(std::get<1>(element.second.first), std::get<2>(element.second.first),
-                                               std::get<3>(element.second.first));
+        size_t enemyId = functionMap[element.second.second](
+            std::get<1>(element.second.first), std::get<2>(element.second.first), std::get<3>(element.second.first));
         ECS::Entity &currentEnemy = world.getMutEntity(enemyId);
         if (!currentEnemy.has<PositionComponent>() || !currentEnemy.has<EnemyMovementsComponent>()) return;
         currentEnemy.addComponent<MovingComponent>(
@@ -194,13 +194,12 @@ size_t EnemySystem::spawnEnemy(float posx, float posy)
     EnemyData::EnemyType type       = getRandomEnemyType();
     auto                 attributes = EnemyData::enemyTypeAttributes.at(type);
 
-    size_t entityId =
-        WORLD.createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
-                           new RenderableComponent(attributes.spritePath, 20, 20, 0), new EnemyComponent(type),
-                           new CollisionComponent(0, 0, 100, 100), new TypeComponent(TypeComponent::enemy));
+    size_t entityId = WORLD.createEntity(new PositionComponent(static_cast<int>(posx), static_cast<int>(posy)),
+                                         new RenderableComponent(attributes.spritePath, 20, 20, 0),
+                                         new EnemyComponent(type), new CollisionComponent(0, 0, 100, 100));
     WORLD.getMutEntity(entityId).addComponent<MovingComponent>(new MovingComponent(
-        sf::Vector2f{static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->x),
-                     static_cast<float>(WORLD.getEntity(entityId).getComponent<PositionComponent>()->y)},
+        sf::Vector2f{static_cast<float>(WORLD.getMutEntity(entityId).getComponent<PositionComponent>()->x),
+                     static_cast<float>(WORLD.getMutEntity(entityId).getComponent<PositionComponent>()->y)},
         3000, {-100, -100}));
     return entityId;
 }

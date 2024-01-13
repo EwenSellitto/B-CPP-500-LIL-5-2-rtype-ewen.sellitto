@@ -61,6 +61,7 @@ void Renderer::tick()
     auto        r_entities = world.getEntitiesWithComponents<RenderableComponent>();
     std::thread t1([&]() {
         for (auto &entity : r_entities) {
+            if (!entity->has<RenderableComponent>()) continue;
             auto renderableComp = entity->getComponent<RenderableComponent>();
             if (!renderableComp->isDisplayed) continue;
             if (entity->has<PositionComponent>()) {
@@ -75,6 +76,7 @@ void Renderer::tick()
     auto        l_entities = world.getEntitiesWithComponents<LayeredRenderableComponent>();
     std::thread t2([&]() {
         for (auto &entity : l_entities) {
+            if (!entity->has<LayeredRenderableComponent>()) continue;
             auto layeredRenderableComp = entity->getComponent<LayeredRenderableComponent>();
             if (!layeredRenderableComp->isDisplayed) continue;
             if (entity->has<PositionComponent>()) {

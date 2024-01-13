@@ -79,7 +79,7 @@ namespace EnemyData
 
     const std::unordered_map<EnemyType, EnemyAttributes> enemyTypeAttributes = {
         {EnemyType::Weak, EnemyAttributes("./assets/klaed/Klaed-Scout-Base.png", 50)},
-        {EnemyType::Normal, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
+        {EnemyType::Medium, EnemyAttributes("./assets/klaed/Klaed-Battlecruiser-Base.png", 100)},
         {EnemyType::Strong, EnemyAttributes("./assets/klaed/Klaed-Dreadnought-Base.png", 150)}};
 
 

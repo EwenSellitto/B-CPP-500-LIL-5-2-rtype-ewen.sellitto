@@ -10,6 +10,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "ECS/Components.hpp"
 #include "SFML/Graphics/Text.hpp"
@@ -68,6 +69,22 @@ namespace Engine::Components
             {
                 if (content.size() > 0) content.pop_back();
                 text.setString(content);
+            }
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
             }
 
             bool centered;

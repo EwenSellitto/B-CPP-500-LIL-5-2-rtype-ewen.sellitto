@@ -34,7 +34,6 @@ namespace Subscribers
 
     inline void subscribeToEventsInputs(ECS::World *world)
     {
-
         auto *keyboardPressed  = new Rtype::Subscriber::KeyboardPressedSubscriber();
         auto *keyboardReleased = new Rtype::Subscriber::KeyboardReleasedSubscriber();
 
