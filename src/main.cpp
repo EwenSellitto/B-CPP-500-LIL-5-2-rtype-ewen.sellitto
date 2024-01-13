@@ -23,6 +23,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         engine.addWorldFactory("createRoom", GameWorld::createRoomWorld);
         engine.addWorldFactory("game", GameWorld::createGameWorld);
         engine.addWorldFactory("joinRoom", GameWorld::joinRoomWorld);
+        engine.addWorldFactory("waitingHost", GameWorld::createWaitingHost);
+        engine.addWorldFactory("waitingClient", GameWorld::createWaitingClient);
 
         engine.run();
 #ifndef DEBUG_MODE

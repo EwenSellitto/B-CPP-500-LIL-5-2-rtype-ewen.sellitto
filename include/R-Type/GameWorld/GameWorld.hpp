@@ -103,4 +103,31 @@ namespace GameWorld
         Subscribers::subscribeToEventsInputs(world);
         return world;
     }
+    inline ECS::World *createWaitingHost()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createParallax(world);
+        Entities::createWaitingHostEntities(world);
+
+        Systems::addUISystem(world);
+        Systems::addParallaxSystem(world);
+
+        return world;
+    }
+
+    inline ECS::World *createWaitingClient()
+    {
+        auto world = new ECS::World();
+
+        Entities::createViewEntity(world);
+        Entities::createParallax(world);
+        Entities::createWaitingClientEntities(world);
+
+        Systems::addUISystem(world);
+        Systems::addParallaxSystem(world);
+
+        return world;
+    }
 } // namespace GameWorld

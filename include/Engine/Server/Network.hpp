@@ -114,6 +114,18 @@ namespace ECS
             // ======================= GETTERS =========================
             // =========================================================
 
+            sf::UdpSocket &getSocket()
+            {
+                return socket;
+            }
+            sf::IpAddress getIP() const
+            {
+                return serverAddress;
+            }
+            int getPort() const
+            {
+                return _port;
+            }
             std::vector<sf::Event> getEvents() const
             {
                 return clientEvents;
@@ -155,6 +167,14 @@ namespace ECS
             // ======================= SETTERS =========================
             // =========================================================
 
+            void setIP(const sf::IpAddress &ip)
+            {
+                serverAddress = ip;
+            }
+            void setPort(int port)
+            {
+                _port = port;
+            }
             // =========================================================
             // =================== EVENTS HANDLING =====================
             // =========================================================
@@ -167,6 +187,19 @@ namespace ECS
             void clearEvents()
             {
                 clientEvents.clear();
+            }
+
+            void setIsReadyToStart(bool isReady)
+            {
+                isReadyToStart = isReady;
+                sf::Packet packet;
+                packet << static_cast<int>(PacketType::SwitchWorld);
+                sendPacketToAllClients(packet);
+            }
+
+            bool getIsReadyToStart() const
+            {
+                return isReadyToStart;
             }
 
         private:
@@ -208,12 +241,17 @@ namespace ECS
 
             // ================== ATTRIBUTS ==================
 
-            WaitingRoom                              waitingRoom;
-            sf::UdpSocket                            socket;
-            std::thread                              thread;
-            bool                                     running        = false;
+            WaitingRoom   waitingRoom;
+            sf::UdpSocket socket;
+            sf::IpAddress serverAddress = sf::IpAddress::None;
+
+            std::thread thread;
+            bool        running = false;
+            int         _port   = 0;
+
             bool                                     isServer       = false;
             bool                                     gameHasStarted = false;
+            bool                                     isReadyToStart = false;
             ComponentsConvertor                      componentsConvertor;
             std::vector<sf::Event>                   clientEvents;
             std::map<int, std::vector<sf::Event>>    serverEvents;

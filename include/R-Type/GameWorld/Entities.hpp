@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <iostream>
+#include <sstream>
+
 #include "ECS/World.hpp"
 #include "Engine/Components/Animation.component.hpp"
 #include "Engine/Components/Button.component.hpp"
@@ -52,7 +55,7 @@ namespace Entities
     inline void createPlayerEntities(ECS::World *world, int playerNb)
     {
         using namespace Engine::Components;
-        std::vector<std::pair<int, int>> playerPos = {{100, 300}, {100, 360}, {100, 300}, {100, 400}};
+        std::vector<std::pair<int, int>> playerPos = {{100, 300}, {100, 360}, {100, 420}, {100, 480}};
 
         world->createEntity(
             new PlayerComponent(playerNb), new PositionComponent(playerPos[playerNb].first, playerPos[playerNb].second),
@@ -75,12 +78,12 @@ namespace Entities
             return;
         }
         world->createEntity(
-            new PositionComponent(400, 200), new TextComponent("PORT", font, 30, {310, 180}, false, true),
-            new OptionsComponent(), new TextInputComponent("PORT", []() {}),
+            new PositionComponent(400, 200), new TextComponent("IP", font, 30, {310, 180}, false, true),
+            new OptionsComponent(), new TextInputComponent("IP", []() {}),
             new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(
-            new PositionComponent(400, 300), new TextComponent("IP", font, 30, {310, 280}, false, true),
-            new OptionsComponent(), new TextInputComponent("IP", []() {}),
+            new PositionComponent(400, 300), new TextComponent("PORT", font, 30, {310, 280}, false, true),
+            new OptionsComponent(), new TextInputComponent("PORT", []() {}),
             new RenderableComponent("./assets/menu/button_long/long_focus.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(400, 410),
                             new TextComponent("Send", font, 40, {400, 385}, true, true), new OptionsComponent(),
@@ -88,9 +91,83 @@ namespace Entities
                                                 [world]() {
                                                     Engine::System::InputsSystem inputsSystem =
                                                         Engine::System::InputsSystem(*world);
+                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
                                                     inputsSystem.handleSend({"PORT", "IP"});
+                                                    uiSystem.handleGoWaitingClient();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(40, 100), new MenuComponent(),
+            new ButtonComponent("Pause Game",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleGoMenu();
+                                }),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
+                            new RenderableComponent("./assets/menu/icons/close_icon.png", 0, 0, 2, 0, {2, 2}, true));
+    }
+
+    inline void createWaitingHostEntities(ECS::World *world)
+    {
+        using namespace Engine::Components;
+        sf::Font font;
+        if (!font.loadFromFile("./assets/fonts/font.ttf")) {
+            return;
+        }
+        Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+        std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
+        world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
+        std::string strServer = "Server IP : " + engine.network().getIP().toString();
+        world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
+        std::string strPort = "Port : " + std::to_string(engine.network().getPort());
+        world->createEntity(new TextComponent(strPort, font, 30, {310, 380}, false, true));
+        world->createEntity(
+            new PositionComponent(40, 100), new MenuComponent(),
+            new ButtonComponent("Pause Game",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleGoJoin();
+                                }),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
+                            new RenderableComponent("./assets/menu/icons/close_icon.png", 0, 0, 2, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(400, 520), new TextComponent("Start Game", font, 40, {400, 500}, true),
+            new MenuComponent(),
+            new ButtonComponent("Start Game",
+                                [world]() {
+                                    std::cout << "Start Game" << std::endl;
+                                    NETWORK.setIsReadyToStart(true);
+                                }),
+            new RenderableComponent("./assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
+    }
+
+    inline void createWaitingClientEntities(ECS::World *world)
+    {
+        using namespace Engine::Components;
+        sf::Font font;
+        if (!font.loadFromFile("./assets/fonts/font.ttf")) {
+            return;
+        }
+        Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+        // std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
+        // world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
+        std::string strServer = "Server IP : " + engine.network().getIP().toString();
+        world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
+        std::string strPort = "Port : " + std::to_string(engine.network().getPort());
+        world->createEntity(new TextComponent(strPort, font, 30, {310, 380}, false, true));
+        world->createEntity(
+            new PositionComponent(40, 100), new MenuComponent(),
+            new ButtonComponent("Pause Game",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleGoJoin();
+                                }),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
+                            new RenderableComponent("./assets/menu/icons/close_icon.png", 0, 0, 2, 0, {2, 2}, true));
+        world->createEntity(new TextComponent("Waiting for the host ...", font, 40, {400, 500}, true));
     }
 
     inline void createInputsEntitiesForCreate(ECS::World *world)
@@ -110,9 +187,21 @@ namespace Entities
                                                 [world]() {
                                                     Engine::System::InputsSystem inputsSystem =
                                                         Engine::System::InputsSystem(*world);
+                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
                                                     inputsSystem.handleSend({"PORT"});
+                                                    uiSystem.handleGoWaitingHost();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(40, 100), new MenuComponent(),
+            new ButtonComponent("Pause Game",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleGoMenu();
+                                }),
+            new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
+                            new RenderableComponent("./assets/menu/icons/close_icon.png", 0, 0, 2, 0, {2, 2}, true));
     }
 
     inline void createOptionsEntities(ECS::World *world)
@@ -143,7 +232,7 @@ namespace Entities
         world->createEntity(
             new PositionComponent(250, 450), new TextComponent("musique", font, 40, {250, 400}, false, false),
             new RenderableComponent("./assets/menu/range/barre_pleine.png", 0, 0, 3, 0, {2, 2}, false, false),
-            new OptionsComponent()); // size x= 240 y=25
+            new OptionsComponent());
         world->createEntity(
             new PositionComponent(370, 465), new CursorComponent([world]() {
                 Engine::System::Sound SoundSystem = Engine::System::Sound(*world);
@@ -177,10 +266,39 @@ namespace Entities
         if (!font.loadFromFile("./assets/fonts/font_big.ttf")) {
             return;
         }
-        world->createEntity(new TextComponent("R-Type", font, 110, {300, 50}), new MenuComponent());
+        world->createEntity(new TextComponent("R-Type", font, 110, {400, 50}, true), new MenuComponent());
 
         world->createEntity(
-            new PositionComponent(400, 370), new TextComponent("Quit", font, 40, {375, 340}), new MenuComponent(),
+            new PositionComponent(400, 220), new TextComponent("Start", font, 40, {400, 200}, true),
+            new MenuComponent(),
+            new ButtonComponent("Start Game",
+                                [world]() {
+                                    NETWORK.startServer(5555);
+                                    // sleep 200 ms
+                                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                                    NETWORK.setIsReadyToStart(true);
+                                }),
+            new RenderableComponent("./assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(
+            new ButtonComponent("Start Room",
+                                []() {
+                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+                                    engine.switchWorld("createRoom");
+                                }),
+            new PositionComponent(400, 320), new TextComponent("Start Room", font, 40, {400, 300}, true),
+            new MenuComponent(),
+            new RenderableComponent("././assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(
+            new ButtonComponent("Join Room",
+                                []() {
+                                    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+                                    engine.switchWorld("joinRoom");
+                                }),
+            new PositionComponent(400, 420), new TextComponent("Join Room", font, 40, {400, 400}, true),
+            new MenuComponent(),
+            new RenderableComponent("././assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
+        world->createEntity(
+            new PositionComponent(400, 520), new TextComponent("Quit", font, 40, {400, 500}, true), new MenuComponent(),
             new ButtonComponent("Quit",
                                 [world]() {
                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
@@ -188,14 +306,6 @@ namespace Entities
                                 }),
             new RenderableComponent("./assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
 
-        world->createEntity(
-            new PositionComponent(400, 270), new TextComponent("Start", font, 40, {370, 240}), new MenuComponent(),
-            new ButtonComponent("Start Game",
-                                [world]() {
-                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                    uiSystem.handleStartGame();
-                                }),
-            new RenderableComponent("./assets/menu/button_long/long_off.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(
             new PositionComponent(40, 100), new MenuComponent(),
             new ButtonComponent("Pause Game",
@@ -207,28 +317,6 @@ namespace Entities
             new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
                             new RenderableComponent("./assets/menu/icons/settings_icon.png", 0, 0, 2, 0, {2, 2}, true));
-
-        world->createEntity(new ButtonComponent("Start Waiting Room",
-                                                []() {
-                                                    //                                                    Engine::EngineClass
-                                                    //                                                    &engine =
-                                                    //                                                    Engine::EngineClass::getEngine();
-                                                    //                                                    engine.switchWorld("createRoom");
-                                                    NETWORK.startServer(5555);
-                                                }),
-                            new PositionComponent(200, 200),
-                            new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));
-
-        world->createEntity(new ButtonComponent("Join Waiting Room",
-                                                []() {
-                                                    //                                                    Engine::EngineClass
-                                                    //                                                    &engine =
-                                                    //                                                    Engine::EngineClass::getEngine();
-                                                    //                                                    engine.switchWorld("joinRoom");
-                                                    NETWORK.connectToServer("localhost", 5555);
-                                                }),
-                            new PositionComponent(200, 300),
-                            new RenderableComponent("./assets/logo.png", 0, 0, 1, 0, {1, 1}, true));
     }
 
     inline void createBackground(ECS::World *world, const std::string &texturePath, ParallaxLayer layer, float speed,

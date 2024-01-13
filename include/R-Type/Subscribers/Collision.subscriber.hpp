@@ -62,7 +62,7 @@ namespace Rtype::Subscriber
                     WORLD.removeEntity(data.collidingEntity->getId());
                 }
                 WORLD.removeEntity(data.collidingEntity->getId());
-                data.movingEntity->removeAllComponents();
+                WORLD.removeEntity(data.movingEntity->getId());
             }
     };
 } // namespace Rtype::Subscriber

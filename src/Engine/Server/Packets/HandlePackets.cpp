@@ -135,11 +135,10 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
         sf::Packet packet;
         packet << static_cast<int>(PacketType::InitializeGame);
         packet << static_cast<int>(waitingRoom.getPlayers().size());
-        World &world = Engine::EngineClass::getEngine().world();
-        GameWorld::addToGameWorldServerSide(&world, waitingRoom.getPlayers().size());
+        GameWorld::addToGameWorldServerSide(&WORLD, waitingRoom.getPlayers().size());
         int nbEntities = getNbEntitiesModified();
         packet << nbEntities;
-        for (const auto &pair : world.getEntities())
+        for (const auto &pair : WORLD.getEntities())
             addSerializedEntityToPacket(packet, pair);
         sendPacketToAllClients(packet);
     }
@@ -148,12 +147,6 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
 void ECS::Network::addPlayerToLobby(const sf::IpAddress &clientAddress, unsigned short clientPort, bool isHost)
 {
     waitingRoom.addPlayer(clientAddress, clientPort, isHost);
-
-    if (waitingRoom.isReadyToStart()) {
-        sf::Packet packet;
-        packet << static_cast<int>(PacketType::SwitchWorld);
-        sendPacketToAllClients(packet);
-    }
 }
 
 void ECS::Network::handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
