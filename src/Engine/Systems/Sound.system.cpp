@@ -54,6 +54,10 @@ void Sound::SetVolumeMusic()
     float             volume         = (cursorPosition / 240) * 100;
     world.each<Engine::Components::MusicComponent>(
         [&]([[maybe_unused]] ECS::Entity *entity, ECS::ComponentHandle<Engine::Components::MusicComponent> music) {
+            if (volume > 100)
+                volume = 100;
+            else if (volume < 1)
+                volume = 0;
             music->music.setVolume(volume);
         });
 }
