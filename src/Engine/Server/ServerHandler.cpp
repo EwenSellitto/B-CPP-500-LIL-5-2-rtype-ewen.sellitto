@@ -58,4 +58,5 @@ void ECS::Network::stop()
 {
     running = false;
     if (thread.joinable()) thread.join();
+    if (socket.getLocalPort() != 0) socket.unbind();
 }

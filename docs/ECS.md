@@ -418,7 +418,6 @@ namespace ECS
             World()
                 : _entities(), _global_entities(), _subscribers(), _clock(), _engine(Engine::EngineClass::getEngine())
             {
-                std::cout << "New world created" << std::endl;
             }
 
             ~World()

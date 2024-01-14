@@ -40,10 +40,7 @@ namespace Rtype::Subscriber
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     WORLD.removeEntity(data.movingEntity->getId());
-
-                    if (data.movingEntity->getComponent<PlayerComponent>()->playerNb ==
-                        Engine::EngineClass::getEngine().getOwnPlayer())
-                        ui->handleGameOver();
+                    ui->handleGameOver(data.movingEntity->getComponent<PlayerComponent>()->playerNb);
 
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.collidingEntity->has<PlayerComponent, BoosterActiveComponent>()) {
@@ -55,10 +52,7 @@ namespace Rtype::Subscriber
                                data.collidingEntity->has<PlayerComponent>()) {
                         WORLD.removeEntity(data.movingEntity->getId());
                         WORLD.removeEntity(data.collidingEntity->getId());
-
-                        if (data.collidingEntity->getComponent<PlayerComponent>()->playerNb ==
-                            Engine::EngineClass::getEngine().getOwnPlayer())
-                            ui->handleGameOver();
+                            ui->handleGameOver(data.collidingEntity->getComponent<PlayerComponent>()->playerNb);
 
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {

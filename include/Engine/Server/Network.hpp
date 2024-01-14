@@ -96,6 +96,7 @@ namespace ECS
             void sendPacketToAllClients(sf::Packet &packet, bool includeServer = true);
             void sendPacketToClient(sf::Packet &packet, const sf::IpAddress &address, unsigned short port);
 
+            void sendGameOverToClients();
             // =========================================================
             // ====================== RECEPTION ========================
             // =========================================================
@@ -148,6 +149,11 @@ namespace ECS
                 return waitingRoom;
             }
 
+            bool getNeedToReset() const
+            {
+                return needToReset;
+            }
+
             std::vector<std::tuple<ECS::id_t, std::vector<ComponentType>,
                                    std::vector<std::pair<BaseComponent *, ComponentType>>>> &
             getComponentsToUpdate()
@@ -196,6 +202,7 @@ namespace ECS
 
             void resetServer()
             {
+                needToReset    = false;
                 isServer       = false;
                 gameHasStarted = false;
                 isReadyToStart = false;
@@ -244,6 +251,7 @@ namespace ECS
             void handleSwitchWorld(const sf::IpAddress &sender, unsigned short clientPort);
             void handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsigned short clientPort);
 
+            void handleEndGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
             void handleClientUpdate(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
             void handleKeyInputs(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort);
 
@@ -257,6 +265,7 @@ namespace ECS
 
             std::thread thread;
             bool        running = false;
+            bool        needToReset = false;
             int         _port   = 0;
 
             bool                                     isServer       = false;

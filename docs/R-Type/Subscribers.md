@@ -21,14 +21,12 @@ namespace Rtype::Subscriber
                 using namespace Engine::Components;
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
-                    std::cout << "YOU LOSE here" << std::endl;
                     data.movingEntity->removeAllComponents();
                     return;
                 }
                 if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                         data.collidingEntity->has<PlayerComponent>()) {
-                        std::cout << "YOU LOSE here" << std::endl;
                         data.movingEntity->removeAllComponents();
                         data.collidingEntity->removeAllComponents();
                         return;

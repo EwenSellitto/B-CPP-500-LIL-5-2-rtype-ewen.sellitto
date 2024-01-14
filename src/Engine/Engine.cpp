@@ -322,6 +322,11 @@ void EngineClass::run()
         handleEvents();
         world().tick();
 
+        if (NETWORK.getNeedToReset()) {
+            switchWorld("GameOver");
+            NETWORK.resetServer();
+        }
+
         for (auto &id : WORLD.getEntitesToDelete()) {
             if (!WORLD.entityExists(id)) continue;
 

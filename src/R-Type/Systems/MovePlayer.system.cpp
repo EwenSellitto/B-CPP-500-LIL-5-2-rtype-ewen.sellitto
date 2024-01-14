@@ -37,16 +37,10 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
     }
 
     if (!player) {
-        std::cerr << "PlayerMissing: entity with PlayerComponent must be declared in world before movePlayer "
-                     "system creation, it must have a speedComponent"
-                  << std::endl;
         return;
     }
 
     if (!player->has<SpeedComponent>() || !player->has<PositionComponent>()) {
-        std::cerr << "SpeedComponent or PositionComponent missing: entity with PlayerComponent must be declared "
-                     "in world before movePlayer system creation, it must have a speedComponent"
-                  << std::endl;
         return;
     }
     ECS::ComponentHandle<SpeedComponent> speedComponent = player->getComponent<SpeedComponent>();

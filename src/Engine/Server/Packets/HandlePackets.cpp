@@ -12,6 +12,11 @@
 #include "Engine/Server/Network.hpp"
 #include "R-Type/GameWorld/GameWorld.hpp"
 
+void ECS::Network::handleEndGame(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
+{
+    needToReset = true;
+}
+
 void ECS::Network::handleHandshakeRequest(sf::Packet &packet, const sf::IpAddress &sender, unsigned short senderPort)
 {
     bool isHost = false;

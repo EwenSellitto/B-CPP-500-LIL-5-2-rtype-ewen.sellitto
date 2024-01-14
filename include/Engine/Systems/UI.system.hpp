@@ -39,7 +39,7 @@ namespace Engine::System
 
             void handleQuitGame();
 
-            void handleGameOver();
+            void handleGameOver(int playerNb);
 
             void handleGoJoin();
 

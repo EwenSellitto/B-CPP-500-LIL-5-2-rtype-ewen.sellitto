@@ -23,6 +23,7 @@ struct ClientInfo {
         bool           isInitialized    = false;
         bool           isServer         = false;
         int            nbPlayer         = 0;
+        bool           isAlive          = true;
 
         ClientInfo() : port(0), state(ClientState::Disconnected) {} // Constructeur par défaut
 

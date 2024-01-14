@@ -50,6 +50,16 @@ struct WaitingRoom {
             return true;
         }
 
+        bool allPlayersAreDead() const
+        {
+            for (const auto &player : players) {
+                if (player->isAlive) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         bool allPlayersInitializedGame()
         {
             for (const auto &player : players) {

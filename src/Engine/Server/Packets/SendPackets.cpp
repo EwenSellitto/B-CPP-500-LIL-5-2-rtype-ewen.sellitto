@@ -12,6 +12,13 @@
 using namespace Engine;
 using namespace ECS;
 
+void ECS::Network::sendGameOverToClients()
+{
+    sf::Packet packet;
+    packet << static_cast<int>(PacketType::EndGame);
+    sendPacketToAllClients(packet, false);
+}
+
 void ECS::Network::sendRemovedEntitiesToClients(std::vector<ECS::id_t> &removedEntities)
 {
     sf::Packet packet;

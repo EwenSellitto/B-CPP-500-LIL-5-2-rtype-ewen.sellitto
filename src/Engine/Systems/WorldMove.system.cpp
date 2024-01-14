@@ -28,7 +28,6 @@ void WorldMoveSystem::tick()
     ECS::Entity *worldMoveEntity = world.getEntityWithComponents<WorldMoveProgressComponent>();
 
     if (!worldMoveEntity) {
-        std::cerr << "declare a worldMoveProgressComponent before declaring the worldMoveSystem" << std::endl;
         return;
     }
 

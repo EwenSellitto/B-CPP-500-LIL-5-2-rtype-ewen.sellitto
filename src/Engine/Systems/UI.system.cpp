@@ -155,10 +155,20 @@ void UI::handleGoMenu()
     engine.switchWorld("menu");
 }
 
-void UI::handleGameOver()
+void UI::handleGameOver(int playerNb)
 {
-    Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-    engine.switchWorld("GameOver");
+    if (NETWORK.getIsServer()) {
+        for (auto &player : NETWORK.getWaitingRoom().getPlayers()) {
+            if (player->nbPlayer == playerNb) {
+                player->isAlive = false;
+            }
+        }
+        if (!NETWORK.getWaitingRoom().allPlayersAreDead()) return;
+        NETWORK.sendGameOverToClients();
+        Engine::EngineClass &engine = Engine::EngineClass::getEngine();
+        engine.switchWorld("GameOver");
+        NETWORK.resetServer();
+    }
 }
 
 void UI::handleGoJoin()
