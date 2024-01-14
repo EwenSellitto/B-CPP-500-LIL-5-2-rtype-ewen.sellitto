@@ -30,7 +30,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv, [[maybe_unused
         engine.run();
 #ifndef DEBUG_MODE
     } catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
         return 84;
     }
 #endif
