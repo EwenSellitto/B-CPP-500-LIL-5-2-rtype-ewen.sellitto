@@ -112,7 +112,7 @@ namespace Entities
             return;
         }
         Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-        std::string          str    = "Nombre de joueurs : " + std::to_string(NETWORK.getWaitingRoom().getPlayers().size()) + "/4";
+        std::string str = "Nombre de joueurs : " + std::to_string(NETWORK.getWaitingRoom().getPlayers().size()) + "/4";
         world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true, "nbPlayers"));
         std::string strServer = "Server IP : " + NETWORK.getIP().toString();
         world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
@@ -123,7 +123,7 @@ namespace Entities
             new ButtonComponent("Pause Game",
                                 [world]() {
                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                    uiSystem.handleGoJoin();
+                                    uiSystem.handleGoCreate();
                                 }),
             new RenderableComponent("./assets/menu/button_tabs/button_main_disabled.png", 0, 0, 1, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(30, 100), new MenuComponent(),
@@ -141,10 +141,8 @@ namespace Entities
         if (!font.loadFromFile("./assets/fonts/font.ttf")) {
             return;
         }
-        Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-        // std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
-        // world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
-        std::string strServer = "Server IP : " + engine.network().getIP().toString();
+        Engine::EngineClass &engine    = Engine::EngineClass::getEngine();
+        std::string          strServer = "Server IP : " + engine.network().getIP().toString();
         world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
         std::string strPort = "Port : " + std::to_string(engine.network().getPort());
         world->createEntity(new TextComponent(strPort, font, 30, {310, 380}, false, true));
