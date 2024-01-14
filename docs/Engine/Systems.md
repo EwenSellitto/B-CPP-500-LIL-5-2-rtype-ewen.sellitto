@@ -40,6 +40,96 @@ This class define an **`AnimationSystem`** responsible for managing animations w
     - **`void unconfigure() override`**: Method to unconfigure or reset the system.
     - **`void tick() override`**: Method to execute the system logic during each iteration.
 
+# Inputs.system.hpp
+```cpp
+#pragma once
+
+#include "ECS/System.hpp"
+#include "ECS/World.hpp"
+
+namespace Engine::System
+{
+    class InputsSystem : public ECS::BaseSystem
+    {
+        public:
+            InputsSystem(ECS::World &world) : ECS::BaseSystem(world) {}
+
+            void configure(ECS::World &world) override;
+
+            void unconfigure() override;
+
+            void tick() override;
+
+            void changeText(std::string &text);
+
+            void removeText();
+
+            void handleSend(std::vector<std::string> args);
+
+        private:
+            int         port      = 0;
+            std::string ipAddress = "127.0.0.1";
+    };
+} // namespace Engine::System
+```
+
+### **`InputsSystem` Class:**
+
+- **Purpose**: Represents a system for handling inputs in an ECS-based game.
+- **Inherits From**: **`ECS::BaseSystem`**
+- **Constructors**:
+    - Constructor with a reference to the ECS world: Initializes an instance of the **`InputsSystem`** with a reference to the ECS world.
+- **Member Functions**:
+    - **`configure`**: Overrides the **`configure`** function from the base system class.
+    - **`unconfigure`**: Overrides the **`unconfigure`** function from the base system class.
+    - **`tick`**: Overrides the **`tick`** function from the base system class. This function is called during each game tick.
+    - **`changeText`**: Changes the text based on the provided string.
+    - **`removeText`**: Removes text.
+    - **`handleSend`**: Handles sending data based on the provided arguments.
+- **Member Variables**:
+    - **`port`**: An integer representing the port used by the system.
+    - **`ipAddress`**: A string representing the IP address used by the system.
+
+# Options.system.hpp
+```cpp
+#pragma once
+
+#include "ECS/System.hpp"
+#include "ECS/World.hpp"
+
+namespace Engine::System
+{
+    class OptionsSystem : public ECS::BaseSystem
+    {
+        public:
+            OptionsSystem(ECS::World &world) : ECS::BaseSystem(world) {}
+
+            void configure(ECS::World &world) override;
+
+            void unconfigure() override;
+
+            void tick() override;
+
+            void openOptions();
+
+            void closeOptions();
+    };
+} // namespace Engine::System
+```
+### **`OptionsSystem` Class:**
+
+- **Purpose**: Represents a system for handling options in an ECS-based game.
+- **Inherits From**: **`ECS::BaseSystem`**
+- **Constructors**:
+    - Constructor with a reference to the ECS world: Initializes an instance of the **`OptionsSystem`** with a reference to the ECS world.
+- **Member Functions**:
+    - **`configure`**: Overrides the **`configure`** function from the base system class.
+    - **`unconfigure`**: Overrides the **`unconfigure`** function from the base system class.
+    - **`tick`**: Overrides the **`tick`** function from the base system class. This function is called during each game tick.
+    - **`openOptions`**: Opens the options, indicating an action related to options handling.
+    - **`closeOptions`**: Closes the options, indicating an action related to options handling.
+
+
 # Parallax.system.hpp
 ```cpp
 #pragma once
@@ -177,6 +267,101 @@ This class defines a **`Renderer`** system aimed at managing rendering-related o
 - **`void configure(ECS::World &world) override`**: Configures the system, accepting a world reference as a parameter.
 - **`void unconfigure() override`**: Manages the unconfiguration or resetting of the system.
 - **`void tick() override`**: Executes the system's logic during each iteration.
+
+# Score.system.hpp
+```cpp
+#pragma once
+
+#include "ECS/System.hpp"
+#include "ECS/World.hpp"
+
+namespace Engine::System
+{
+    class ScoreSystem : public ECS::BaseSystem
+    {
+        public:
+            ScoreSystem(ECS::World &world) : ECS::BaseSystem(world){};
+            ScoreSystem(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
+            ~ScoreSystem() override = default;
+
+            void configure(ECS::World &world) override;
+
+            void unconfigure() override;
+
+            void tick() override;
+
+            void incrementScore();
+    };
+} // namespace Engine::System
+```
+
+### **`ScoreSystem` Class:**
+
+- **Purpose**: Represents a system for managing and updating scores in an ECS-based game.
+- **Inherits From**: **`ECS::BaseSystem`**
+- **Constructors**:
+    - Constructor with a reference to the ECS world: Initializes an instance of the **`ScoreSystem`** with a reference to the ECS world.
+    - Constructor with a reference to the ECS world and a variable number of entity IDs: Initializes an instance of the **`ScoreSystem`** with a reference to the ECS world and a variable number of entity IDs. (Note: The ellipsis **`...`** in the constructor's parameter list indicates a variable number of parameters.)
+- **Member Functions**:
+    - **`configure`**: Overrides the **`configure`** function from the base system class.
+    - **`unconfigure`**: Overrides the **`unconfigure`** function from the base system class.
+    - **`tick`**: Overrides the **`tick`** function from the base system class. This function is called during each game tick.
+    - **`incrementScore`**: Increments the score, indicating an action related to scoring.
+
+# Sound.system.hpp
+```cpp
+#pragma once
+
+#include "ECS/System.hpp"
+#include "ECS/World.hpp"
+
+namespace Engine::System
+{
+    class Sound : public ECS::BaseSystem
+    {
+        public:
+            Sound(ECS::World &world) : ECS::BaseSystem(world){};
+            Sound(ECS::World &world, ECS::id_t ids...) : ECS::BaseSystem(world, ids) {}
+            ~Sound() override = default;
+
+            void configure(ECS::World &world) override;
+
+            void unconfigure() override;
+
+            void tick() override;
+
+            void UpVolumeMusic();
+
+            void DownVolumeMusic();
+
+            void UpVolumeSFX();
+
+            void SetVolumeMusic();
+
+            void DownVolumeSFX();
+
+            void Mute();
+    };
+} // namespace Engine::System
+```
+
+### **`Sound` Class:**
+
+- **Purpose**: Represents a system for managing and controlling audio-related functionalities in an ECS-based game.
+- **Inherits From**: **`ECS::BaseSystem`**
+- **Constructors**:
+    - Constructor with a reference to the ECS world: Initializes an instance of the **`Sound`** system with a reference to the ECS world.
+    - Constructor with a reference to the ECS world and a variable number of entity IDs: Initializes an instance of the **`Sound`** system with a reference to the ECS world and a variable number of entity IDs. (Note: The ellipsis **`...`** in the constructor's parameter list indicates a variable number of parameters.)
+- **Member Functions**:
+    - **`configure`**: Overrides the **`configure`** function from the base system class.
+    - **`unconfigure`**: Overrides the **`unconfigure`** function from the base system class.
+    - **`tick`**: Overrides the **`tick`** function from the base system class. This function is called during each game tick.
+    - **`UpVolumeMusic`**: Increases the volume of the music.
+    - **`DownVolumeMusic`**: Decreases the volume of the music.
+    - **`UpVolumeSFX`**: Increases the volume of sound effects (SFX).
+    - **`DownVolumeSFX`**: Decreases the volume of sound effects (SFX).
+    - **`SetVolumeMusic`**: Sets the volume level for the music.
+    - **`Mute`**: Mutes the audio.
 
 # UI.system.hpp
 ```cpp

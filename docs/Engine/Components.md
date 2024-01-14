@@ -82,6 +82,76 @@ The **`ButtonComponent`** resides in the **`Engine::Components`** namespace and 
 
 - **`ButtonComponent(const std::string &text, std::function<void()> onClick)`**: Constructor initializing the button component with specified text and an onClick function.
 
+# CheckBox.component.hpp
+```cpp
+#pragma once
+#include <functional>
+#include <string>
+#include <utility>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct CheckBoxComponent : public ECS::BaseComponent {
+            std::string           text;
+            std::function<void()> clickOn;
+            std::function<void()> clickOff;
+            bool                  isActivated{};
+            bool                  status    = false;
+            bool                  isClicked = false;
+
+            CheckBoxComponent(std::string text, std::function<void()> clickOn, std::function<void()> clickOff,
+                              bool isActivated = true)
+                : text(std::move(text)), clickOn(std::move(clickOn)), clickOff(std::move(clickOff)),
+                  isActivated(isActivated)
+            {
+            }
+            CheckBoxComponent()           = default;
+            ~CheckBoxComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                std::ostringstream oss(std::ios::binary);
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] std::vector<char> vec,
+                                            ECS::BaseComponent                *component) override
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+    };
+} // namespace Engine::Components
+```
+
+### **`CheckBoxComponent` Structure:**
+
+- **Namespace**: **`Engine::Components`**
+- **Purpose**: Represents a checkbox component that can be used in graphical user interfaces.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`text`**: A string representing the text associated with the checkbox.
+    - **`clickOn`**: A function to be executed when the checkbox is clicked and activated.
+    - **`clickOff`**: A function to be executed when the checkbox is clicked and deactivated.
+    - **`isActivated`**: A boolean indicating whether the checkbox is initially activated.
+    - **`status`**: A boolean indicating the current activation status of the checkbox.
+    - **`isClicked`**: A boolean indicating whether the checkbox has been clicked.
+- **Constructors**:
+    - Parameterized constructor: Takes a string **`text`**, two functions **`clickOn`** and **`clickOff`**, and a boolean **`isActivated`** to initialize the checkbox component.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the checkbox component into a vector of characters. (Not yet implemented, returns an empty vector)
+    - **`deserialize`**: Deserializes a vector of characters into a checkbox component. (Not yet implemented, returns the original component)
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**)
+
 # Collision.component.hpp
 
 ```cpp
@@ -179,6 +249,108 @@ The **`SpriteInfo`** structure encapsulates essential information for rendering 
 
 This map serves as a centralized repository for sprite-related data, allowing easy access to sprite information throughout the game.
 
+# Cursor.component.hpp
+```cpp
+#pragma once
+
+#include <functional>
+#include <vector>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct CursorComponent : public ECS::BaseComponent {
+            std::function<void()> onChange;
+            bool                  isClicked = false;
+
+            CursorComponent(std::function<void()> onChange) : onChange(onChange) {}
+            ~CursorComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+    };
+} // namespace Engine::Components
+```
+
+### **`CursorComponent` Structure:**
+
+- **Namespace**: **`Engine::Components`**
+- **Purpose**: Represents a cursor component that can be used in graphical user interfaces.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`onChange`**: A function to be executed when the cursor state changes.
+    - **`isClicked`**: A boolean indicating whether the cursor is currently clicked.
+- **Constructors**:
+    - Parameterized constructor: Takes a function **`onChange`** to initialize the cursor component.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the cursor component into a vector of characters. (Returns an empty vector as it is not yet implemented)
+    - **`deserialize`**: Deserializes a vector of characters into a cursor component. (Returns the original component as it is not yet implemented)
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**).
+
+
+# Drawable.component.hpp
+```cpp
+#pragma once
+
+#include "ECS/Components.hpp"
+#include "SFML/Graphics/Drawable.hpp"
+
+class DrawableComponent : public ECS::BaseComponent
+{
+    public:
+        DrawableComponent(sf::Drawable *drawable) : drawable(drawable){};
+
+        ~DrawableComponent() override = default;
+
+        std::vector<char> serialize() override
+        {
+            return {};
+        }
+
+        ECS::BaseComponent *deserialize([[maybe_unused]] std::vector<char> vec, ECS::BaseComponent *component) override
+        {
+            return component;
+        }
+
+        ComponentType getType() override
+        {
+            return ComponentType::NoneComponent;
+        }
+
+        sf::Drawable *drawable;
+};
+```
+
+### **`DrawableComponent` Structure:**
+
+- **Purpose**: Represents a drawable component that can be used in a graphical user interface.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`drawable`**: A pointer to an **`sf::Drawable`** object.
+- **Constructors**:
+    - Parameterized constructor: Takes an **`sf::Drawable*`** and initializes the **`drawable`** member.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the drawable component into a vector of characters. (Returns an empty vector as it is not yet implemented)
+    - **`deserialize`**: Deserializes a vector of characters into a drawable component. (Returns the original component as it is not yet implemented)
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**).
+
+
 # ExcludeCollision.component.hpp
 
 ```cpp
@@ -208,6 +380,352 @@ The **`ExcludeCollisionComponent`** resides in the **`Engine::Components`** name
 - **`ExcludeCollisionComponent(std::size_t id)`**: Constructor initializing the exclusion component with the specified entity identifier.
 
 This component assists in managing collision detection by excluding specific entities from collision calculations or interactions.
+
+# LayeredAnimation.component.hpp
+```cpp
+#pragma once
+
+#include <vector>
+
+#include "ECS/Components.hpp"
+#include "Engine/Components/Animation.component.hpp"
+
+namespace Engine::Components
+{
+    class LayeredAnimationComponent : public ECS::BaseComponent
+    {
+        public:
+            LayeredAnimationComponent()           = default;
+            ~LayeredAnimationComponent() override = default;
+
+            /**
+             * @brief Construct a new Layered Animation Component object
+             *
+             * @param first
+             * @param rest
+             * @note the order of the animations is the order of the parameters and is linked with the layered render
+             * component order
+             */
+            template <typename... Animations>
+            explicit LayeredAnimationComponent(AnimationComponent *first, Animations... rest)
+                : animation{std::shared_ptr<AnimationComponent>(first), std::shared_ptr<AnimationComponent>(rest)...},
+                  layers(0)
+            {
+                layers = animation.size();
+            }
+
+            std::vector<char> serialize() override
+            {
+                unsigned long      size = animation.size();
+                std::ostringstream oss(std::ios::binary);
+
+                oss.write(reinterpret_cast<const char *>(&layers), sizeof(layers));
+                oss.write(reinterpret_cast<const char *>(&size), sizeof(size));
+                for (auto &anim : animation) {
+                    std::vector<char> animSerialized = anim->serialize();
+
+                    size_t animSize = animSerialized.size();
+                    oss.write(reinterpret_cast<const char *>(&animSize), sizeof(animSize));
+                    oss.write(reinterpret_cast<const char *>(animSerialized.data()), animSize);
+                }
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
+            {
+                unsigned long              size;
+                LayeredAnimationComponent *layered_animation_component;
+                if (component == nullptr) {
+                    layered_animation_component = new LayeredAnimationComponent();
+                } else {
+                    layered_animation_component = dynamic_cast<LayeredAnimationComponent *>(component);
+                    if (layered_animation_component == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char *>(&layered_animation_component->layers),
+                         sizeof(layered_animation_component->layers));
+                iss.read(reinterpret_cast<char *>(&size), sizeof(size));
+                for (unsigned long i = 0; i < size; i++) {
+                    size_t animSize;
+                    iss.read(reinterpret_cast<char *>(&animSize), sizeof(animSize));
+                    std::vector<char> animSerialized(animSize);
+                    iss.read(reinterpret_cast<char *>(animSerialized.data()), animSize);
+                    auto *anim = new AnimationComponent();
+                    anim       = dynamic_cast<AnimationComponent *>(anim->deserialize(animSerialized, anim));
+                    layered_animation_component->animation.push_back(std::shared_ptr<AnimationComponent>(anim));
+                }
+
+                return layered_animation_component;
+            }
+
+            ECS::ComponentHandle<AnimationComponent> at(int index)
+            {
+                return ECS::ComponentHandle<AnimationComponent>(animation[index]);
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::LayeredAnimationComponent;
+            }
+
+            std::vector<std::shared_ptr<AnimationComponent>> animation;
+            int                                              layers{};
+    };
+
+} // namespace Engine::Components
+```
+### **`LayeredAnimationComponent` Structure:**
+
+- **Purpose**: Represents a component that stores a collection of layered animations, each represented by an **`AnimationComponent`**.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`animation`**: A vector of shared pointers to **`AnimationComponent`** objects, representing the layered animations.
+    - **`layers`**: An integer representing the number of layers in the layered animation.
+- **Constructors**:
+    - Default constructor: Initializes the component with default values.
+    - Parameterized constructor (template): Takes a variable number of **`AnimationComponent*`** pointers representing the layered animations.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the layered animation component into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a layered animation component.
+    - **`at`**: Returns a component handle to the **`AnimationComponent`** at the specified index in the layered animation vector.
+    - **`getType`**: Returns the type of the component (**`ComponentType::LayeredAnimationComponent`**).
+
+# LayeredRenderable.component.hpp
+```cpp
+#pragma once
+
+#include <vector>
+
+#include "ECS/Components.hpp"
+#include "Engine/Components/Renderable.component.hpp"
+
+namespace Engine::Components
+{
+    struct LayeredRenderableComponent : ECS::BaseComponent {
+
+            LayeredRenderableComponent() = default;
+            LayeredRenderableComponent(int priority, RenderableComponent *first)
+                : renderable{std::shared_ptr<RenderableComponent>(first)}, layers(0), priority(priority)
+            {
+                layers = renderable.size();
+            }
+            template <typename... Renderables>
+            LayeredRenderableComponent(int priority, RenderableComponent *first, Renderables... rest)
+                : renderable{std::shared_ptr<RenderableComponent>(first),
+                             std::shared_ptr<RenderableComponent>(rest)...},
+                  layers(0), priority(priority)
+            {
+                layers = renderable.size();
+            }
+            ~LayeredRenderableComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                unsigned long size = renderable.size();
+
+                std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char *>(&priority), sizeof(priority));
+                oss.write(reinterpret_cast<const char *>(&layers), sizeof(layers));
+                oss.write(reinterpret_cast<const char *>(&isDisplayed), sizeof(isDisplayed));
+                oss.write(reinterpret_cast<const char *>(&size), sizeof(size));
+
+                for (auto &renderableComp : renderable) {
+                    std::vector<char> renderableSerialized = renderableComp->serialize();
+                    size_t            renderableSize       = renderableSerialized.size();
+                    oss.write(reinterpret_cast<const char *>(&renderableSize), sizeof(renderableSize));
+                    oss.write(reinterpret_cast<const char *>(renderableSerialized.data()), renderableSize);
+                }
+
+                const std::string &str = oss.str();
+                return std::vector<char>(str.begin(), str.end());
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) override
+            {
+                unsigned long               size;
+                LayeredRenderableComponent *layeredAnimationComponent;
+                if (component == nullptr) {
+                    layeredAnimationComponent = new LayeredRenderableComponent();
+                } else {
+                    layeredAnimationComponent = dynamic_cast<LayeredRenderableComponent *>(component);
+                    if (layeredAnimationComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char *>(&layeredAnimationComponent->priority),
+                         sizeof(layeredAnimationComponent->priority));
+                iss.read(reinterpret_cast<char *>(&layeredAnimationComponent->layers),
+                         sizeof(layeredAnimationComponent->layers));
+                iss.read(reinterpret_cast<char *>(&layeredAnimationComponent->isDisplayed),
+                         sizeof(layeredAnimationComponent->isDisplayed));
+                iss.read(reinterpret_cast<char *>(&size), sizeof(size));
+
+                for (unsigned long i = 0; i < size; i++) {
+                    size_t animSize;
+                    iss.read(reinterpret_cast<char *>(&animSize), sizeof(animSize));
+                    std::vector<char> animSerialized(animSize);
+                    iss.read(reinterpret_cast<char *>(animSerialized.data()), animSize);
+                    auto *renderableComponent = new RenderableComponent();
+                    renderableComponent->deserialize(animSerialized, renderableComponent);
+                    renderableComponent->setTexture();
+                    layeredAnimationComponent->renderable.push_back(
+                        std::shared_ptr<RenderableComponent>(renderableComponent));
+                }
+
+                return layeredAnimationComponent;
+            }
+
+            ECS::ComponentHandle<RenderableComponent> at(int index)
+            {
+                return ECS::ComponentHandle<RenderableComponent>(renderable[index]);
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::LayeredRenderableComponent;
+            }
+
+            std::vector<std::shared_ptr<RenderableComponent>> renderable;
+            int                                               layers{};
+            int                                               priority{};
+            bool                                              isDisplayed = true;
+    };
+
+} // namespace Engine::Components
+```
+
+### **`LayeredRenderableComponent` Structure:**
+
+- **Purpose**: Represents a component that stores a collection of layered renderable components, each represented by a **`RenderableComponent`**.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`renderable`**: A vector of shared pointers to **`RenderableComponent`** objects, representing the layered renderable components.
+    - **`layers`**: An integer representing the number of layers in the layered renderable.
+    - **`priority`**: An integer representing the priority of the layered renderable.
+    - **`isDisplayed`**: A boolean indicating whether the layered renderable is currently displayed.
+- **Constructors**:
+    - Default constructor: Initializes the component with default values.
+    - Parameterized constructor (single renderable): Takes a priority and a pointer to a **`RenderableComponent`**.
+    - Parameterized constructor (template): Takes a priority and a variable number of **`RenderableComponent*`** pointers representing the layered renderables.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the layered renderable component into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a layered renderable component.
+    - **`at`**: Returns a component handle to the **`RenderableComponent`** at the specified index in the layered renderable vector.
+    - **`getType`**: Returns the type of the component (**`ComponentType::LayeredRenderableComponent`**).
+
+# Link.component.hpp
+```cpp
+#pragma once
+
+#include <cstddef>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct LinkComponent : ECS::BaseComponent {
+        public:
+            LinkComponent() : entity(0) {}
+            LinkComponent(std::size_t id) : entity(id) {}
+            ~LinkComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                std::ostringstream oss(std::ios::binary);
+                oss.write(reinterpret_cast<const char *>(&entity), sizeof(entity));
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                LinkComponent *linkComponent;
+                if (component == nullptr) {
+                    linkComponent = new LinkComponent(0);
+                } else {
+                    linkComponent = dynamic_cast<LinkComponent *>(component);
+                    if (linkComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+                iss.read(reinterpret_cast<char *>(&linkComponent->entity), sizeof(linkComponent->entity));
+
+                return linkComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::LinkComponent;
+            }
+            std::size_t entity;
+    };
+} // namespace Engine::Components
+```
+
+### **`LinkComponent` Structure:**
+
+- **Purpose**: Represents a component that establishes a link to another entity using its unique identifier (**`entity`**).
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Members**:
+    - **`entity`**: A **`std::size_t`** representing the unique identifier of the linked entity.
+- **Constructors**:
+    - Default constructor: Initializes the component with the **`entity`** set to 0.
+    - Parameterized constructor: Takes a **`std::size_t`** parameter to set the **`entity`** during initialization.
+- **Destructor**: Default destructor.
+- **Member Functions**:
+    - **`serialize`**: Serializes the **`LinkComponent`** into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a **`LinkComponent`**.
+    - **`getType`**: Returns the type of the component (**`ComponentType::LinkComponent`**).
+
+# Menu.component.hpp
+```cpp
+#pragma once
+
+#include <vector>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct MenuComponent : public ECS::BaseComponent {
+
+            MenuComponent() {}
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+    };
+} // namespace Engine::Components
+```
+
+### **`MenuComponent` Structure:**
+
+- **Purpose**: Represents a component associated with menu functionality in an ECS-based system.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Default constructor: Initializes the **`MenuComponent`**.
+- **Member Functions**:
+    - **`serialize`**: Serializes the **`MenuComponent`** into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a **`MenuComponent`**.
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**).
 
 # Moving.component.hpp
 ```cpp
@@ -263,6 +781,110 @@ The **`MovingComponent`** resides in the **`Engine::Components`** namespace and 
     - **`moveAmount`**: The distance and direction of the movement.
 
 This component manages entity movement based on the provided parameters, including the starting time of the movement, initial position, movement amount, and duration.
+
+# Music.component.hpp
+```cpp
+#pragma once
+
+#include <SFML/Audio.hpp>
+#include <vector>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct MusicComponent : public ECS::BaseComponent {
+        public:
+            MusicComponent(std::string path, float _volume = 50) : _volume(_volume)
+            {
+                music.openFromFile(path);
+                music.setVolume(_volume);
+                music.setLoop(true);
+                music.play();
+            }
+
+            ~MusicComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+
+            float     _volume;
+            sf::Music music;
+    };
+} // namespace Engine::Components
+```
+### **`MusicComponent` Structure:**
+
+- **Purpose**: Represents a component associated with playing music in an ECS-based system using SFML.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Parameterized constructor: Takes a file path and an optional volume parameter to initialize the **`MusicComponent`**. Loads the music from the specified file, sets the volume, enables looping, and starts playing.
+- **Member Variables**:
+    - **`_volume`**: Represents the volume level of the music component.
+    - **`music`**: An SFML **`sf::Music`** object used for playing music.
+- **Member Functions**:
+    - **`serialize`**: Serializes the **`MusicComponent`** into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a **`MusicComponent`**.
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**).
+
+# Options.component.hpp
+```cpp
+#pragma once
+
+#include <vector>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct OptionsComponent : public ECS::BaseComponent {
+
+        public:
+            OptionsComponent() {}
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+    };
+} // namespace Engine::Components
+```
+
+### **`OptionsComponent` Structure:**
+
+- **Purpose**: Represents a component associated with game options in an ECS-based system.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Default constructor: Initializes an **`OptionsComponent`** instance.
+- **Member Functions**:
+    - **`serialize`**: Serializes the **`OptionsComponent`** into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into an **`OptionsComponent`**.
+    - **`getType`**: Returns the type of the component (**`ComponentType::NoneComponent`**).
+
 
 # Parallax.component.hpp
 ```cpp
@@ -450,6 +1072,78 @@ The **`RenderableComponent`** is part of the **`Engine::Components`** namespace,
 
 This component encapsulates rendering functionality, including handling textures, sprites, positions, rotations, scaling, and display settings for entities within the game world.
 
+# Score.component.hpp
+```cpp
+#pragma once
+
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <sstream>
+#include <vector>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct ScoreComponent : public ECS::BaseComponent {
+        public:
+            ScoreComponent() = default;
+            ScoreComponent(int score) : score(score) {}
+
+            ~ScoreComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                std::ostringstream oss(std::ios::binary);
+
+                oss.write(reinterpret_cast<const char *>(&score), sizeof(score));
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize(std::vector<char> vec, ECS::BaseComponent *component) final
+            {
+                ScoreComponent *scoreComponent;
+                if (component == nullptr) {
+                    scoreComponent = new ScoreComponent(0);
+                } else {
+                    scoreComponent = dynamic_cast<ScoreComponent *>(component);
+                    if (scoreComponent == nullptr) return nullptr;
+                }
+
+                std::istringstream iss(std::string(vec.begin(), vec.end()), std::ios::binary);
+
+                iss.read(reinterpret_cast<char *>(&scoreComponent->score), sizeof(scoreComponent->score));
+
+                return scoreComponent;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::ScoreComponent;
+            }
+
+            int score = 0;
+
+        private:
+    };
+} // namespace Engine::Components
+```
+
+### **`ScoreComponent` Structure:**
+
+- **Purpose**: Represents a component associated with scoring in an ECS-based system.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Default constructor: Initializes a **`ScoreComponent`** instance with a default score of 0.
+    - Parameterized constructor: Initializes a **`ScoreComponent`** instance with a specified score.
+- **Member Functions**:
+    - **`serialize`**: Serializes the **`ScoreComponent`** into a vector of characters.
+    - **`deserialize`**: Deserializes a vector of characters into a **`ScoreComponent`**.
+    - **`getType`**: Returns the type of the component (**`ComponentType::ScoreComponent`**).
+
+
 # Speed.component.hpp
 ```cpp
 #pragma once
@@ -488,6 +1182,176 @@ The **`SpeedComponent`** belongs to the **`Engine::Components`** namespace and s
 - **`SpeedComponent(float speed)`**: Initializes the **`speed`** attribute with the provided value.
 
 This component is focused on encapsulating and storing the speed attribute for entities within the game. It allows for the management and manipulation of speed-related functionalities for specific entities.
+
+# Text.component.hpp
+```cpp
+#pragma once
+
+#include <SFML/System/Vector2.hpp>
+#include <string>
+#include <vector>
+
+#include "ECS/Components.hpp"
+#include "SFML/Graphics/Text.hpp"
+
+namespace Engine::Components
+{
+    struct TextComponent : public ECS::BaseComponent {
+            sf::Text    text;
+            std::string content;
+            sf::Font    font;
+            sf::Color   fillColor;
+            bool        isDisplay;
+
+            TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
+                          bool centered = false, bool isDisplay = true)
+                : isDisplay(isDisplay), centered(centered)
+
+            {
+                font = newFont;
+                text.setString(str);
+                text.setFont(font);
+                text.setCharacterSize(characterSize);
+                text.setPosition(pos);
+                text.setFillColor(sf::Color::White);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
+            }
+            TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
+                          const sf::Color &fillColor, bool centered = false, bool isDisplay = true)
+                : isDisplay(isDisplay), centered(false)
+            {
+                font = newFont;
+                text.setString(str);
+                text.setFont(font);
+                text.setCharacterSize(characterSize);
+                text.setPosition(pos);
+                text.setFillColor(fillColor);
+                if (centered) {
+                    text.setOrigin(text.getLocalBounds().width / 2, text.getLocalBounds().height / 2);
+                }
+            }
+            void changeText(const std::string &str)
+            {
+                content = str;
+                text.setString(content);
+            }
+
+            void addText(const std::string &str)
+            {
+                content += str;
+                text.setString(content);
+            }
+
+            void removeText()
+            {
+                if (content.size() > 0) content.pop_back();
+                text.setString(content);
+            }
+
+            std::vector<char> serialize() override
+            {
+                return {};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] const std::vector<char> vec,
+                                            [[maybe_unused]] ECS::BaseComponent     *component) final
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+
+            bool centered;
+    };
+} // namespace Engine::Components
+```
+
+### **`TextComponent` Structure:**
+
+- **Purpose**: Represents a component for rendering text in an ECS-based system.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Constructor with basic text properties: Initializes a **`TextComponent`** instance with the specified text content, font, character size, position, and display properties.
+    - Constructor with additional fill color: Initializes a **`TextComponent`** instance with the specified text content, font, character size, position, fill color, and display properties.
+- **Member Variables**:
+    - **`text`**: An SFML **`Text`** object for rendering text.
+    - **`content`**: The text content to be displayed.
+    - **`font`**: The font used for the text.
+    - **`fillColor`**: The fill color of the text.
+    - **`isDisplay`**: A boolean indicating whether the text should be displayed.
+    - **`centered`**: A boolean indicating whether the text should be centered.
+- **Member Functions**:
+    - **`changeText`**: Modifies the text content of the component.
+    - **`addText`**: Appends additional text to the existing content.
+    - **`removeText`**: Removes the last character from the text content.
+
+# TextInput.component.hpp
+```cpp
+#pragma once
+
+#include <functional>
+#include <sstream>
+#include <string>
+#include <utility>
+
+#include "ECS/Components.hpp"
+
+namespace Engine::Components
+{
+    struct TextInputComponent : public ECS::BaseComponent {
+            std::string           text;
+            std::function<void()> onChange;
+            bool                  isFocused = false;
+            bool                  isClicked = false;
+
+            TextInputComponent(std::string defaultValue, std::function<void()> onChange)
+                : text(std::move(defaultValue)), onChange(std::move(onChange))
+            {
+            }
+
+            TextInputComponent()           = default;
+            ~TextInputComponent() override = default;
+
+            std::vector<char> serialize() override
+            {
+                std::ostringstream oss(std::ios::binary);
+
+                const std::string &str = oss.str();
+                return {str.begin(), str.end()};
+            }
+
+            ECS::BaseComponent *deserialize([[maybe_unused]] std::vector<char> vec,
+                                            ECS::BaseComponent                *component) override
+            {
+                return component;
+            }
+
+            ComponentType getType() override
+            {
+                return ComponentType::NoneComponent;
+            }
+    };
+} // namespace Engine::Components
+```
+
+### **`TextInputComponent` Structure:**
+
+- **Purpose**: Represents a component for handling text input in an ECS-based system.
+- **Inherits From**: **`ECS::BaseComponent`**
+- **Constructors**:
+    - Constructor with initial value and onChange callback: Initializes a **`TextInputComponent`** instance with the specified default value and a callback function to be invoked on text change.
+- **Member Variables**:
+    - **`text`**: The current text content of the input component.
+    - **`onChange`**: A callback function to be executed when the text changes.
+    - **`isFocused`**: A boolean indicating whether the input is currently focused.
+    - **`isClicked`**: A boolean indicating whether the input has been clicked.
+- **Member Functions**:
+    - None provided in the current implementation.
 
 # View.component.hpp
 ```cpp
