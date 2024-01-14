@@ -272,20 +272,6 @@ namespace ECS
             }
 
             /**
-             * @brief Iterates over all entities that have a specific set of component types.
-             *
-             * @tparam Types Component types to filter entities.
-             * @param func The callable function that will be applied to each entity and its components.
-             * @note This function utilizes a helper function to handle the iteration and application of the function.
-             */
-            template <typename... Types> void each(std::function<void(Entity *, ComponentHandle<Types...>)> func)
-            {
-                for (auto &entity : getEntitiesWithComponents<Types...>()) {
-                    _eachHelper<Types...>(entity, func);
-                }
-            }
-
-            /**
              * @brief get all entities that have a set of given components.
              *
              * @tparam Types The component types to filter entities.
