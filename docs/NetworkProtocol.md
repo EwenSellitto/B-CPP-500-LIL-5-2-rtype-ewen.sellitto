@@ -73,7 +73,7 @@
    | 1    | RemoveComponents | Remove game components from entities |
    | 2    | RemoveEntity     | Remove an entire entity              |
 
-<!-- ## 7. Protocol Format
+## 7. Protocol Format
    The protocol messages follow the format below:
 
    | Field        | Description                                     |
@@ -81,7 +81,7 @@
    | PacketType   | Type of packet being sent or responded to       |
    | UpdateType   | Type of update (if applicable)                  |
    | ComponentType| Type of game component (if applicable)          |
-   | Payload      | Data specific to the packet or update type      | -->
+   | Payload      | Data specific to the packet or update type      |
 
 
 
