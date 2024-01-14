@@ -207,8 +207,11 @@ namespace Entities
                             new TextComponent("Restart", font, 40, {400, 300}, true, true),
                             new ButtonComponent("Restart",
                                                 [world]() {
-                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                                    uiSystem.handleStartGame();
+                                                    NETWORK.resetServer();
+                                                    NETWORK.startServer(5555);
+                                                    // sleep 200 ms
+                                                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                                                    NETWORK.setIsReadyToStart(true);
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(new PositionComponent(400, 410),
