@@ -48,6 +48,12 @@ void UI::tick()
             const ECS::ComponentHandle<RenderableComponent> &renderable) {
             updateInputState(entity, textinputComp, renderable, worldPos);
         });
+    world.each<TextComponent>(
+        [&]([[maybe_unused]] ECS::Entity *entity, [[maybe_unused]] const ECS::ComponentHandle<TextComponent> &textComp) {
+            if (entity->getComponent<TextComponent>()->name == "nbPlayers")
+                entity->getComponent<TextComponent>()->changeText(
+                    "Nombre de joueurs : " + std::to_string(NETWORK.getWaitingRoom().getPlayers().size()) + "/4");
+        });
 }
 
 void UI::updateButtonState(ECS::ComponentHandle<Components::ButtonComponent>     buttonComp,

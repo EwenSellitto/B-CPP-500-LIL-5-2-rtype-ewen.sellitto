@@ -112,11 +112,11 @@ namespace Entities
             return;
         }
         Engine::EngineClass &engine = Engine::EngineClass::getEngine();
-        std::string          str    = "Nombre de joueurs : " + std::to_string(engine.getPlayersAmount()) + "/4";
-        world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true));
-        std::string strServer = "Server IP : " + engine.network().getIP().toString();
+        std::string          str    = "Nombre de joueurs : " + std::to_string(NETWORK.getWaitingRoom().getPlayers().size()) + "/4";
+        world->createEntity(new TextComponent(str, font, 30, {310, 180}, false, true, "nbPlayers"));
+        std::string strServer = "Server IP : " + NETWORK.getIP().toString();
         world->createEntity(new TextComponent(strServer, font, 30, {310, 280}, false, true));
-        std::string strPort = "Port : " + std::to_string(engine.network().getPort());
+        std::string strPort = "Port : " + std::to_string(NETWORK.getPort());
         world->createEntity(new TextComponent(strPort, font, 30, {310, 380}, false, true));
         world->createEntity(
             new PositionComponent(40, 100), new MenuComponent(),
@@ -202,27 +202,34 @@ namespace Entities
         if (!font.loadFromFile("./assets/fonts/font_big.ttf")) {
             return;
         }
-        world->createEntity(new TextComponent("Game over", font, 80, {400, 50}, sf::Color::White, true));
-        world->createEntity(new PositionComponent(400, 325),
-                            new TextComponent("Restart", font, 40, {400, 300}, true, true),
-                            new ButtonComponent("Restart",
-                                                [world]() {
-                                                    NETWORK.resetServer();
-                                                    NETWORK.startServer(5555);
-                                                    // sleep 200 ms
-                                                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-                                                    NETWORK.setIsReadyToStart(true);
-                                                }),
-                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
-        world->createEntity(new PositionComponent(400, 410),
-                            new TextComponent("Menu", font, 40, {400, 385}, true, true),
-                            new ButtonComponent("Menu",
-                                                [world]() {
-                                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                                    uiSystem.handleGoMenu();
-                                                    NETWORK.resetServer();
-                                                }),
-                            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        ECS::id_t newEntity =
+            world->createEntity(new TextComponent("Game over", font, 80, {400, 50}, sf::Color::White, true));
+        for (auto &i : world->getMutEntity(newEntity).getComponents())
+            i.second->setHasChanged(false);
+        newEntity = world->createEntity(
+            new PositionComponent(400, 325), new TextComponent("Restart", font, 40, {400, 300}, true, true),
+            new ButtonComponent("Restart",
+                                [world]() {
+                                    NETWORK.resetServer();
+                                    NETWORK.startServer(5555);
+                                    // sleep 200 ms
+                                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                                    NETWORK.setIsReadyToStart(true);
+                                }),
+            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        for (auto &i : world->getMutEntity(newEntity).getComponents())
+            i.second->setHasChanged(false);
+        newEntity = world->createEntity(
+            new PositionComponent(400, 410), new TextComponent("Menu", font, 40, {400, 385}, true, true),
+            new ButtonComponent("Menu",
+                                [world]() {
+                                    Engine::System::UI uiSystem = Engine::System::UI(*world);
+                                    uiSystem.handleGoMenu();
+                                    NETWORK.resetServer();
+                                }),
+            new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
+        for (auto &i : world->getMutEntity(newEntity).getComponents())
+            i.second->setHasChanged(false);
     }
 
     inline void createScoreEntities(ECS::World *world)

@@ -22,10 +22,12 @@ namespace Engine::Components
             sf::Font    font;
             sf::Color   fillColor;
             bool        isDisplay;
+            bool        centered;
+            std::string name;
 
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
-                          bool centered = false, bool isDisplay = true)
-                : isDisplay(isDisplay), centered(centered)
+                          bool centered = false, bool isDisplay = true, std::string name = "")
+                : isDisplay(isDisplay), centered(centered), name(name)
 
             {
                 font = newFont;
@@ -39,8 +41,9 @@ namespace Engine::Components
                 }
             }
             TextComponent(const std::string &str, const sf::Font newFont, unsigned int characterSize, sf::Vector2f pos,
-                          const sf::Color &fillColor, bool centered = false, bool isDisplay = true)
-                : isDisplay(isDisplay), centered(false)
+                          const sf::Color &fillColor, bool centered = false, bool isDisplay = true,
+                          std::string name = "")
+                : isDisplay(isDisplay), centered(false), name(name)
             {
                 font = newFont;
                 text.setString(str);
@@ -85,7 +88,5 @@ namespace Engine::Components
             {
                 return ComponentType::NoneComponent;
             }
-
-            bool centered;
     };
 } // namespace Engine::Components
