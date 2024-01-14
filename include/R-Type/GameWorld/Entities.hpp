@@ -452,6 +452,7 @@ namespace Entities
         auto WeakDiagTopToBot = enemyPatternMovements.find("WeakDiagTopToBot");
 
         auto MediumUpAndDown = enemyPatternMovements.find("MediumUpAndDown");
+        auto StrongUpAndDown = enemyPatternMovements.find("StrongUpAndDown");
 
         world->createEntity(new EnemyQueueComponent({
 
@@ -674,7 +675,7 @@ namespace Entities
             std::make_pair(false, std::make_pair(std::make_tuple(2125, 640, false, WeakLeft->second), 3)),
 
             // R letter
-            std::make_pair(false, std::make_pair(std::make_tuple(2200, 140, true, WeakLeft->second), 0)),
+            // std::make_pair(false, std::make_pair(std::make_tuple(2200, 140, true, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2420, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2440, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2460, 140, false, WeakLeft->second), 0)),
@@ -745,7 +746,7 @@ namespace Entities
             std::make_pair(false, std::make_pair(std::make_tuple(2820, 460, false, WeakLeft->second), 0)),
 
             // P letter
-            std::make_pair(false, std::make_pair(std::make_tuple(2900, 140, true, WeakLeft->second), 0)),
+            std::make_pair(false, std::make_pair(std::make_tuple(2900, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2920, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2940, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(2960, 140, false, WeakLeft->second), 0)),
@@ -771,7 +772,7 @@ namespace Entities
             std::make_pair(false, std::make_pair(std::make_tuple(2900, 460, false, WeakLeft->second), 0)),
 
             // E letter
-            std::make_pair(false, std::make_pair(std::make_tuple(3040, 140, true, WeakLeft->second), 0)),
+            std::make_pair(false, std::make_pair(std::make_tuple(3040, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(3060, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(3080, 140, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(3100, 140, false, WeakLeft->second), 0)),
@@ -798,8 +799,7 @@ namespace Entities
             std::make_pair(false, std::make_pair(std::make_tuple(3120, 460, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(3140, 460, false, WeakLeft->second), 0)),
 
-            // std::make_pair(false, std::make_pair(std::make_tuple(3250, 350, true, MediumUpAndDown->second),
-            // strongEnemyMaker)),
+            std::make_pair(false, std::make_pair(std::make_tuple(3250, 100, true, StrongUpAndDown->second), 2)),
         }));
     }
 

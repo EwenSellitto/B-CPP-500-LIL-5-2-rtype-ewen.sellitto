@@ -20,6 +20,10 @@ static const std::map<std::string, std::vector<std::pair<size_t, sf::Vector2f>>>
 
     // Medium
     {"MediumUpAndDown", {std::make_pair(800, sf::Vector2f(-50, 50)), std::make_pair(800, sf::Vector2f(-50, -50))}},
+
+    // Strong
+    {"StrongUpAndDown", {std::make_pair(800, sf::Vector2f(-30, 500)), std::make_pair(800, sf::Vector2f(-30, -500))}},
+
 };
 
 // pos_x and pos_y are the position of the first enemy of the wave (top left corner or 1st enemy of the wave)
