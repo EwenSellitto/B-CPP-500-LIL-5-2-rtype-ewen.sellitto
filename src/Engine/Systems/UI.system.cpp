@@ -254,7 +254,9 @@ void UI::handleChange(ECS::ComponentHandle<Components::CursorComponent>   cursor
 {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         if (position->x > 250 && position->x < 490) cursorComp->onChange();
-        position->x = mousePosition.x;
+        if (mousePosition.x > 250 && mousePosition.x < 490) {
+            position->x = mousePosition.x;
+        }
     }
 }
 
