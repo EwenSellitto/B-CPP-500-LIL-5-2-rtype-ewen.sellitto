@@ -20,8 +20,6 @@ example_ecs.hpp
 .vscode/
 cmake-build-debug/
 vgcore.*
-doc/
-
 
 # Fichiers générés par CMake
 CMakeFiles/
