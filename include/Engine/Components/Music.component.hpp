@@ -16,7 +16,7 @@ namespace Engine::Components
 {
     struct MusicComponent : public ECS::BaseComponent {
         public:
-            MusicComponent(std::string path, float _volume = 0) : _volume(_volume)
+            MusicComponent(std::string path, float _volume = 50) : _volume(_volume)
             {
                 music.openFromFile(path);
                 music.setVolume(_volume);

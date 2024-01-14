@@ -63,8 +63,8 @@ namespace ECS
             // ==================== SERVER HANDLER =====================
             // =========================================================
 
-            void startServer(unsigned short port);
-            void startClient(unsigned short port);
+            void startServer(unsigned short port, bool isSolo);
+            void startClient(unsigned short port, bool isSolo);
 
             void connectToServer(const sf::IpAddress &serverAddress, unsigned short port);
             void sendConnectionToServer(const sf::IpAddress &serverAddress, unsigned short port);

@@ -71,6 +71,6 @@ void InputsSystem::handleSend(std::vector<std::string> args)
     if (args.size() == 2) {
         NETWORK.connectToServer(ipAddress, port);
     } else {
-        NETWORK.startServer(port);
+        NETWORK.startServer(port, false);
     }
 }

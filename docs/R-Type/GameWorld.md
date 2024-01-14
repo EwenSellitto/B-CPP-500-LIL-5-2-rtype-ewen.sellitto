@@ -256,7 +256,7 @@ namespace Entities
                             new ButtonComponent("Restart",
                                                 [world]() {
                                                     NETWORK.resetServer();
-                                                    NETWORK.startServer(5555);
+                                                    NETWORK.startServer(5555, true);
                                                     // sleep 200 ms
                                                     std::this_thread::sleep_for(std::chrono::milliseconds(200));
                                                     NETWORK.setIsReadyToStart(true);
@@ -353,7 +353,7 @@ namespace Entities
             new MenuComponent(),
             new ButtonComponent("Start Game",
                                 [world]() {
-                                    NETWORK.startServer(5555);
+                                    NETWORK.startServer(5555, true);
                                     // sleep 200 ms
                                     std::this_thread::sleep_for(std::chrono::milliseconds(200));
                                     NETWORK.setIsReadyToStart(true);

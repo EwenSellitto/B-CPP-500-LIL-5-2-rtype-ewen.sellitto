@@ -7,22 +7,27 @@
 
 #include "Engine/Server/Network.hpp"
 
-void ECS::Network::startServer(unsigned short port)
+void ECS::Network::startServer(unsigned short port, bool isSolo)
 {
     if (running) return;
-    thread   = std::thread(&Network::startClient, this, port);
+    thread   = std::thread(&Network::startClient, this, port, isSolo);
     isServer = true;
     running  = true;
 }
 
-void ECS::Network::startClient(unsigned short port)
+void ECS::Network::startClient(unsigned short port, bool isSolo)
 {
     setIP("127.0.0.1");
     setPort(port);
     socket.setBlocking(false);
-    if (socket.bind(port) != sf::Socket::Done) {
-        std::cerr << "Erreur de liaison du port " << std::endl;
-        return;
+    if (isSolo) {
+        while (socket.bind(port) != sf::Socket::Done) {
+            port++;
+        }
+    } else {
+        if (socket.bind(port) != sf::Socket::Done) {
+            return;
+        }
     }
     addPlayerToLobby("localhost", port, isServer);
     while (running) {
