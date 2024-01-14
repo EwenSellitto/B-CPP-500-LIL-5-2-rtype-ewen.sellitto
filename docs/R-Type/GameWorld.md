@@ -99,7 +99,7 @@ namespace Entities
     inline void createPlayerEntities(ECS::World *world, int playerNb)
     {
         using namespace Engine::Components;
-        std::vector<std::pair<int, int>> playerPos = {{100, 300}, {100, 360}, {100, 420}, {100, 480}};
+        std::vector<std::pair<int, int>> playerPos = [{100, 300}, {100, 360}, {100, 420}, {100, 480}];
 
         world->createEntity(
             new PlayerComponent(playerNb), new PositionComponent(playerPos[playerNb].first, playerPos[playerNb].second),
