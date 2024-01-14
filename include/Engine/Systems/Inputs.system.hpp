@@ -27,7 +27,7 @@ namespace Engine::System
 
             void removeText();
 
-            void handleSend(std::vector<std::string> args);
+            bool handleSend(std::vector<std::string> args);
 
         private:
             int         port      = 0;

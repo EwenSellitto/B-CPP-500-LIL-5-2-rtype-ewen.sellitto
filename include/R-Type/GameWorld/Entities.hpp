@@ -87,8 +87,8 @@ namespace Entities
                                                     Engine::System::InputsSystem inputsSystem =
                                                         Engine::System::InputsSystem(*world);
                                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                                    inputsSystem.handleSend({"PORT", "IP"});
-                                                    uiSystem.handleGoWaitingClient();
+                                                    bool isValid = inputsSystem.handleSend({"PORT", "IP"});
+                                                    if (isValid) uiSystem.handleGoWaitingClient();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(
@@ -179,8 +179,8 @@ namespace Entities
                                                     Engine::System::InputsSystem inputsSystem =
                                                         Engine::System::InputsSystem(*world);
                                                     Engine::System::UI uiSystem = Engine::System::UI(*world);
-                                                    inputsSystem.handleSend({"PORT"});
-                                                    uiSystem.handleGoWaitingHost();
+                                                    bool isValid = inputsSystem.handleSend({"PORT"});
+                                                    if (isValid) uiSystem.handleGoWaitingHost();
                                                 }),
                             new RenderableComponent("./assets/menu/button_long/long_on.png", 0, 0, 3, 0, {2, 2}, true));
         world->createEntity(

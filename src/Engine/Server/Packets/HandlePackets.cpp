@@ -22,6 +22,9 @@ void ECS::Network::handleHandshakeRequest(sf::Packet &packet, const sf::IpAddres
     bool isHost = false;
     packet >> isHost;
 
+    if (waitingRoom.getPlayers().size() >= 4) {
+        return;
+    }
     handleClientConnection(sender, senderPort, isHost);
 }
 

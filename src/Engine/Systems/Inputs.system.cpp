@@ -49,7 +49,7 @@ void InputsSystem::removeText()
     });
 }
 
-void InputsSystem::handleSend(std::vector<std::string> args)
+bool InputsSystem::handleSend(std::vector<std::string> args)
 {
     std::string ipAddress = "";
     int         port      = 0;
@@ -62,15 +62,26 @@ void InputsSystem::handleSend(std::vector<std::string> args)
                 if (id == "IP") {
                     ipAddress = entity->getComponent<TextComponent>()->content;
                 } else if (id == "PORT") {
-                    port = std::stoi(entity->getComponent<TextComponent>()->content);
+                    if (entity->getComponent<TextComponent>()->content.empty()) {
+                        port = 0;
+                    } else {
+                        port = std::stoi(entity->getComponent<TextComponent>()->content);
+                    }
                 }
             }
         }
     });
 
     if (args.size() == 2) {
+        if (ipAddress == "" || port == 0) {
+            return false;
+        }
         NETWORK.connectToServer(ipAddress, port);
     } else {
+        if (port == 0) {
+            return false;
+        }
         NETWORK.startServer(port, false);
     }
+    return true;
 }
