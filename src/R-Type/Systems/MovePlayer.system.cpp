@@ -26,7 +26,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    std::vector<ECS::Entity *> players = EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+    std::vector<ECS::Entity *> players = WORLD.getEntitiesWithComponents<PlayerComponent>();
     ECS::Entity               *player  = nullptr;
 
     for (auto &p : players) {
@@ -53,7 +53,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
     float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> movingComponent(
@@ -134,7 +134,7 @@ void MovePlayer::stopMovePlayer(sf::Event::KeyEvent key)
     float                                speed          = speedComponent->speed;
 
     ECS::ComponentHandle<PositionComponent> playerPos(player->getComponent<PositionComponent>());
-    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed) * 100}, {speed * 100, 0}, {-(speed) * 100, 0}, {0, speed * 100}};
+    std::vector<sf::Vector2f> moves_zdqs{{0, -(speed)*100}, {speed * 100, 0}, {-(speed)*100, 0}, {0, speed * 100}};
 
     if (player->has<MovingComponent>()) {
         ECS::ComponentHandle<Components::MovingComponent> playerMovingComp(

@@ -70,7 +70,8 @@ void ECS::Network::handleClientIndependentInitialization(sf::Packet &packet)
 
 void ECS::Network::handleSwitchWorld(const sf::IpAddress &sender, unsigned short senderPort)
 {
-    switchToGame();
+    if ((NETWORK.getIsServer() && NETWORK.getWaitingRoom().allPlayersSwitchedWorld()) || !NETWORK.getIsServer())
+        switchToGame();
     sf::Packet responsePacket;
     responsePacket << static_cast<int>(PacketType::SwitchWorldOkForMe);
     sendPacketToClient(responsePacket, sender, senderPort);
@@ -135,7 +136,7 @@ void ECS::Network::handleReceiveSwitchedWorld(const sf::IpAddress &sender, unsig
         sf::Packet packet;
         packet << static_cast<int>(PacketType::InitializeGame);
         packet << static_cast<int>(waitingRoom.getPlayers().size());
-        GameWorld::addToGameWorldServerSide(&WORLD, static_cast<int>(waitingRoom.getPlayers().size()));
+        switchToGame();
         int nbEntities = getNbEntitiesModified();
         packet << nbEntities;
         for (const auto &pair : WORLD.getEntities())
