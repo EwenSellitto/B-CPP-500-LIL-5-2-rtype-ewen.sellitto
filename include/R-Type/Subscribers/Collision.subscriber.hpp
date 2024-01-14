@@ -40,17 +40,26 @@ namespace Rtype::Subscriber
 
                 if (data.movingEntity->has<PlayerComponent>() && data.collidingEntity->has<EnemyComponent>()) {
                     WORLD.removeEntity(data.movingEntity->getId());
-                    ui->handleGameOver();
+
+                    if (data.movingEntity->getComponent<PlayerComponent>()->playerNb ==
+                        Engine::EngineClass::getEngine().getOwnPlayer())
+                        ui->handleGameOver();
+
                 } else if (data.movingEntity->has<BaseBulletComponent>()) {
                     if (data.collidingEntity->has<PlayerComponent, BoosterActiveComponent>()) {
                         auto boosterActive = data.collidingEntity->getComponent<BoosterActiveComponent>();
                         boosterActive->hitpoints -= 1;
                         world.removeEntity(data.movingEntity);
+
                     } else if (data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<PlayerComponent>()) {
-                        ui->handleGameOver();
                         WORLD.removeEntity(data.movingEntity->getId());
                         WORLD.removeEntity(data.collidingEntity->getId());
+
+                        if (data.collidingEntity->getComponent<PlayerComponent>()->playerNb ==
+                            Engine::EngineClass::getEngine().getOwnPlayer())
+                            ui->handleGameOver();
+
                     } else if (!data.movingEntity->getComponent<BaseBulletComponent>()->fromEnemy &&
                                data.collidingEntity->has<EnemyComponent>()) {
                         score->incrementScore();

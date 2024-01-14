@@ -22,15 +22,10 @@ namespace GameWorld
         // Setup view and create entities
         Entities::createViewEntity(world);
         Entities::createParallax(world);
-        // Entities::createPlayerEntities(world);
-        // Entities::createEnemyQueue(world);
-        // Entities::createWorldMoveProgress(world);
         Entities::createOptionsEntities(world);
         Entities::createScoreEntities(world);
         // Entities::createChangeSceneButton(world, "./assets/menu/button_normal/normal_off.png", "menu", {150, 150},
         //                                   {2, 2}, 4);
-        // Entities::createEnemyQueue(world);
-        // Entities::createWorldMoveProgress(world);
 
         // Add systems
         Systems::addPhysics(world);
@@ -49,16 +44,15 @@ namespace GameWorld
         // Subscribe to events
         Subscribers::subscribeToEvents(world);
 
-        return world;
-    }
+        if (NETWORK.getIsServer()) {
+            for (auto &player : NETWORK.getWaitingRoom().getPlayers()) {
+                Entities::createPlayerEntities(world, player->nbPlayer);
+            }
+            Entities::createEnemyQueue(world);
+            Entities::createWorldMoveProgress(world);
+        }
 
-    inline void addToGameWorldServerSide(ECS::World *world, int players)
-    {
-        // Setup view and create entities
-        for (int i = 0; i < players; i++)
-            Entities::createPlayerEntities(world, i);
-        Entities::createEnemyQueue(world);
-        Entities::createWorldMoveProgress(world);
+        return world;
     }
 
     // inline std::shared_ptr<ECS::World> createMenuWorld(Engine::EngineClass &engine)

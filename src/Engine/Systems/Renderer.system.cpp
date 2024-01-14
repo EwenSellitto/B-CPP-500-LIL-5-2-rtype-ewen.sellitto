@@ -51,7 +51,6 @@ void Renderer::tick()
     ViewEntities = world.get<ViewComponent>();
     if (ViewEntities.empty()) {
         std::cerr << "ViewComponent missing, declare one" << std::endl;
-        exit(84);
     } else {
         auto                                it            = ViewEntities.begin();
         ECS::ComponentHandle<ViewComponent> viewComponent = it->second;

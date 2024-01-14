@@ -26,7 +26,7 @@ void MovePlayer::addMovePlayer(sf::Event::KeyEvent key)
 {
     using namespace Engine::Components;
 
-    std::vector<ECS::Entity *> players = EngineClass::getEngine().world().getEntitiesWithComponents<PlayerComponent>();
+    std::vector<ECS::Entity *> players = WORLD.getEntitiesWithComponents<PlayerComponent>();
     ECS::Entity               *player  = nullptr;
 
     for (auto &p : players) {
