@@ -791,7 +791,7 @@ namespace Entities
             std::make_pair(false, std::make_pair(std::make_tuple(3120, 460, false, WeakLeft->second), 0)),
             std::make_pair(false, std::make_pair(std::make_tuple(3140, 460, false, WeakLeft->second), 0)),
 
-            // std::make_pair(false, std::make_pair(std::make_tuple(700, 350, true, MediumUpAndDown->second),
+            // std::make_pair(false, std::make_pair(std::make_tuple(3250, 350, true, MediumUpAndDown->second),
             // strongEnemyMaker)),
         }));
     }
